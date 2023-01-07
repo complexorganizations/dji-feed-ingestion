@@ -7,7 +7,7 @@
 
 # Record the video live.
 ```
-.\ffmpeg.exe -i rtsp://127.0.0.1:8554/dji -c copy -f segment -strftime 1 -segment_time 60 -segment_format mpegts saved_%Y-%m-%d_%H-%M-%S.ts
+.\ffmpeg.exe -i rtsp://127.0.0.1:8554/dji -c copy -f segment -strftime 1 -segment_time 3600 -segment_format mpegts saved_%Y-%m-%d_%H-%M-%S.ts
 ```
 
 # Feed the data into aws.
