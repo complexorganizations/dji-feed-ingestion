@@ -18,7 +18,7 @@ ffmpeg -re -stream_loop -1 -i $VIDEO_FILEPATH -r 30 -c:v libx264 -pix_fmt yuv420
 ```
 
 
-# Do a anaylis of the live feed using cloud providers.
+# Do a analysis of the live feed using cloud providers.
 
 https://docs.aws.amazon.com/ivs/latest/userguide/getting-started-set-up-streaming.html
 
