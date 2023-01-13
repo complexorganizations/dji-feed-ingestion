@@ -17,6 +17,10 @@ ffmpeg -i rtsp://127.0.0.1:8554/dji -c copy -f segment -strftime 1 -segment_time
 ffmpeg -re -stream_loop -1 -i $VIDEO_FILEPATH -r 30 -c:v libx264 -pix_fmt yuv420p -profile:v main -preset veryfast -x264opts "nal-hrd=cbr:no-scenecut" -minrate 3000 -maxrate 3000 -g 60 -c:a aac -b:a 160k -ac 2 -ar 44100 -f flv rtmps://$INGEST_ENDPOINT:443/app/$STREAM_KEY
 ```
 
+```
+sed "s|runOnDemand:|runOnDemand: ffmpeg -re -stream_loop -1 -i main.tf -r 30 -c:v libx264 -pix_fmt yuv420p -profile:v main -preset veryfast -x264opts "nal-hrd=cbr:no-scenecut" -minrate 3000 -maxrate 3000 -g 60 -c:a aac -b:a 160k -ac 2 -ar 44100 -f flv rtmps://4e99170d7608.global-contribute.live-video.net:443/app/sk_us-east-1_2Je2yx6VbfSk_If4lY1OevQwx8gQ8JnZQi1qOlbGWIj|g' /etc/rtsp-simple-server/rtsp-simple-server.yml
+sed 's|runOnReady:|runOnReady: ffmpeg -i rtsp://127.0.0.1:8554/dji -c copy -f segment -strftime 1 -segment_time 3600 -segment_format mpegts main.tf|g' /etc/rtsp-simple-server/rtsp-simple-server.yml
+```
 
 # Do a analysis of the live feed using cloud providers.
 
