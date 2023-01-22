@@ -25,7 +25,7 @@ sed 's|runOnReady:|runOnReady: ffmpeg -i rtsp://127.0.0.1:8554/dji -c copy -f se
 
 # Do a analysis of the live feed using cloud providers.
 
-https://docs.aws.amazon.com/ivs/latest/userguide/getting-started-set-up-streaming.html
+##### https://docs.aws.amazon.com/ivs/latest/userguide/getting-started-set-up-streaming.html
 
 ```
 
