@@ -29,3 +29,15 @@ https://docs.aws.amazon.com/ivs/latest/userguide/getting-started-set-up-streamin
 ```
 
 ```
+
+# Validate all the recorded videos are good.
+``` bash
+ALL_FILES_IN_DIRECTORY=$(find PATH_TO_VIDEO_FILES/ -type f -name "*.MP4")
+for CURRENT_FILE_IN_DIRECTORY in ${ALL_FILES_IN_DIRECTORY}; do
+  ALL_FILES_LIST[${ADD_CONTENT}]=${CURRENT_FILE_IN_DIRECTORY}
+  ADD_CONTENT=$(("${ADD_CONTENT}" + 1))
+done
+for FILE_LIST in "${ALL_FILES_LIST[@]}"; do
+  ffmpeg -v error -i ${FILE_LIST} -f null - 2>error.log
+done
+```
