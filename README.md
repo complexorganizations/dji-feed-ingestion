@@ -3,7 +3,7 @@
 ```
 apt-get update
 apt-get upgrade -y
-apt-get install ffmpeg wget coreutils screen ffmpeg -y
+apt-get install ffmpeg wget coreutils screen -y
 mkdir /etc/rtsp-simple-server
 cd /etc/rtsp-simple-server
 wget https://github.com/aler9/rtsp-simple-server/releases/download/v0.21.0/rtsp-simple-server_v0.21.0_linux_amd64.tar.gz
