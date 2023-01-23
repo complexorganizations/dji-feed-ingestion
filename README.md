@@ -27,7 +27,7 @@ ffmpeg -re -stream_loop -1 -i ${VIDEO_FILEPATH} -r 30 -c:v libx264 -pix_fmt yuv4
 ffmpeg -v error -i first_input.mp4 -f null - 2 >> error.log
 ```
 
-### Combine all the videos into a single video.
+### Combine all the valid videos into a single video.
 ``` bash
 ffmpeg -i concat:"first_input.mp4|second_input.mp4" output.mp4
 ```
