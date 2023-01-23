@@ -31,3 +31,15 @@ ffmpeg -v error -i first_input.mp4 -f null - 2 >> error.log
 ``` bash
 ffmpeg -i concat:"first_input.mp4|second_input.mp4" output.mp4
 ```
+
+### Combine all the srt file into one.
+``` bash
+ALL_FILES_IN_DIRECTORY=$(find 100MEDIA/  -type f -name "*.SRT")
+for CURRENT_FILE_IN_DIRECTORY in ${ALL_FILES_IN_DIRECTORY}; do
+  ALL_FILES_LIST[${ADD_CONTENT}]=${CURRENT_FILE_IN_DIRECTORY}
+  ADD_CONTENT=$(("${ADD_CONTENT}" + 1))
+done
+for FILE_LIST in "${ALL_FILES_LIST[@]}"; do
+  cat ${FILE_LIST} >> 100MEDIA/ALL.SRT
+done
+```
