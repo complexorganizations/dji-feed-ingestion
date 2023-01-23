@@ -42,3 +42,8 @@ for FILE_LIST in "${ALL_FILES_LIST[@]}"; do
   ffmpeg -v error -i ${FILE_LIST} -f null - 2>error.log
 done
 ```
+
+# Combine all the videos into a single video.
+```
+ffmpeg -i concat:"input1.mp4|input2.mp4" output.mp4
+```
