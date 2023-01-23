@@ -22,6 +22,12 @@ ffmpeg -re -stream_loop -1 -i ${VIDEO_FILEPATH} -r 30 -c:v libx264 -pix_fmt yuv4
 ```
 
 ### Post Recording
+
+##### What to do with the `.lrf` files? (DELETE ALL OF THEM)
+``` bash
+rm -f 100MEDIA/*.LRF
+```
+
 ### Validate all the recorded videos are good.
 ``` bash
 ffmpeg -v error -i first_input.mp4 -f null - 2 >> error.log
