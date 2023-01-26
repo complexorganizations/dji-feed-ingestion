@@ -13,6 +13,11 @@ ffmpeg -i rtsp://localhost:8554/test -c copy -f segment -strftime 1 -segment_tim
 ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/main.ts -r 30 -c:v libx264 -pix_fmt yuv420p -profile:v main -preset veryfast -x264opts "nal-hrd=cbr:no-scenecut" -minrate 3000 -maxrate 3000 -g 60 -c:a aac -b:a 160k -ac 2 -ar 44100 -f flv rtmps://${INGEST_ENDPOINT}:443/app/${STREAM_KEY}
 ```
 
+### Check the status of a stream.
+```
+ffprobe -v quiet -print_format json -show_streams rtmp://localhost/test
+```
+
 #### Do a analysis of the live feed using cloud providers.
 
 ##### https://docs.aws.amazon.com/ivs/latest/userguide/getting-started-set-up-streaming.html
