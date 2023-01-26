@@ -15,7 +15,7 @@ ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/main.ts -r 30 -c:v libx264
 
 ### Check the status of a stream.
 ```
-ffprobe -v quiet -print_format json -show_streams rtmp://localhost/test
+ffprobe -v quiet -print_format json -show_streams rtmp://localhost:1935/test
 ```
 
 #### Do a analysis of the live feed using cloud providers.
