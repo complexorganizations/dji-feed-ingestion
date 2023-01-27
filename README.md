@@ -5,7 +5,7 @@
 
 #### Check the status of a stream.
 ``` bash
-ffprobe -v quiet -print_format json -show_streams rtmp://localhost:1935/test
+ffprobe -v quiet -print_format json -show_streams rtsp://admin:password@localhost:8554/test
 ```
 
 #### Watch the stream live.
