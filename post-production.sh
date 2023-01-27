@@ -6,8 +6,10 @@ DRONE_VIDEO_ZIP_NAME="${RANDOM_DRONE_RUN_ID}.zip"
 # Remove all the temp .lrf files.
 rm -f 100MEDIA/*.LRF
 
-# Zip all the files and upload them to S3.
+# Zip all the files.
 zip -r ${DRONE_VIDEO_ZIP_NAME} 100MEDIA/
+
+# Upload all the files to a given service like S3
 
 # Unzip all the videos and make sure all the video files are valid.
 unzip ${DRONE_VIDEO_ZIP_NAME} -d ${RANDOM_DRONE_RUN_ID}
