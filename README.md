@@ -8,6 +8,11 @@
 ffprobe -v quiet -print_format json -show_streams rtmp://localhost:1935/test
 ```
 
+#### Watch the stream live.
+``` bash
+vlc rtsp://admin:password@localhost:8554/test
+```
+
 #### Recording the live stream on the server
 ``` bash
 ffmpeg -i rtsp://localhost:8554/test -c copy -f segment -strftime 1 -segment_time 3600 -segment_format mpegts /etc/rtsp-simple-server/main.ts
