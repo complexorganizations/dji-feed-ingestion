@@ -6,6 +6,6 @@ mkdir -p /etc/amazon-kinesis-video-streams-producer-sdk-cpp/build
 cd /etc/amazon-kinesis-video-streams-producer-sdk-cpp/build
 cmake -DBUILD_GSTREAMER_PLUGIN=TRUE ..
 make
-export GST_PLUGIN_PATH=`pwd`/build
-export LD_LIBRARY_PATH=`pwd`/open-source/local/lib
+echo "export GST_PLUGIN_PATH=/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build
+export LD_LIBRARY_PATH=/etc/amazon-kinesis-video-streams-producer-sdk-cpp/open-source/local/lib" >> ~/.profile
 AWS_ACCESS_KEY_ID=KEY AWS_SECRET_ACCESS_KEY=KEY ./kvs_gstreamer_sample dji-stream-0 rtsp://admin:password@157.230.180.160:8554/test
