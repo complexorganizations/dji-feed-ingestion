@@ -62,11 +62,12 @@ AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH="/etc/amazon-kinesis-video-streams-pr
 AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/build"
 AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
 AMAZON_KINESIS_VIDEO_STREAMS_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/kvs_gstreamer_sample"
+SYSTEM_IPV4=$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip')
 # RTSP Paths
-RTSP_SERVER_ZERO="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip'):8554/zero"
-RTSP_SERVER_ONE="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip'):8554/one"
-RTSP_SERVER_TWO="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip'):8554/two"
-RTSP_SERVER_THREE="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip'):8554/three"
+RTSP_SERVER_ZERO="rtsp://admin:password@${SYSTEM_IPV4}:8554/zero"
+RTSP_SERVER_ONE="rtsp://admin:password@${SYSTEM_IPV4}:8554/one"
+RTSP_SERVER_TWO="rtsp://admin:password@${SYSTEM_IPV4}:8554/two"
+RTSP_SERVER_THREE="rtsp://admin:password@${SYSTEM_IPV4}:8554/three"
 # Kinesis Video Streams Variables
 KINESIS_STREAM_ZERO="rtsp-stream-0"
 KINESIS_STREAM_ONE="rtsp-stream"
