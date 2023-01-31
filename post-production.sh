@@ -6,6 +6,12 @@ DRONE_VIDEO_ZIP_NAME="${RANDOM_DRONE_RUN_ID}.zip"
 # Remove all the temp .lrf files.
 rm -f 100MEDIA/*.LRF
 
+# Validate all the recordings are good.
+ffmpeg -v error -i first_input.mp4 -f null - 2 >> error.log
+
+# Combine all the recordings into one.
+ffmpeg -i concat:"first_input.mp4|second_input.mp4" output.mp4
+
 # Zip all the files.
 zip -r ${DRONE_VIDEO_ZIP_NAME} 100MEDIA/
 
