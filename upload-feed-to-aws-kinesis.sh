@@ -110,15 +110,21 @@ function check-rtsp-server-status() {
             if [ ${RTSP_SERVER_ZERO_COUNTER} == 0 ]; then
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER + 1))
                 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} "${RTSP_SERVER_ZERO}" > ${RTSP_SERVER_ZERO_LOG} &
-                # Check the status of the stream.
-                if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -lt 100 ]; then
-                    # End the stream to aws since the stream already eneded.
-                    kill $!
-                fi
-                if [ "$(tail -n3 ${RTSP_SERVER_ZERO_LOG} | grep string | wc -m)" -gt 500 ]; then
-                    # End the stream if there is an issue
-                    kill $!
-                fi
+                RTSP_SERVER_CHECK_COUNTER=0
+                while [ ${RTSP_SERVER_CHECK_COUNTER} -le 0 ]; do
+                    # Check the status of the stream.
+                    if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -lt 100 ]; then
+                        # End the stream to aws since the stream already eneded.
+                        kill $!
+                        RTSP_SERVER_CHECK_COUNTER=$((RTSP_SERVER_CHECK_COUNTER + 1))
+                    fi
+                    if [ "$(tail -n3 ${RTSP_SERVER_ZERO_LOG} | grep string | wc -m)" -gt 500 ]; then
+                        # End the stream if there is an issue
+                        kill $!
+                        RTSP_SERVER_CHECK_COUNTER=$((RTSP_SERVER_CHECK_COUNTER + 1))
+                    fi
+                    sleep 15
+                done
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER - 1))
             fi
         elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 500 ]; then
