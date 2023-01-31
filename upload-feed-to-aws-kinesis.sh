@@ -70,7 +70,7 @@ RTSP_SERVER_TWO="rtsp://admin:password@${SYSTEM_IPV4}:8554/two"
 RTSP_SERVER_THREE="rtsp://admin:password@${SYSTEM_IPV4}:8554/three"
 # Kinesis Video Streams Variables
 KINESIS_STREAM_ZERO="rtsp-stream-0"
-KINESIS_STREAM_ONE="rtsp-stream"
+KINESIS_STREAM_ONE="rtsp-stream-1"
 KINESIS_STREAM_TWO="rtsp-stream-2"
 KINESIS_STREAM_THREE="rtsp-stream-3"
 # AWS Credentials
