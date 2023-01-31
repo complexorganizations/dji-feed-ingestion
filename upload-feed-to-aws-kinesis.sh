@@ -101,37 +101,36 @@ function check-rtsp-server-status() {
         # Loop through the RTSP servers and check if they are alive
         # Check if a given RTSP server is alive and if it is than stream it
         # Only run the stream once.
-        if [[ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_ZERO} | wc -m)" >= 500 ]]; then
+        if [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_ZERO} | wc -m)" -gt 500 ]; then
             RTSP_SERVER_ZERO_COUNTER=0
             if [ ${RTSP_SERVER_ZERO_COUNTER} == 0 ]; then
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER + 1))
                 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} ${RTSP_SERVER_ZERO}
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER - 1))
             fi
-        elif [[ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_ONE} | wc -m)" >= 500 ]]; then
+        elif [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_ONE} | wc -m)" -gt 500 ]; then
             RTSP_SERVER_ONE_COUNTER=0
             if [ ${RTSP_SERVER_ONE_COUNTER} == 0 ]; then
                 RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER + 1))
                 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ONE} ${RTSP_SERVER_ONE}
                 RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER - 1))
             fi
-        elif [[ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_TWO} | wc -m)" >= 500 ]]; then
+        elif [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_TWO} | wc -m)" -gt 500 ]; then
             RTSP_SERVER_TWO_COUNTER=0
             if [ ${RTSP_SERVER_TWO_COUNTER} == 0 ]; then
                 RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER + 1))
                 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_TWO} ${RTSP_SERVER_TWO}
                 RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER - 1))
             fi
-        elif [[ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_THREE} | wc -m)" >= 500 ]]; then
+        elif [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_THREE} | wc -m)" -gt 500 ]; then
             RTSP_SERVER_THREE_COUNTER=0
             if [ ${RTSP_SERVER_THREE_COUNTER} == 0 ]; then
                 RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER + 1))
                 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_THREE} ${RTSP_SERVER_THREE}
                 RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER - 1))
             fi
-        else
-            exit
         fi
+        sleep 15
     done
 }
 
