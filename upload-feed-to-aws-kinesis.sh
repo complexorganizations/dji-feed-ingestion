@@ -67,7 +67,12 @@ RTSP_SERVER_ZERO="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv
 RTSP_SERVER_ONE="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip'):8554/one"
 RTSP_SERVER_TWO="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip'):8554/two"
 RTSP_SERVER_THREE="rtsp://admin:password@$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip'):8554/three"
-# AWS Variables
+# Kinesis Video Streams Variables
+KINESIS_STREAM_ZERO="rtsp-stream-0"
+KINESIS_STREAM_ONE="rtsp-stream"
+KINESIS_STREAM_TWO="rtsp-stream-2"
+KINESIS_STREAM_THREE="rtsp-stream-3"
+# AWS Credentials
 AWS_ACCESS_KEY_ID="SAMPLEKEY"
 AWS_SECRET_ACCESS_KEY="SAMPLESECRET"
 AWS_DEFAULT_REGION="us-east-1"
@@ -95,13 +100,13 @@ build-kensis-application
 function check-rtsp-server-status() {
     # Check if a given RTSP server is alive and if it is than stream it
     if [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_ZERO} | wc -m)" ] >= 500; then
-        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./kvs_gstreamer_sample dji-stream-0 ${RTSP_SERVER_ZERO}
+        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} ${RTSP_SERVER_ZERO}
     elif [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_ONE} | wc -m)" ] >= 500; then
-        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./kvs_gstreamer_sample dji-stream-1 ${RTSP_SERVER_ONE}
+        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ONE} ${RTSP_SERVER_ONE}
     elif [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_TWO} | wc -m)" ] >= 500; then
-        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./kvs_gstreamer_sample dji-stream-2 ${RTSP_SERVER_TWO}
+        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_TWO} ${RTSP_SERVER_TWO}
     elif [ "$(ffprobe -v quiet -print_format json -show_streams ${RTSP_SERVER_THREE} | wc -m)" ] >= 500; then
-        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./kvs_gstreamer_sample dji-stream-3 ${RTSP_SERVER_THREE}
+        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_THREE} ${RTSP_SERVER_THREE}
     else
         exit
     fi
