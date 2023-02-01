@@ -131,7 +131,8 @@ function check-rtsp-server-status() {
                 done
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER - 1))
             fi
-        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 100 ]; then
+        fi
+        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 100 ]; then
             # Counter for the while loop
             RTSP_SERVER_ONE_COUNTER=0
             if [ ${RTSP_SERVER_ONE_COUNTER} == 0 ]; then
@@ -157,7 +158,8 @@ function check-rtsp-server-status() {
                 done
                 RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER - 1))
             fi
-        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -gt 100 ]; then
+        fi
+        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -gt 100 ]; then
             # Counter for the while loop
             RTSP_SERVER_TWO_COUNTER=0
             if [ ${RTSP_SERVER_TWO_COUNTER} == 0 ]; then
@@ -183,7 +185,8 @@ function check-rtsp-server-status() {
                 done
                 RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER - 1))
             fi
-        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -gt 100 ]; then
+        fi
+        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -gt 100 ]; then
             # Counter for the while loop
             RTSP_SERVER_THREE_COUNTER=0
             if [ ${RTSP_SERVER_THREE_COUNTER} == 0 ]; then
