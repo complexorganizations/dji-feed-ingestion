@@ -118,7 +118,7 @@ function check-rtsp-server-status() {
                         kill $!
                         RTSP_SERVER_CHECK_COUNTER=$((RTSP_SERVER_CHECK_COUNTER + 1))
                     fi
-                    if [ "$(tail -n3 ${RTSP_SERVER_ZERO_LOG} | grep string | wc -m)" -gt 500 ]; then
+                    if [ "$(tail -n50 ${RTSP_SERVER_ZERO_LOG} | grep 'pad link failed' | wc -m)" -gt 1 ]; then
                         # End the stream if there is an issue
                         kill $!
                         RTSP_SERVER_CHECK_COUNTER=$((RTSP_SERVER_CHECK_COUNTER + 1))
