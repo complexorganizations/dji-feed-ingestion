@@ -1,5 +1,6 @@
 # Global variables.
-PATH_TO_MICRO_SD_CARD=$()
+PATH_TO_MICRO_SD_CARD="100MEDIA/"
+PATH_TO_S3="s3://mybucket/myfolder"
 RANDOM_DRONE_RUN_ID=$(openssl rand -hex 6)
 DRONE_VIDEO_ZIP_NAME="${RANDOM_DRONE_RUN_ID}.zip"
 
@@ -7,13 +8,13 @@ DRONE_VIDEO_ZIP_NAME="${RANDOM_DRONE_RUN_ID}.zip"
 rm -f 100MEDIA/*.LRF
 
 # Zip all the files.
-zip -r ${DRONE_VIDEO_ZIP_NAME} 100MEDIA/
+zip -r ${DRONE_VIDEO_ZIP_NAME} ${PATH_TO_MICRO_SD_CARD}
 
 # Upload all the files to a given service like S3
-aws s3 cp ${DRONE_VIDEO_ZIP_NAME} s3://mybucket/myfolder
+aws s3 cp ${DRONE_VIDEO_ZIP_NAME} ${PATH_TO_S3}
 
 # Remove the content from the SD card.
-rm -r 100MEDIA/*
+rm -r ${PATH_TO_MICRO_SD_CARD}*
 
 # Using a serivce like lamda function unzip the files.
 # Unzip all the videos and make sure all the video files are valid.
