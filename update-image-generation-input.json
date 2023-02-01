@@ -1,12 +1,12 @@
 {
- "StreamName": "TestStream",
+ "StreamName": "dji-stream-0",
  "ImageGenerationConfiguration":
  {
   "Status": "ENABLED",
   "DestinationConfig":
   {
    "DestinationRegion": "us-east-1",
-   "Uri": "s3://bucket-name"
+   "Uri": "s3://dji-live-stream-feed-data-0"
   },
   "SamplingInterval": 3000,
   "ImageSelectorType": "PRODUCER_TIMESTAMP",
@@ -14,7 +14,7 @@
   "FormatConfig": {
                 "JPEGQuality": "80"
        },
-  "WidthPixels": 320,
-  "HeightPixels": 240
+  "WidthPixels": 1920,
+  "HeightPixels": 1080
  }
 }
