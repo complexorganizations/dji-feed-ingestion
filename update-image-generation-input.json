@@ -1,0 +1,20 @@
+{
+ "StreamName": "TestStream",
+ "ImageGenerationConfiguration":
+ {
+  "Status": "ENABLED",
+  "DestinationConfig":
+  {
+   "DestinationRegion": "us-east-1",
+   "Uri": "s3://bucket-name"
+  },
+  "SamplingInterval": 3000,
+  "ImageSelectorType": "PRODUCER_TIMESTAMP",
+  "Format": "JPEG",
+  "FormatConfig": {
+                "JPEGQuality": "80"
+       },
+  "WidthPixels": 320,
+  "HeightPixels": 240
+ }
+}
