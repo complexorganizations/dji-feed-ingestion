@@ -34,7 +34,7 @@ function installing-system-requirements() {
         if { [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v curl)" ] || [ ! -x "$(command -v jq)" ]; }; then
             if { [ "${CURRENT_DISTRO}" == "ubuntu" ] || [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "raspbian" ] || [ "${CURRENT_DISTRO}" == "pop" ] || [ "${CURRENT_DISTRO}" == "kali" ] || [ "${CURRENT_DISTRO}" == "linuxmint" ] || [ "${CURRENT_DISTRO}" == "neon" ]; }; then
                 apt-get update
-                apt-get install pkg-config cmake m4 git build-essential jq libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
+                apt-get install pkg-config cmake m4 git procps build-essential jq libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
             elif { [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
                 yum check-update
             elif { [ "${CURRENT_DISTRO}" == "arch" ] || [ "${CURRENT_DISTRO}" == "archarm" ] || [ "${CURRENT_DISTRO}" == "manjaro" ]; }; then
@@ -77,6 +77,11 @@ KINESIS_STREAM_THREE="rtsp-stream-3"
 AWS_ACCESS_KEY_ID="SAMPLEKEY"
 AWS_SECRET_ACCESS_KEY="SAMPLESECRET"
 AWS_DEFAULT_REGION="us-east-1"
+# Logging
+RTSP_SERVER_ZERO_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/rtsp-server-zero.log"
+RTSP_SERVER_ONE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/rtsp-server-one.log"
+RTSP_SERVER_TWO_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/rtsp-server-two.log"
+RTSP_SERVER_THREE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/rtsp-server-three.log"
 
 # Build the application.
 function build-kensis-application() {
@@ -100,32 +105,47 @@ function check-rtsp-server-status() {
         # Loop through the RTSP servers and check if they are alive
         # Check if a given RTSP server is alive and if it is than stream it
         # Only run the stream once.
-        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -gt 500 ]; then
+        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -gt 100 ]; then
             RTSP_SERVER_ZERO_COUNTER=0
             if [ ${RTSP_SERVER_ZERO_COUNTER} == 0 ]; then
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER + 1))
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} "${RTSP_SERVER_ZERO}"
+                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} "${RTSP_SERVER_ZERO}" > ${RTSP_SERVER_ZERO_LOG} &
+                RTSP_SERVER_CHECK_COUNTER=0
+                while [ ${RTSP_SERVER_CHECK_COUNTER} -le 0 ]; do
+                    # Check the status of the stream.
+                    if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -lt 100 ]; then
+                        # End the stream to aws since the stream already eneded.
+                        kill $!
+                        RTSP_SERVER_CHECK_COUNTER=$((RTSP_SERVER_CHECK_COUNTER + 1))
+                    fi
+                    if [ "$(tail -n50 ${RTSP_SERVER_ZERO_LOG} | grep 'pad link failed' | wc -m)" -ge 1 ]; then
+                        # End the stream if there is an issue
+                        kill $!
+                        RTSP_SERVER_CHECK_COUNTER=$((RTSP_SERVER_CHECK_COUNTER + 1))
+                    fi
+                    sleep 15
+                done
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER - 1))
             fi
-        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 500 ]; then
+        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 100 ]; then
             RTSP_SERVER_ONE_COUNTER=0
             if [ ${RTSP_SERVER_ONE_COUNTER} == 0 ]; then
                 RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER + 1))
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ONE} "${RTSP_SERVER_ONE}"
+                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ONE} "${RTSP_SERVER_ONE}" > ${RTSP_SERVER_ONE_LOG} &
                 RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER - 1))
             fi
-        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -gt 500 ]; then
+        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -gt 100 ]; then
             RTSP_SERVER_TWO_COUNTER=0
             if [ ${RTSP_SERVER_TWO_COUNTER} == 0 ]; then
                 RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER + 1))
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_TWO} "${RTSP_SERVER_TWO}"
+                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_TWO} "${RTSP_SERVER_TWO}" > ${RTSP_SERVER_TWO_LOG} &
                 RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER - 1))
             fi
-        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -gt 500 ]; then
+        elif [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -gt 100 ]; then
             RTSP_SERVER_THREE_COUNTER=0
             if [ ${RTSP_SERVER_THREE_COUNTER} == 0 ]; then
                 RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER + 1))
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_THREE} "${RTSP_SERVER_THREE}"
+                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ./${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_THREE} "${RTSP_SERVER_THREE}" > ${RTSP_SERVER_THREE_LOG} &
                 RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER - 1))
             fi
         fi
