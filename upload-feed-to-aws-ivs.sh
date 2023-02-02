@@ -1,5 +1,5 @@
 # Global variables
-RTSP_CONNECTION_STRING="rtsp://admin:password@localhost:8554/test"
+RTSP_CONNECTION_STRING="rtsp://Administrator:Password@localhost:8554/test"
 RTSP_VIDEO_PATH="/etc/rtsp-simple-server/main.ts"
 
 # Always record the feed; even thought it might be offline since we don't know when it will come online.
