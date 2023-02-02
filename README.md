@@ -3,7 +3,7 @@
 #### Connect your drone to cloud service provider for real time data analysis.
 
 #### Requirements:
-- DJI Mavic 3
+- DJI Mavic 3 `https://www.ebay.com/itm/304601807310`
 - DJI Matrice 30
 
 #### Why are only these drone supported?
