@@ -28,3 +28,7 @@ ffmpeg -i concat:"first_input.mp4|second_input.mp4" output.mp4
 
 # Combine all the .srt files into one.
 cat *.SRT >> all.srt
+
+
+
+# analysis on the video depending on which is faster; the split videos or the whoel vidoes.
