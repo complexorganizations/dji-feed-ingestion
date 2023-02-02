@@ -8,3 +8,18 @@
 
 #### Why are only these drone supported?
 - Currently only these drones are supported since the flight path can be fully automated.
+
+#### How to connect your drone to the cloud?
+- Settings > Transmission > Live Streaming Platforms > RTMP > `rtmp://localhost:1935/drone_0?user=admin&pass=password`
+
+#### How to transfer waypoints from DJI FH to device?
+- ``
+
+#### Which controlls are supported?
+- RC-N1
+
+#### Why are the other conrollers not supported?
+- Since they don't support rtmp.
+
+#### Is it better to use android or ios?
+- Android has a bitrate of 5 while ios has a bitrate of 3.
