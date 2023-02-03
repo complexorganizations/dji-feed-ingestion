@@ -10,7 +10,7 @@
 - Currently only these drones are supported since the flight path can be fully automated.
 
 #### How to connect your drone to the cloud?
-- Settings > Transmission > Live Streaming Platforms > RTMP > `rtmp://localhost:1935/drone_0?user=admin&pass=password`
+- Settings > Transmission > Live Streaming Platforms > RTMP > `rtmp://localhost:1935/drone_0?user=Administrator&pass=Password`
 
 #### How to transfer waypoints from DJI FH to device?
 - ``
