@@ -82,6 +82,10 @@ RTSP_SERVER_ZERO_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/rtsp-s
 RTSP_SERVER_ONE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/rtsp-server-one.log"
 RTSP_SERVER_TWO_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/rtsp-server-two.log"
 RTSP_SERVER_THREE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/rtsp-server-three.log"
+#
+GITHUB_REPO_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/upload-feed-to-aws-kinesis.sh"
+KINESIS_VIDEO_STREAMS_BASH_SERVICE="/etc/systemd/system/kinesis-video-streams-bash.service"
+KINESIS_VIDEO_STREAMS_BASH_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/kinesis-video-streams-bash.sh"
 
 # Build the application.
 function build-kensis-application() {
@@ -219,3 +223,25 @@ function check-rtsp-server-status() {
 
 # Check if the RTSP server is alive and if it is than stream it
 check-rtsp-server-status
+
+# Install the script as a service.
+function install-bash-as-service() {
+if [ ! -f "${KINESIS_VIDEO_STREAMS_BASH_SERVICE}" ]; then
+      echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=${KINESIS_VIDEO_STREAMS_BASH_PATH}
+[Install]
+WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
+      if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+        systemctl daemon-reload
+        systemctl enable kinesis-video-streams-bash
+        systemctl restart kinesis-video-streams-bash
+      elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+        service kinesis-video-streams-bash restart
+      fi
+fi
+      }
+      
+      install-bash-as-service
+
