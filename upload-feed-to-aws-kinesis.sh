@@ -226,22 +226,22 @@ check-rtsp-server-status
 
 # Install the script as a service.
 function install-bash-as-service() {
-if [ ! -f "${KINESIS_VIDEO_STREAMS_BASH_SERVICE}" ]; then
-      echo "[Unit]
+    if [ ! -f "${KINESIS_VIDEO_STREAMS_BASH_SERVICE}" ]; then
+        echo "[Unit]
 Wants=network.target
 [Service]
 ExecStart=${KINESIS_VIDEO_STREAMS_BASH_PATH}
 [Install]
 WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
-      if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-        systemctl daemon-reload
-        systemctl enable kinesis-video-streams-bash
-        systemctl restart kinesis-video-streams-bash
-      elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-        service kinesis-video-streams-bash restart
-      fi
-fi
-      }
-      
-      install-bash-as-service
+        if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+            systemctl daemon-reload
+            systemctl enable kinesis-video-streams-bash
+            systemctl restart kinesis-video-streams-bash
+        elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+            service kinesis-video-streams-bash restart
+        fi
+    fi
+}
 
+# Install the bash script as a service.
+install-bash-as-service
