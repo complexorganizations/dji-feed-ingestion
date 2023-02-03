@@ -325,7 +325,9 @@ paths:
     rpiCameraProfile: main
     # H264 level
     rpiCameraLevel: '4.1'
-
+    
+    # Generate sha256 using this.
+    # echo -n "Password" | openssl dgst -binary -sha256 | openssl base64
     # Username required to publish.
     # SHA256-hashed values can be inserted with the "sha256:" prefix.
     publishUser: sha256:59PnafP1k9rcuGNMxbCfyQ3TphxKBqecsJI2Yv5vrms=
