@@ -21,13 +21,13 @@ rm -r ${PATH_TO_MICRO_SD_CARD}/*
 $ unzip ${DRONE_VIDEO_ZIP_NAME} -d ${RANDOM_DRONE_RUN_ID}
 
 # Validate all the recordings are good.
-ffmpeg -v error -i first_input.mp4 -f null - 2 >> error.log
+ffmpeg -v error -i first_input.mp4 -f null - 2 >>error.log
 
 # Combine all the recordings into one.
 ffmpeg -i concat:"first_input.mp4|second_input.mp4" output.mp4
 
 # Combine all the .srt files into one.
-cat *.SRT >> all.srt
+cat *.SRT >>all.srt
 
 # analysis on the video depending on which is faster; the split videos or the whoel vidoes.
 # Split the video frame by frame just the same way as aws; so we can convert that recorded data too.

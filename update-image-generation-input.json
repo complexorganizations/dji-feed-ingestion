@@ -1,20 +1,18 @@
 {
- "StreamName": "dji-stream-0",
- "ImageGenerationConfiguration":
- {
-  "Status": "ENABLED",
-  "DestinationConfig":
-  {
-   "DestinationRegion": "us-east-1",
-   "Uri": "s3://dji-live-stream-feed-data-0/media/dji-stream-0/"
-  },
-  "SamplingInterval": 1000,
-  "ImageSelectorType": "PRODUCER_TIMESTAMP",
-  "Format": "JPEG",
-  "FormatConfig": {
-                "JPEGQuality": "80"
-       },
-  "WidthPixels": 1920,
-  "HeightPixels": 1080
- }
+     "StreamName": "dji-stream-0",
+     "ImageGenerationConfiguration": {
+          "Status": "ENABLED",
+          "DestinationConfig": {
+               "DestinationRegion": "us-east-1",
+               "Uri": "s3://dji-live-stream-feed-data-0/media/dji-stream-0/"
+          },
+          "SamplingInterval": 1000,
+          "ImageSelectorType": "PRODUCER_TIMESTAMP",
+          "Format": "JPEG",
+          "FormatConfig": {
+               "JPEGQuality": "80"
+          },
+          "WidthPixels": 1920,
+          "HeightPixels": 1080
+     }
 }
