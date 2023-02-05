@@ -31,10 +31,10 @@ system-information
 # Pre-Checks system requirements
 function installing-system-requirements() {
     if { [ "${CURRENT_DISTRO}" == "ubuntu" ] || [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "raspbian" ] || [ "${CURRENT_DISTRO}" == "pop" ] || [ "${CURRENT_DISTRO}" == "kali" ] || [ "${CURRENT_DISTRO}" == "linuxmint" ] || [ "${CURRENT_DISTRO}" == "neon" ] || [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ] || [ "${CURRENT_DISTRO}" == "arch" ] || [ "${CURRENT_DISTRO}" == "archarm" ] || [ "${CURRENT_DISTRO}" == "manjaro" ] || [ "${CURRENT_DISTRO}" == "alpine" ] || [ "${CURRENT_DISTRO}" == "freebsd" ] || [ "${CURRENT_DISTRO}" == "ol" ]; }; then
-        if { [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v curl)" ] || [ ! -x "$(command -v jq)" ]; }; then
+        if { [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v curl)" ] || [ ! -x "$(command -v jq)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v gst-launch-1.0)" ]; }; then
             if { [ "${CURRENT_DISTRO}" == "ubuntu" ] || [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "raspbian" ] || [ "${CURRENT_DISTRO}" == "pop" ] || [ "${CURRENT_DISTRO}" == "kali" ] || [ "${CURRENT_DISTRO}" == "linuxmint" ] || [ "${CURRENT_DISTRO}" == "neon" ]; }; then
                 apt-get update
-                apt-get install pkg-config cmake m4 git procps build-essential jq libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
+                apt-get install pkg-config cmake m4 ffmpeg git procps build-essential jq libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
             elif { [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
                 yum check-update
             elif { [ "${CURRENT_DISTRO}" == "arch" ] || [ "${CURRENT_DISTRO}" == "archarm" ] || [ "${CURRENT_DISTRO}" == "manjaro" ]; }; then
@@ -102,6 +102,28 @@ function build-kensis-application() {
 
 # Build the application.
 build-kensis-application
+
+# Install the script as a service.
+function install-bash-as-service() {
+    if [ ! -f "${KINESIS_VIDEO_STREAMS_BASH_SERVICE}" ]; then
+        echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=${KINESIS_VIDEO_STREAMS_BASH_PATH}
+[Install]
+WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
+        if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+            systemctl daemon-reload
+            systemctl enable kinesis-video-streams-bash
+            systemctl restart kinesis-video-streams-bash
+        elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+            service kinesis-video-streams-bash restart
+        fi
+    fi
+}
+
+# Install the bash script as a service.
+install-bash-as-service
 
 # Check the RTSP server status
 function check-rtsp-server-status() {
@@ -224,25 +246,3 @@ function check-rtsp-server-status() {
 
 # Check if the RTSP server is alive and if it is than stream it
 check-rtsp-server-status
-
-# Install the script as a service.
-function install-bash-as-service() {
-    if [ ! -f "${KINESIS_VIDEO_STREAMS_BASH_SERVICE}" ]; then
-        echo "[Unit]
-Wants=network.target
-[Service]
-ExecStart=${KINESIS_VIDEO_STREAMS_BASH_PATH}
-[Install]
-WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
-        if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-            systemctl daemon-reload
-            systemctl enable kinesis-video-streams-bash
-            systemctl restart kinesis-video-streams-bash
-        elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-            service kinesis-video-streams-bash restart
-        fi
-    fi
-}
-
-# Install the bash script as a service.
-install-bash-as-service
