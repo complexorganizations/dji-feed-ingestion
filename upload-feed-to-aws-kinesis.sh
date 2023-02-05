@@ -112,22 +112,36 @@ Wants=network.target
 ExecStart=${KINESIS_VIDEO_STREAMS_BASH_PATH}
 [Install]
 WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
-        if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-            systemctl daemon-reload
-            systemctl enable kinesis-video-streams-bash
-            systemctl restart kinesis-video-streams-bash
-        elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-            service kinesis-video-streams-bash restart
-        fi
     fi
+    if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+        systemctl daemon-reload
+        systemctl enable kinesis-video-streams-bash
+        systemctl restart kinesis-video-streams-bash
+    elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+        service kinesis-video-streams-bash restart
+    fi
+    
 }
 
 # Install the bash script as a service.
 install-bash-as-service
 
-# Note: Save the script in the correct directory and than;
-# Check the path of the current script; if its the correct directory continue; else exit.
-# Restart the bash service so the correct script runs.
+# Make sure there is only one version of the script running from the correct path the rest can be deleted.
+function check-script-path() {
+    if [ ! -f ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
+        # Note: Save the script in the correct directory and than;
+        curl ${GITHUB_REPO_UPDATE_URL} -o ${KINESIS_VIDEO_STREAMS_BASH_PATH}
+    fi
+    # Restart the bash service.
+    install-bash-as-service
+    # Check the path of the current script; if its the correct directory continue; else exit.
+    if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
+        rm -f ${BASH_SOURCE}
+        exit
+    fi
+}
+
+check-script-path
 
 # Check the RTSP server status
 function check-rtsp-server-status() {
