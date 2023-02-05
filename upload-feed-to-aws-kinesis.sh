@@ -125,6 +125,10 @@ WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
 # Install the bash script as a service.
 install-bash-as-service
 
+# Note: Save the script in the correct directory and than;
+# Check the path of the current script; if its the correct directory continue; else exit.
+# Restart the bash service so the correct script runs.
+
 # Check the RTSP server status
 function check-rtsp-server-status() {
     while true; do
