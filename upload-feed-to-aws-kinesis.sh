@@ -115,10 +115,11 @@ function check-rtsp-server-status() {
             if [ ${RTSP_SERVER_ZERO_COUNTER} == 0 ]; then
                 # Add 1 to start the loop.
                 RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER + 1))
-                # Start kensis
+                # Start kinesis
                 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} "${RTSP_SERVER_ZERO}" >${RTSP_SERVER_ZERO_LOG} &
                 # Counter for the while loop.
                 RTSP_SERVER_ZERO_CHECK_COUNTER=0
+                # While the kinesis stream is going; check the status of the stream and determine the couse of action.
                 while [ ${RTSP_SERVER_ZERO_CHECK_COUNTER} -le 0 ]; do
                     # Check the status of the stream.
                     if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -lt 100 ]; then
