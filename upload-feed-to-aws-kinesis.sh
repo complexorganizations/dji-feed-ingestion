@@ -105,6 +105,14 @@ build-kensis-application
 
 # Install the script as a service.
 function install-bash-as-service() {
+    if [ ! -f ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
+        # Note: Save the script in the correct directory.
+        curl ${GITHUB_REPO_UPDATE_URL} -o ${KINESIS_VIDEO_STREAMS_BASH_PATH}
+        chmod +x ${KINESIS_VIDEO_STREAMS_BASH_PATH}
+        # Restart the bash service.
+        install-bash-as-service
+    fi
+    # Install the bash script as a service.
     if [ ! -f "${KINESIS_VIDEO_STREAMS_BASH_SERVICE}" ]; then
         echo "[Unit]
 Wants=network.target
@@ -120,19 +128,6 @@ WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
     elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
         service kinesis-video-streams-bash restart
     fi
-}
-
-# Install the bash script as a service.
-install-bash-as-service
-
-# Make sure there is only one version of the script running from the correct path the rest can be deleted.
-function check-script-path() {
-    if [ ! -f ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
-        # Note: Save the script in the correct directory and than;
-        curl ${GITHUB_REPO_UPDATE_URL} -o ${KINESIS_VIDEO_STREAMS_BASH_PATH}
-        # Restart the bash service.
-        install-bash-as-service
-    fi
     # Check the path of the current script; if its the correct directory continue; else exit.
     if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
         rm -f ${BASH_SOURCE}
@@ -140,7 +135,8 @@ function check-script-path() {
     fi
 }
 
-check-script-path
+# Install the bash script as a service.
+install-bash-as-service
 
 # Check the RTSP server status
 function check-rtsp-server-status() {
