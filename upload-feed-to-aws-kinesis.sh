@@ -120,7 +120,6 @@ WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
     elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
         service kinesis-video-streams-bash restart
     fi
-    
 }
 
 # Install the bash script as a service.
@@ -131,9 +130,9 @@ function check-script-path() {
     if [ ! -f ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
         # Note: Save the script in the correct directory and than;
         curl ${GITHUB_REPO_UPDATE_URL} -o ${KINESIS_VIDEO_STREAMS_BASH_PATH}
+        # Restart the bash service.
+        install-bash-as-service
     fi
-    # Restart the bash service.
-    install-bash-as-service
     # Check the path of the current script; if its the correct directory continue; else exit.
     if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
         rm -f ${BASH_SOURCE}
