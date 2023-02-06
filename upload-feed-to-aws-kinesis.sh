@@ -109,8 +109,6 @@ function install-bash-as-service() {
         # Note: Save the script in the correct directory.
         curl ${GITHUB_REPO_UPDATE_URL} -o ${KINESIS_VIDEO_STREAMS_BASH_PATH}
         chmod +x ${KINESIS_VIDEO_STREAMS_BASH_PATH}
-        # Restart the bash service.
-        install-bash-as-service
     fi
     # Install the bash script as a service.
     if [ ! -f "${KINESIS_VIDEO_STREAMS_BASH_SERVICE}" ]; then
@@ -120,13 +118,13 @@ Wants=network.target
 ExecStart=${KINESIS_VIDEO_STREAMS_BASH_PATH}
 [Install]
 WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
-    fi
-    if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-        systemctl daemon-reload
-        systemctl enable kinesis-video-streams-bash
-        systemctl restart kinesis-video-streams-bash
-    elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-        service kinesis-video-streams-bash restart
+        if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+            systemctl daemon-reload
+            systemctl enable kinesis-video-streams-bash
+            systemctl restart kinesis-video-streams-bash
+        elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+            service kinesis-video-streams-bash restart
+        fi
     fi
     # Check the path of the current script; if its the correct directory continue; else exit.
     # if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
