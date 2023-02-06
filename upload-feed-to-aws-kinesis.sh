@@ -129,10 +129,10 @@ WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
         service kinesis-video-streams-bash restart
     fi
     # Check the path of the current script; if its the correct directory continue; else exit.
-    if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
-        rm -f ${BASH_SOURCE}
-        exit
-    fi
+    # if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
+    #    rm -f ${BASH_SOURCE}
+    #    exit
+    # fi
 }
 
 # Install the bash script as a service.
