@@ -136,6 +136,9 @@ WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
 # Install the bash script as a service.
 install-bash-as-service
 
+### Note: Replace this whole function with a key:value pair check.
+### Each time the server checks each node and determins if we need to upload the stream to aws.
+
 # Check the RTSP server status
 function check-rtsp-server-status() {
     while true; do
