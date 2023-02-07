@@ -163,7 +163,7 @@ function check-rtsp-server-status() {
                         kill $!
                         RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
                     fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_ZERO_LOG} | grep 'pad link failed' | wc -m)" -ge 1 ]; then
+                    if [ "$(tail -n50 ${RTSP_SERVER_ZERO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
                         # End the stream if there is an issue
                         kill $!
                         RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
@@ -190,7 +190,7 @@ function check-rtsp-server-status() {
                         kill $!
                         RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
                     fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_ONE_LOG} | grep 'pad link failed' | wc -m)" -ge 1 ]; then
+                    if [ "$(tail -n50 ${RTSP_SERVER_ONE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
                         # End the stream if there is an issue
                         kill $!
                         RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
@@ -217,7 +217,7 @@ function check-rtsp-server-status() {
                         kill $!
                         RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
                     fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_TWO_LOG} | grep 'pad link failed' | wc -m)" -ge 1 ]; then
+                    if [ "$(tail -n50 ${RTSP_SERVER_TWO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
                         # End the stream if there is an issue
                         kill $!
                         RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
@@ -244,7 +244,7 @@ function check-rtsp-server-status() {
                         kill $!
                         RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
                     fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_THREE_LOG} | grep 'pad link failed' | wc -m)" -ge 1 ]; then
+                    if [ "$(tail -n50 ${RTSP_SERVER_THREE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
                         # End the stream if there is an issue
                         kill $!
                         RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
