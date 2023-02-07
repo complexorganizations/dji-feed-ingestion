@@ -32,4 +32,6 @@ cat *.SRT >>all.srt
 # Take a pic of the video every second.
 ffmpeg -i output.mp4 -r 1 output_%04d.png
 
+# Since the video isnt always perfect; sometimes it cointains blank spaces so when that there remove it from the picture.
+
 # Do a alalysis on the video.
