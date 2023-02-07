@@ -129,7 +129,7 @@ if [ ! -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
       ;;
     esac
   }
-  
+
   # Choose the version of the app.
   get-latest-3-releases
 
