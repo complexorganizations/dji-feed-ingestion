@@ -26,7 +26,7 @@ def get_response(s3URI):
 
 
 # Get all the file paths of all the objects in a bucket
-def get_objects_in_bucket(s3URI):
+def get_all_file_path_in_s3_bucket(s3URI):
     s3 = boto3.client("s3")
     response = s3.list_objects_v2(Bucket=get_bucket_name_from_s3_uri(
         s3URI), Prefix=get_path_from_s3_uri(s3URI))
@@ -46,8 +46,9 @@ def main():
     for label in response["Labels"]:
         print(label["Name"], label["Confidence"])
 
-    # Get all the objects in a bucket
-    objects = get_objects_in_bucket("s3://dji-live-stream-feed-data-0/")
+    # Get all the file paths of all the objects in a bucket
+    objects = get_all_file_path_in_s3_bucket(
+        "s3://dji-live-stream-feed-data-0/")
     print(objects)
 
 
