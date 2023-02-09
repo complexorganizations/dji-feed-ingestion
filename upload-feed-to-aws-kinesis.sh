@@ -64,15 +64,15 @@ AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_
 AMAZON_KINESIS_VIDEO_STREAMS_PATH="./kvs_gstreamer_sample"
 SYSTEM_IPV4=$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip')
 # RTSP Paths
-RTSP_SERVER_ZERO="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/zero"
-RTSP_SERVER_ONE="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/one"
-RTSP_SERVER_TWO="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/two"
-RTSP_SERVER_THREE="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/three"
+RTSP_SERVER_ZERO="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_0"
+RTSP_SERVER_ONE="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_1"
+RTSP_SERVER_TWO="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_2"
+RTSP_SERVER_THREE="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_3"
 # Kinesis Video Streams Variables
-KINESIS_STREAM_ZERO="rtsp-stream-0"
-KINESIS_STREAM_ONE="rtsp-stream-1"
-KINESIS_STREAM_TWO="rtsp-stream-2"
-KINESIS_STREAM_THREE="rtsp-stream-3"
+KINESIS_STREAM_ZERO="dji-stream-0"
+KINESIS_STREAM_ONE="dji-stream-1"
+KINESIS_STREAM_TWO="dji-stream-2"
+KINESIS_STREAM_THREE="dji-stream-3"
 # AWS Credentials
 AWS_ACCESS_KEY_ID="SAMPLEKEY"
 AWS_SECRET_ACCESS_KEY="SAMPLESECRET"
