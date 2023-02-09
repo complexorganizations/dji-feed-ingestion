@@ -13,7 +13,7 @@ def get_path_from_s3_uri(s3_uri):
 
 # Get the response from Rekognition
 def get_response(s3URI):
-    rekognition = boto3.client("rekognition", region_name="us-east-1")
+    rekognition = boto3.client("rekognition")
     response = rekognition.detect_labels(
         Image={
             "S3Object": {
