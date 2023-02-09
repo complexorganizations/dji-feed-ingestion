@@ -28,8 +28,14 @@ def get_response(s3URI):
 def main():
     # Get the response from Rekognition
     response = get_response(
-        "s3://dji-live-stream-feed-data-0/media/dji-stream-0//113669145637_dji-stream-0_1675350588904_b574d515-c67b-49af-8c74-48fd302bd3c0.jpg")
+        "s3://dji-live-stream-feed-data-0/media/dji-stream-0//113669145637_dji-stream-0_1675350168417_db41d0f6-ccf1-4665-aa8d-de74561aaa64.jpg")
+
+    # Print the response
     print(response)
+
+    # Print the confidence and name of each label
+    for label in response["Labels"]:
+        print(label["Name"], label["Confidence"])
 
 
 main()
