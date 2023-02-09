@@ -10,6 +10,7 @@ init()
 def main():
     # Get the response from Rekognition
     response = get_response("bucket", "key")
+    print(response)
 
 main()
 
