@@ -25,6 +25,15 @@ def get_response(s3URI):
     return response
 
 
+# Get all the file paths of all the objects in a bucket
+def get_objects_in_bucket(s3URI):
+    s3 = boto3.client("s3")
+    response = s3.list_objects_v2(Bucket=get_bucket_name_from_s3_uri(
+        s3URI), Prefix=get_path_from_s3_uri(s3URI))
+    # Return the file paths of all the objects in the bucket
+    return [object["Key"] for object in response["Contents"]]
+
+
 def main():
     # Get the response from Rekognition
     response = get_response(
@@ -36,6 +45,10 @@ def main():
     # Print the confidence and name of each label
     for label in response["Labels"]:
         print(label["Name"], label["Confidence"])
+
+    # Get all the objects in a bucket
+    objects = get_objects_in_bucket("s3://dji-live-stream-feed-data-0/")
+    print(objects)
 
 
 main()
