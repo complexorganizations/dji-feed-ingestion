@@ -1,16 +1,9 @@
 import boto3
 
-def main():
-    # Get the response from Rekognition
-    response = get_response("bucket", "key")
-    print(response)
-
-main()
 
 # Get the response from Rekognition
 def get_response(bucket, key):
-    s3 = boto3.resource("s3")
-    rekognition = boto3.client("rekognition")
+    rekognition = boto3.client("rekognition", region_name="us-west-1")
     response = rekognition.detect_labels(
         Image={
             "S3Object": {
@@ -21,3 +14,11 @@ def get_response(bucket, key):
     )
     return response
 
+
+def main():
+    # Get the response from Rekognition
+    response = get_response("bucket", "key")
+    print(response)
+
+
+main()
