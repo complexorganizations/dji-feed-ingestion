@@ -1,3 +1,6 @@
+# Install system requirements.
+apt-get install imagemagick ffmpeg zip unzip openssl -y
+
 # Global variables.
 PATH_TO_MICRO_SD_CARD="100MEDIA"
 PATH_TO_S3="s3://mybucket/myfolder"
@@ -32,6 +35,6 @@ cat *.SRT >>all.srt
 # Take a pic of the video every second.
 ffmpeg -i output.mp4 -r 1 output_%04d.png
 
-# Since the video isnt always perfect; sometimes it cointains blank spaces so when that there remove it from the picture.
+# Validate the picture cointains multiple colors so that its not just dark.
 
 # Do a alalysis on the video.
