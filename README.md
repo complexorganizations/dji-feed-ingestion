@@ -15,6 +15,9 @@
 #### How to transfer waypoints from DJI FH to device?
 - ``
 
+#### How to watch the stream live via vlc?
+- ``
+
 #### Which controlls are supported?
 - RC-N1
 
