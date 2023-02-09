@@ -1,9 +1,8 @@
 import boto3
 
-
 # Get the response from Rekognition
 def get_response(bucket, key):
-    rekognition = boto3.client("rekognition", region_name="us-west-1")
+    rekognition = boto3.client("rekognition", region_name="us-east-1")
     response = rekognition.detect_labels(
         Image={
             "S3Object": {
@@ -17,7 +16,7 @@ def get_response(bucket, key):
 
 def main():
     # Get the response from Rekognition
-    response = get_response("bucket", "key")
+    response = get_response("dji-live-stream-feed-data-0", "s3://dji-live-stream-feed-data-0/media/dji-stream-0//113669145637_dji-stream-0_1675351204694_f8953f18-b68f-469e-bd16-7b972f549c62.jpg")
     print(response)
 
 
