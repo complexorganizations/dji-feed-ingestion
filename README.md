@@ -26,3 +26,7 @@
 
 #### Is it better to use android or ios?
 - Android has a bitrate of 5 while ios has a bitrate of 3.
+
+
+Notes:
+- Use good wifi when using RTMP
