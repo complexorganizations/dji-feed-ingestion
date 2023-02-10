@@ -153,7 +153,7 @@ function check-rtsp-server-status() {
                                 kill $!
                                 RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} + 1))
                             fi
-                            if [ "$(tail -n50 ${RTSP_SERVER_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
+                            if [ "$(tail -n100 ${RTSP_SERVER_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
                                 # End the stream if there is an issue
                                 kill $!
                                 RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} + 1))
