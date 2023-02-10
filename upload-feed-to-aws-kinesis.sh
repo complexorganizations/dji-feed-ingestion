@@ -63,26 +63,17 @@ AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS
 AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
 AMAZON_KINESIS_VIDEO_STREAMS_PATH="./kvs_gstreamer_sample"
 SYSTEM_IPV4=$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip')
-# RTSP Paths
-RTSP_SERVER_ZERO="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_0"
-RTSP_SERVER_ONE="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_1"
-RTSP_SERVER_TWO="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_2"
-RTSP_SERVER_THREE="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_3"
-# Kinesis Video Streams Variables
-KINESIS_STREAM_ZERO="dji-stream-0"
-KINESIS_STREAM_ONE="dji-stream-1"
-KINESIS_STREAM_TWO="dji-stream-2"
-KINESIS_STREAM_THREE="dji-stream-3"
+# Create a key-value pair for the RTSP server and the Kinesis Video Streams Stream Name
+declare -A RTSP_SERVERS
+RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_0"]="dji-stream-0"
+RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_1"]="dji-stream-1"
+RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_2"]="dji-stream-2"
+RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_3"]="dji-stream-3"
 # AWS Credentials
 AWS_ACCESS_KEY_ID="SAMPLEKEY"
 AWS_SECRET_ACCESS_KEY="SAMPLESECRET"
 AWS_DEFAULT_REGION="us-east-1"
-# Logging
-RTSP_SERVER_ZERO_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KINESIS_STREAM_ZERO}.log"
-RTSP_SERVER_ONE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KINESIS_STREAM_ONE}.log"
-RTSP_SERVER_TWO_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KINESIS_STREAM_TWO}.log"
-RTSP_SERVER_THREE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KINESIS_STREAM_THREE}.log"
-#
+# Kinesis Video Streams Bash Script
 GITHUB_REPO_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/upload-feed-to-aws-kinesis.sh"
 KINESIS_VIDEO_STREAMS_BASH_SERVICE="/etc/systemd/system/kinesis-video-streams-bash.service"
 KINESIS_VIDEO_STREAMS_BASH_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/upload-feed-to-aws-kinesis.sh"
@@ -127,139 +118,55 @@ WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
             service kinesis-video-streams-bash restart
         fi
     fi
-    # Check the path of the current script; if its the correct directory continue; else exit.
-    # if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
-    #    rm -f ${BASH_SOURCE}
-    #    exit
-    # fi
 }
 
 # Install the bash script as a service.
 install-bash-as-service
 
-### Note: Replace this whole function with a key:value pair check.
-### Each time the server checks each node and determins if we need to upload the stream to aws.
-
 # Check the RTSP server status
 function check-rtsp-server-status() {
+    # Make sure the script is running in the correct directory
     if [ "${CURRENT_PATH_TO_SCRIPT}" == "${KINESIS_VIDEO_STREAMS_BASH_PATH}" ]; then
+        # Create a loop that will run forever
         while true; do
             # Loop through the RTSP servers and check if they are alive
-            # Check if a given RTSP server is alive and if it is than stream it
-            # Only run the stream once.
-            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -gt 100 ]; then
-                # Counter for the while loop
-                RTSP_SERVER_ZERO_COUNTER=0
-                if [ ${RTSP_SERVER_ZERO_COUNTER} == 0 ]; then
-                    # Add 1 to start the loop.
-                    RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER + 1))
-                    # Start kinesis
-                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} "${RTSP_SERVER_ZERO}" >${RTSP_SERVER_ZERO_LOG} &
-                    # Counter for the while loop.
-                    RTSP_SERVER_ZERO_CHECK_COUNTER=0
-                    # While the kinesis stream is going; check the status of the stream and determine the couse of action.
-                    while [ ${RTSP_SERVER_ZERO_CHECK_COUNTER} -le 0 ]; do
-                        # Check the status of the stream.
-                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -lt 100 ]; then
-                            # End the stream to aws since the stream already eneded.
-                            kill $!
-                            RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
-                        fi
-                        if [ "$(tail -n50 ${RTSP_SERVER_ZERO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                            # End the stream if there is an issue
-                            kill $!
-                            RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
-                        fi
-                        sleep 15
-                    done
-                    RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER - 1))
+            for RTSP_SERVER in "${!RTSP_SERVERS[@]}"; do
+                KINESIS_STREAM_NAME="${RTSP_SERVERS[${RTSP_SERVER}]}"
+                RTSP_SERVER_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KINESIS_STREAM_NAME}.log"
+                # Check if a given RTSP server is alive and if it is than stream it
+                if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER}" | wc -m)" -gt 100 ]; then
+                    # Create a counter for the number of times the RTSP server has been started
+                    RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME}=0
+                    # Only start the RTSP stream to kinesis video streams if the counter is 0; this is to prevent the RTSP server from being started multiple times
+                    if [ $RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} == 0 ]; then
+                        # We need to add a one to the counter so that the RTSP server is not started multiple times
+                        RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} + 1))
+                        # Start the RTSP server
+                        AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_NAME} "${RTSP_SERVER}" >${RTSP_SERVER_LOG} &
+                        # Create a counter for the while loop
+                        RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} = 0
+                        # Create a while loop that will check the health of the RTSP server
+                        while [ $RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} == 0 ]; do
+                            # Check the status of the stream.
+                            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_LOG}" | wc -m)" -lt 100 ]; then
+                                # End the stream to aws since the stream already eneded.
+                                kill $!
+                                RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} + 1))
+                            fi
+                            if [ "$(tail -n50 ${RTSP_SERVER_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
+                                # End the stream if there is an issue
+                                kill $!
+                                RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} + 1))
+                            fi
+                        done
+                    fi
                 fi
-            fi
-            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 100 ]; then
-                # Counter for the while loop
-                RTSP_SERVER_ONE_COUNTER=0
-                if [ ${RTSP_SERVER_ONE_COUNTER} == 0 ]; then
-                    # Add 1 to start the loop.
-                    RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER + 1))
-                    # Start kensis
-                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ONE} "${RTSP_SERVER_ONE}" >${RTSP_SERVER_ONE_LOG} &
-                    # Counter for the while loop.
-                    RTSP_SERVER_ONE_CHECK_COUNTER=0
-                    while [ ${RTSP_SERVER_ONE_CHECK_COUNTER} -le 0 ]; do
-                        # Check the status of the stream.
-                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -lt 100 ]; then
-                            # End the stream to aws since the stream already eneded.
-                            kill $!
-                            RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
-                        fi
-                        if [ "$(tail -n50 ${RTSP_SERVER_ONE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                            # End the stream if there is an issue
-                            kill $!
-                            RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
-                        fi
-                        sleep 15
-                    done
-                    RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER - 1))
-                fi
-            fi
-            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -gt 100 ]; then
-                # Counter for the while loop
-                RTSP_SERVER_TWO_COUNTER=0
-                if [ ${RTSP_SERVER_TWO_COUNTER} == 0 ]; then
-                    # Add 1 to start the loop.
-                    RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER + 1))
-                    # Start kensis
-                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_TWO} "${RTSP_SERVER_TWO}" >${RTSP_SERVER_TWO_LOG} &
-                    # Counter for the while loop.
-                    RTSP_SERVER_TWO_CHECK_COUNTER=0
-                    while [ ${RTSP_SERVER_TWO_CHECK_COUNTER} -le 0 ]; do
-                        # Check the status of the stream.
-                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -lt 100 ]; then
-                            # End the stream to aws since the stream already eneded.
-                            kill $!
-                            RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
-                        fi
-                        if [ "$(tail -n50 ${RTSP_SERVER_TWO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                            # End the stream if there is an issue
-                            kill $!
-                            RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
-                        fi
-                        sleep 15
-                    done
-                    RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER - 1))
-                fi
-            fi
-            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -gt 100 ]; then
-                # Counter for the while loop
-                RTSP_SERVER_THREE_COUNTER=0
-                if [ ${RTSP_SERVER_THREE_COUNTER} == 0 ]; then
-                    # Add 1 to start the loop.
-                    RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER + 1))
-                    # Start kensis
-                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_THREE} "${RTSP_SERVER_THREE}" >${RTSP_SERVER_THREE_LOG} &
-                    # Counter for the while loop.
-                    RTSP_SERVER_THREE_CHECK_COUNTER=0
-                    while [ ${RTSP_SERVER_THREE_CHECK_COUNTER} -le 0 ]; do
-                        # Check the status of the stream.
-                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -lt 100 ]; then
-                            # End the stream to aws since the stream already eneded.
-                            kill $!
-                            RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
-                        fi
-                        if [ "$(tail -n50 ${RTSP_SERVER_THREE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                            # End the stream if there is an issue
-                            kill $!
-                            RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
-                        fi
-                        sleep 15
-                    done
-                    RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER - 1))
-                fi
-            fi
-            sleep 15
+            done
         done
     fi
 }
 
 # Check if the RTSP server is alive and if it is than stream it
 check-rtsp-server-status
+
+# Note: This will not work i think since it seems to be broken in the logic of the app; i think i am not 100% sure but lets see what happens.
