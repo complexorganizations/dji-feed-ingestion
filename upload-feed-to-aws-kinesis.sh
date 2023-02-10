@@ -86,6 +86,7 @@ RTSP_SERVER_THREE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KIN
 GITHUB_REPO_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/upload-feed-to-aws-kinesis.sh"
 KINESIS_VIDEO_STREAMS_BASH_SERVICE="/etc/systemd/system/kinesis-video-streams-bash.service"
 KINESIS_VIDEO_STREAMS_BASH_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/upload-feed-to-aws-kinesis.sh"
+CURRENT_PATH_TO_SCRIPT=$(dirname "$(readlink -f "$0")")
 
 # Build the application.
 function build-kensis-application() {
@@ -141,7 +142,7 @@ install-bash-as-service
 
 # Check the RTSP server status
 function check-rtsp-server-status() {
-    if [ -f "${KINESIS_VIDEO_STREAMS_BASH_PATH}" ]; then
+    if [ "${CURRENT_PATH_TO_SCRIPT}" == "${KINESIS_VIDEO_STREAMS_BASH_PATH}" ]; then
         while true; do
             # Loop through the RTSP servers and check if they are alive
             # Check if a given RTSP server is alive and if it is than stream it
