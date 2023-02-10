@@ -122,23 +122,15 @@ WantedBy=multi-user.target" >${KINESIS_VIDEO_STREAMS_BASH_SERVICE}
         if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
             systemctl daemon-reload
             systemctl enable kinesis-video-streams-bash
-            systemctl restart kinesis-video-streams-bash
+            systemctl start kinesis-video-streams-bash
         elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-            service kinesis-video-streams-bash restart
+            service kinesis-video-streams-bash start
         fi
     fi
-    # Check the path of the current script; if its the correct directory continue; else exit.
-    # if [ ${BASH_SOURCE} != ${KINESIS_VIDEO_STREAMS_BASH_PATH} ]; then
-    #    rm -f ${BASH_SOURCE}
-    #    exit
-    # fi
 }
 
 # Install the bash script as a service.
 install-bash-as-service
-
-### Note: Replace this whole function with a key:value pair check.
-### Each time the server checks each node and determins if we need to upload the stream to aws.
 
 # Check the RTSP server status
 function check-rtsp-server-status() {
