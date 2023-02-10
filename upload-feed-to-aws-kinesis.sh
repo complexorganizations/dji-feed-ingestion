@@ -141,121 +141,123 @@ install-bash-as-service
 
 # Check the RTSP server status
 function check-rtsp-server-status() {
-    while true; do
-        # Loop through the RTSP servers and check if they are alive
-        # Check if a given RTSP server is alive and if it is than stream it
-        # Only run the stream once.
-        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -gt 100 ]; then
-            # Counter for the while loop
-            RTSP_SERVER_ZERO_COUNTER=0
-            if [ ${RTSP_SERVER_ZERO_COUNTER} == 0 ]; then
-                # Add 1 to start the loop.
-                RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER + 1))
-                # Start kinesis
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} "${RTSP_SERVER_ZERO}" >${RTSP_SERVER_ZERO_LOG} &
-                # Counter for the while loop.
-                RTSP_SERVER_ZERO_CHECK_COUNTER=0
-                # While the kinesis stream is going; check the status of the stream and determine the couse of action.
-                while [ ${RTSP_SERVER_ZERO_CHECK_COUNTER} -le 0 ]; do
-                    # Check the status of the stream.
-                    if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -lt 100 ]; then
-                        # End the stream to aws since the stream already eneded.
-                        kill $!
-                        RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
-                    fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_ZERO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                        # End the stream if there is an issue
-                        kill $!
-                        RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
-                    fi
-                    sleep 15
-                done
-                RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER - 1))
+    if [ -f "${KINESIS_VIDEO_STREAMS_BASH_PATH}" ]; then
+        while true; do
+            # Loop through the RTSP servers and check if they are alive
+            # Check if a given RTSP server is alive and if it is than stream it
+            # Only run the stream once.
+            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -gt 100 ]; then
+                # Counter for the while loop
+                RTSP_SERVER_ZERO_COUNTER=0
+                if [ ${RTSP_SERVER_ZERO_COUNTER} == 0 ]; then
+                    # Add 1 to start the loop.
+                    RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER + 1))
+                    # Start kinesis
+                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ZERO} "${RTSP_SERVER_ZERO}" >${RTSP_SERVER_ZERO_LOG} &
+                    # Counter for the while loop.
+                    RTSP_SERVER_ZERO_CHECK_COUNTER=0
+                    # While the kinesis stream is going; check the status of the stream and determine the couse of action.
+                    while [ ${RTSP_SERVER_ZERO_CHECK_COUNTER} -le 0 ]; do
+                        # Check the status of the stream.
+                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ZERO}" | wc -m)" -lt 100 ]; then
+                            # End the stream to aws since the stream already eneded.
+                            kill $!
+                            RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
+                        fi
+                        if [ "$(tail -n50 ${RTSP_SERVER_ZERO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
+                            # End the stream if there is an issue
+                            kill $!
+                            RTSP_SERVER_ZERO_CHECK_COUNTER=$((RTSP_SERVER_ZERO_CHECK_COUNTER + 1))
+                        fi
+                        sleep 15
+                    done
+                    RTSP_SERVER_ZERO_COUNTER=$((RTSP_SERVER_ZERO_COUNTER - 1))
+                fi
             fi
-        fi
-        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 100 ]; then
-            # Counter for the while loop
-            RTSP_SERVER_ONE_COUNTER=0
-            if [ ${RTSP_SERVER_ONE_COUNTER} == 0 ]; then
-                # Add 1 to start the loop.
-                RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER + 1))
-                # Start kensis
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ONE} "${RTSP_SERVER_ONE}" >${RTSP_SERVER_ONE_LOG} &
-                # Counter for the while loop.
-                RTSP_SERVER_ONE_CHECK_COUNTER=0
-                while [ ${RTSP_SERVER_ONE_CHECK_COUNTER} -le 0 ]; do
-                    # Check the status of the stream.
-                    if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -lt 100 ]; then
-                        # End the stream to aws since the stream already eneded.
-                        kill $!
-                        RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
-                    fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_ONE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                        # End the stream if there is an issue
-                        kill $!
-                        RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
-                    fi
-                    sleep 15
-                done
-                RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER - 1))
+            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -gt 100 ]; then
+                # Counter for the while loop
+                RTSP_SERVER_ONE_COUNTER=0
+                if [ ${RTSP_SERVER_ONE_COUNTER} == 0 ]; then
+                    # Add 1 to start the loop.
+                    RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER + 1))
+                    # Start kensis
+                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_ONE} "${RTSP_SERVER_ONE}" >${RTSP_SERVER_ONE_LOG} &
+                    # Counter for the while loop.
+                    RTSP_SERVER_ONE_CHECK_COUNTER=0
+                    while [ ${RTSP_SERVER_ONE_CHECK_COUNTER} -le 0 ]; do
+                        # Check the status of the stream.
+                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_ONE}" | wc -m)" -lt 100 ]; then
+                            # End the stream to aws since the stream already eneded.
+                            kill $!
+                            RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
+                        fi
+                        if [ "$(tail -n50 ${RTSP_SERVER_ONE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
+                            # End the stream if there is an issue
+                            kill $!
+                            RTSP_SERVER_ONE_CHECK_COUNTER=$((RTSP_SERVER_ONE_CHECK_COUNTER + 1))
+                        fi
+                        sleep 15
+                    done
+                    RTSP_SERVER_ONE_COUNTER=$((RTSP_SERVER_ONE_COUNTER - 1))
+                fi
             fi
-        fi
-        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -gt 100 ]; then
-            # Counter for the while loop
-            RTSP_SERVER_TWO_COUNTER=0
-            if [ ${RTSP_SERVER_TWO_COUNTER} == 0 ]; then
-                # Add 1 to start the loop.
-                RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER + 1))
-                # Start kensis
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_TWO} "${RTSP_SERVER_TWO}" >${RTSP_SERVER_TWO_LOG} &
-                # Counter for the while loop.
-                RTSP_SERVER_TWO_CHECK_COUNTER=0
-                while [ ${RTSP_SERVER_TWO_CHECK_COUNTER} -le 0 ]; do
-                    # Check the status of the stream.
-                    if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -lt 100 ]; then
-                        # End the stream to aws since the stream already eneded.
-                        kill $!
-                        RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
-                    fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_TWO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                        # End the stream if there is an issue
-                        kill $!
-                        RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
-                    fi
-                    sleep 15
-                done
-                RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER - 1))
+            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -gt 100 ]; then
+                # Counter for the while loop
+                RTSP_SERVER_TWO_COUNTER=0
+                if [ ${RTSP_SERVER_TWO_COUNTER} == 0 ]; then
+                    # Add 1 to start the loop.
+                    RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER + 1))
+                    # Start kensis
+                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_TWO} "${RTSP_SERVER_TWO}" >${RTSP_SERVER_TWO_LOG} &
+                    # Counter for the while loop.
+                    RTSP_SERVER_TWO_CHECK_COUNTER=0
+                    while [ ${RTSP_SERVER_TWO_CHECK_COUNTER} -le 0 ]; do
+                        # Check the status of the stream.
+                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_TWO}" | wc -m)" -lt 100 ]; then
+                            # End the stream to aws since the stream already eneded.
+                            kill $!
+                            RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
+                        fi
+                        if [ "$(tail -n50 ${RTSP_SERVER_TWO_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
+                            # End the stream if there is an issue
+                            kill $!
+                            RTSP_SERVER_TWO_CHECK_COUNTER=$((RTSP_SERVER_TWO_CHECK_COUNTER + 1))
+                        fi
+                        sleep 15
+                    done
+                    RTSP_SERVER_TWO_COUNTER=$((RTSP_SERVER_TWO_COUNTER - 1))
+                fi
             fi
-        fi
-        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -gt 100 ]; then
-            # Counter for the while loop
-            RTSP_SERVER_THREE_COUNTER=0
-            if [ ${RTSP_SERVER_THREE_COUNTER} == 0 ]; then
-                # Add 1 to start the loop.
-                RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER + 1))
-                # Start kensis
-                AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_THREE} "${RTSP_SERVER_THREE}" >${RTSP_SERVER_THREE_LOG} &
-                # Counter for the while loop.
-                RTSP_SERVER_THREE_CHECK_COUNTER=0
-                while [ ${RTSP_SERVER_THREE_CHECK_COUNTER} -le 0 ]; do
-                    # Check the status of the stream.
-                    if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -lt 100 ]; then
-                        # End the stream to aws since the stream already eneded.
-                        kill $!
-                        RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
-                    fi
-                    if [ "$(tail -n50 ${RTSP_SERVER_THREE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
-                        # End the stream if there is an issue
-                        kill $!
-                        RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
-                    fi
-                    sleep 15
-                done
-                RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER - 1))
+            if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -gt 100 ]; then
+                # Counter for the while loop
+                RTSP_SERVER_THREE_COUNTER=0
+                if [ ${RTSP_SERVER_THREE_COUNTER} == 0 ]; then
+                    # Add 1 to start the loop.
+                    RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER + 1))
+                    # Start kensis
+                    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_THREE} "${RTSP_SERVER_THREE}" >${RTSP_SERVER_THREE_LOG} &
+                    # Counter for the while loop.
+                    RTSP_SERVER_THREE_CHECK_COUNTER=0
+                    while [ ${RTSP_SERVER_THREE_CHECK_COUNTER} -le 0 ]; do
+                        # Check the status of the stream.
+                        if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_THREE}" | wc -m)" -lt 100 ]; then
+                            # End the stream to aws since the stream already eneded.
+                            kill $!
+                            RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
+                        fi
+                        if [ "$(tail -n50 ${RTSP_SERVER_THREE_LOG} | grep 'Pad link failed' | wc -m)" -ge 1 ]; then
+                            # End the stream if there is an issue
+                            kill $!
+                            RTSP_SERVER_THREE_CHECK_COUNTER=$((RTSP_SERVER_THREE_CHECK_COUNTER + 1))
+                        fi
+                        sleep 15
+                    done
+                    RTSP_SERVER_THREE_COUNTER=$((RTSP_SERVER_THREE_COUNTER - 1))
+                fi
             fi
-        fi
-        sleep 15
-    done
+            sleep 15
+        done
+    fi
 }
 
 # Check if the RTSP server is alive and if it is than stream it
