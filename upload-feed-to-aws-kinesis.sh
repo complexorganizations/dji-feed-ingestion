@@ -135,18 +135,18 @@ function check-rtsp-server-status() {
                 RTSP_SERVER_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KINESIS_STREAM_NAME}.log"
                 # Check if a given RTSP server is alive and if it is than stream it
                 if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER}" | wc -m)" -gt 100 ]; then
-                    # Create a counter for the number of times the RTSP server has been started
-                    RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME}=0
-                    # Only start the RTSP stream to kinesis video streams if the counter is 0; this is to prevent the RTSP server from being started multiple times
-                    if [ $RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} == 0 ]; then
-                        # We need to add a one to the counter so that the RTSP server is not started multiple times
+                    # Create a counter for the number of times the RTSP server has been started, Add one to the counter; Value: 1
+                    RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} + 1))
+                    # Only start the RTSP stream to kinesis video streams if the counter is 1; this is to prevent the RTSP server from being started multiple times
+                    if [ $RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} == 1 ]; then
+                        # We need to add a one to the counter so that the RTSP server is not started multiple timesl; Value: 2
                         RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} + 1))
                         # Start the RTSP server
                         AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_NAME} "${RTSP_SERVER}" >${RTSP_SERVER_LOG} &
                         # Create a counter for the while loop
                         RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} = 0
                         # Create a while loop that will check the health of the RTSP server
-                        while [ $RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} == 0 ]; do
+                        while [ $RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} -le 0 ]; do
                             # Check the status of the stream.
                             if [ "$(ffprobe -v quiet -print_format json -show_streams "${RTSP_SERVER_LOG}" | wc -m)" -lt 100 ]; then
                                 # End the stream to aws since the stream already eneded.
@@ -159,6 +159,8 @@ function check-rtsp-server-status() {
                                 RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_WHILE_COUNTER_${KINESIS_STREAM_NAME} + 1))
                             fi
                         done
+                        # Reset the counter // Value: 0
+                        RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} = 0
                     fi
                 fi
             done
@@ -166,7 +168,5 @@ function check-rtsp-server-status() {
     fi
 }
 
-# Check if the RTSP server is alive and if it is than stream it
+# Check if the RTSP server is alive and if it is than stream it to kinesis video streams
 check-rtsp-server-status
-
-# Note: This will not work i think since it seems to be broken in the logic of the app; i think i am not 100% sure but lets see what happens.
