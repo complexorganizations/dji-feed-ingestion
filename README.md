@@ -10,10 +10,12 @@
 - Buy Mavic 3 Fly More Combo
 - Setup a RTMP server using `rtsp-installer.sh`.
 - Forward all RTMP from DJI to rtmp server;
-- Forward everything from RTMP server to AWS cloud (or any other cloud)
-- Find the locations of people; cars and other things;
+- Forward everything from RTMP server to AWS cloud (or any other cloud) `upload-feed-to-aws-kinesis.sh`
+- Find the locations of people; cars and other things; `image-rekognition.py`
 - using waypoints automate the missions.
 - loop;
+- Using aws u can train your own ML model for other purposes too.
+- Using waypoints you can automated data collection.
 
 #### Why are only these drone supported?
 - Currently only these drones are supported since the flight path can be fully automated.
