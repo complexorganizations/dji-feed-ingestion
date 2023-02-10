@@ -141,6 +141,8 @@ function check-rtsp-server-status() {
                     if [ $RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} == 1 ]; then
                         # We need to add a one to the counter so that the RTSP server is not started multiple timesl; Value: 2
                         RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME}=$((RTSP_SERVER_START_COUNTER_${KINESIS_STREAM_NAME} + 1))
+                        # Note: This is a temp fix for the script since there seems to be no other of doing it for now.
+                        cd ${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}
                         # Start the RTSP server
                         AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM_NAME} "${RTSP_SERVER}" >${RTSP_SERVER_LOG} &
                         # Create a counter for the while loop
