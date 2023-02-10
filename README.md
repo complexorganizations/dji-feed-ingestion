@@ -6,6 +6,15 @@
 - DJI Mavic 3 `https://www.ebay.com/itm/304601807310`
 - DJI Matrice 30
 
+#### How to use?
+- Buy Mavic 3 Fly More Combo
+- Setup a RTMP server using `rtsp-installer.sh`.
+- Forward all RTMP from DJI to rtmp server;
+- Forward everything from RTMP server to AWS cloud (or any other cloud)
+- Find the locations of people; cars and other things;
+- using waypoints automate the missions.
+- loop;
+
 #### Why are only these drone supported?
 - Currently only these drones are supported since the flight path can be fully automated.
 
