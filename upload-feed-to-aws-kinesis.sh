@@ -86,7 +86,7 @@ RTSP_SERVER_THREE_LOG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/${KIN
 GITHUB_REPO_UPDATE_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/upload-feed-to-aws-kinesis.sh"
 KINESIS_VIDEO_STREAMS_BASH_SERVICE="/etc/systemd/system/kinesis-video-streams-bash.service"
 KINESIS_VIDEO_STREAMS_BASH_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/upload-feed-to-aws-kinesis.sh"
-CURRENT_PATH_TO_SCRIPT=$(dirname "$(readlink -f "$0")")
+CURRENT_PATH_TO_SCRIPT=$(realpath "$0")
 
 # Build the application.
 function build-kensis-application() {
