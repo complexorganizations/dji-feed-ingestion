@@ -140,9 +140,9 @@ WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
       if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
         systemctl daemon-reload
         systemctl enable rtsp-simple-server
-        systemctl restart rtsp-simple-server
+        systemctl start rtsp-simple-server
       elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-        service rtsp-simple-server restart
+        service rtsp-simple-server start
       fi
     fi
   }
@@ -161,8 +161,8 @@ else
     if [[ "${UNINSTALL_RTSP_SERVER}" == "y" ]]; then
       echo "Uninstalling the rtsp-simple-server..."
       if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-        systemctl stop rtsp-simple-server
         systemctl disable rtsp-simple-server
+        systemctl stop rtsp-simple-server
       elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
         service rtsp-simple-server stop
       fi
