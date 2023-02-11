@@ -100,6 +100,7 @@ RTSP_SIMPLE_SERVER_SERVICE="/etc/systemd/system/rtsp-simple-server.service"
 RTSP_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/rtsp/rtsp-simple-server.yml"
 LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/rtsp-simple-server/releases/latest | grep browser_download_url | cut -d'"' -f4 | grep $(dpkg --print-architecture) | grep linux)
 LASTEST_FILE_NAME=$(echo "${LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
+TEMP_DOWNLOAD_PATH="/tmp/${LASTEST_FILE_NAME}"
 
 # Check if the rtsp-simple-server directory dosent exists
 if [ ! -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
@@ -108,13 +109,15 @@ if [ ! -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
   function download-latest-release() {
     # Create the path for the application build to go to.
     if [ -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
-        rm -rf ${RTSP_SIMPLE_SERVER_PATH}
+      rm -rf ${RTSP_SIMPLE_SERVER_PATH}
     fi
+    # Make the folder in /etc/rtsp-simple-server
     mkdir -p ${RTSP_SIMPLE_SERVER_PATH}
-    # This code downloads the latest release
-    # The latest release is downloaded to /tmp/
-    curl -L "${LATEST_RELEASE}" -o /tmp/${LASTEST_FILE_NAME}
-    tar -xvf /tmp/${FILE_NAME} -C ${RTSP_SIMPLE_SERVER_PATH}
+    # Download the latest build of the application in the /tmp/
+    curl -L "${LATEST_RELEASE}" -o ${TEMP_DOWNLOAD_PATH}
+    # Extract the application from /tmp/ to /etc/rtsp-simple-server
+    tar -xvf ${TEMP_DOWNLOAD_PATH} -C ${RTSP_SIMPLE_SERVER_PATH}
+    # Download the latest config for the application.
     curl ${RTSP_CONFIG_FILE_GITHUB_URL} -o ${RTSP_SIMPLE_SERVER_CONFIG}
   }
 
@@ -123,7 +126,7 @@ if [ ! -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
 
   # Create the service file
   function create-service-file() {
-      if [ ! -f "${RTSP_SIMPLE_SERVER_SERVICE}" ]; then
+    if [ ! -f "${RTSP_SIMPLE_SERVER_SERVICE}" ]; then
       # This code creates the service file
       # The service file is stored in /etc/systemd/system/rtsp-simple-server.service
       echo "[Unit]
@@ -139,7 +142,7 @@ WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
       elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
         service rtsp-simple-server restart
       fi
-      fi
+    fi
   }
 
   # Create the service file
