@@ -3,8 +3,8 @@
 #### Connect your drone to cloud service provider for real time data analysis.
 
 #### Requirements:
-- DJI Mavic 3 (Professional) `https://www.ebay.com/itm/304601807310`
-- DJI Matrice 30 & Matrice 30 Dock (Enterprise) ``
+- Professional: DJI Mavic 3 `https://www.ebay.com/itm/304601807310`
+- Enterprise: DJI Matrice 30 & Dock ``
 
 #### How to use?
 - Setup a RTMP server using `rtsp-installer.sh`.
