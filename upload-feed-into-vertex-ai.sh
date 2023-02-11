@@ -11,8 +11,4 @@ apt-get install -y --no-install-recommends autoconf automake build-essential ca-
 # https://cloud.google.com/vision-ai/docs/create-manage-streams#ingest-videos
 # This command will send an RTSP feed into the stream.
 # This command has to run in the network that has direct access to the RTSP feed.
-vaictl -p PROJECT_ID \
-         -l LOCATION_ID \
-         -c application-cluster-0 \
-         --service-endpoint visionai.googleapis.com \
-send rtsp to streams STREAM_ID --rtsp-uri RTSP_ADDRESS
+vaictl -p github-code-snippets -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams dji-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/drone_0
