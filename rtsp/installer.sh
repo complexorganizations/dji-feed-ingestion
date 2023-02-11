@@ -106,10 +106,14 @@ if [ ! -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
 
   # Download the latest release
   function download-latest-release() {
+    # Create the path for the application build to go to.
+    if [ -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
+        rm -rf ${RTSP_SIMPLE_SERVER_PATH}
+    fi
+    mkdir -p ${RTSP_SIMPLE_SERVER_PATH}
     # This code downloads the latest release
     # The latest release is downloaded to /tmp/
     curl -L "${LATEST_RELEASE}" -o /tmp/${LASTEST_FILE_NAME}
-    mkdir -p ${RTSP_SIMPLE_SERVER_PATH}
     tar -xvf /tmp/${FILE_NAME} -C ${RTSP_SIMPLE_SERVER_PATH}
     curl ${RTSP_CONFIG_FILE_GITHUB_URL} -o ${RTSP_SIMPLE_SERVER_CONFIG}
   }
