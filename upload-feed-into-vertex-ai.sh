@@ -8,3 +8,11 @@ wget https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_
 sudo apt install ./visionai_0.0-4_amd64.deb
 sudo apt install bazel-4.2.1 -y
 apt-get install -y --no-install-recommends autoconf automake build-essential ca-certificates flex bison python3 nasm libjpeg-dev -y
+# https://cloud.google.com/vision-ai/docs/create-manage-streams#ingest-videos
+# This command will send an RTSP feed into the stream.
+# This command has to run in the network that has direct access to the RTSP feed.
+vaictl -p PROJECT_ID \
+         -l LOCATION_ID \
+         -c application-cluster-0 \
+         --service-endpoint visionai.googleapis.com \
+send rtsp to streams STREAM_ID --rtsp-uri RTSP_ADDRESS
