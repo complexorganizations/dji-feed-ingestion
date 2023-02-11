@@ -10,10 +10,9 @@
 - Buy Mavic 3 Fly More Combo
 - Setup a RTMP server using `rtsp-installer.sh`.
 - Forward all RTMP from DJI to rtsp server;
-- Forward everything from RTMP server to AWS cloud `upload-feed-to-aws-kinesis.sh`
-- Forward everything from RTMP server to GCP cloud `upload-feed-into-vertex-ai.sh`
-- Forward everything from RTMP server to Azure cloud `upload-feed-into-video-analyzer.sh`
-- Find the locations of people; cars and other things; `image-rekognition.py`
+- Forward video from RTMP to aws kinesis `upload-feed-to-aws-kinesis.sh`
+- Forward video from RTMP to gcp vertex ai `upload-feed-into-vertex-ai.sh`
+- Forward video from RTMP to azure video analyzer `upload-feed-into-video-analyzer.sh`
 - using waypoints automate the missions.
 - loop;
 - Using aws u can train your own ML model for other purposes too.
