@@ -38,6 +38,10 @@
 #### Is it better to use android or ios?
 - Android has a bitrate of 5 while ios has a bitrate of 3.
 
+#### What settings should the DJI use?
+- Disable cache for videos
+- Enable subtitles for videos (location; gps cordnates)... post analysis.
+- Record in 4k 60fps; use the auto feature.
 
 Notes:
 - Use good wifi when using RTMP
