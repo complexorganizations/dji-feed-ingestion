@@ -63,12 +63,14 @@ AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS
 AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
 AMAZON_KINESIS_VIDEO_STREAMS_PATH="./kvs_gstreamer_sample"
 SYSTEM_IPV4=$(curl --ipv4 --connect-timeout 5 --tlsv1.3 --silent 'https://api.ipengine.dev' | jq -r '.network.ip')
+# RTSP connection url.
+RTSP_CONNECTION_URL="rtsp://Administrator:Password@${SYSTEM_IPV4}:8554"
 # Create a key-value pair for the RTSP server and the Kinesis Video Streams Stream Name
 declare -A RTSP_SERVERS
-RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_0"]="dji-stream-0"
-RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_1"]="dji-stream-1"
-RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_2"]="dji-stream-2"
-RTSP_SERVERS["rtsp://Administrator:Password@${SYSTEM_IPV4}:8554/drone_3"]="dji-stream-3"
+RTSP_SERVERS["${RTSP_CONNECTION_URL}/drone_0"]="dji-stream-0"
+RTSP_SERVERS["${RTSP_CONNECTION_URL}/drone_1"]="dji-stream-1"
+RTSP_SERVERS["${RTSP_CONNECTION_URL}/drone_2"]="dji-stream-2"
+RTSP_SERVERS["${RTSP_CONNECTION_URL}/drone_3"]="dji-stream-3"
 # AWS Credentials
 AWS_ACCESS_KEY_ID="SAMPLEKEY"
 AWS_SECRET_ACCESS_KEY="SAMPLESECRET"
