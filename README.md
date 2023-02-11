@@ -3,11 +3,10 @@
 #### Connect your drone to cloud service provider for real time data analysis.
 
 #### Requirements:
-- DJI Mavic 3 `https://www.ebay.com/itm/304601807310`
-- DJI Matrice 30
+- DJI Mavic 3 (Professional) `https://www.ebay.com/itm/304601807310`
+- DJI Matrice 30 & Matrice 30 Dock (Enterprise) ``
 
 #### How to use?
-- Buy Mavic 3 Fly More Combo
 - Setup a RTMP server using `rtsp-installer.sh`.
 - Forward all RTMP from DJI to rtsp server;
 - Forward video from RTMP to aws kinesis `upload-feed-to-aws-kinesis.sh`
