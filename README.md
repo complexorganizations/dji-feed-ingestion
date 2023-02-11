@@ -14,6 +14,9 @@
 - Forward video from RTMP to azure video analyzer `upload-feed-into-video-analyzer.sh`
 - Using waypoints automate the drone completely.
 
+#### Use Case:
+- Get an object's current location (Vehicles, People...)
+
 #### Why are only these drone supported?
 - Currently only these drones are supported since the flight path can be fully automated.
 
