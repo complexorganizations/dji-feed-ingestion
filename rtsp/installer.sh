@@ -107,16 +107,18 @@ if [ ! -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
 
   # Download the latest release
   function download-latest-release() {
-    # Create the path for the application build to go to.
-    if [ -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
-      rm -rf ${RTSP_SIMPLE_SERVER_PATH}
-    fi
     # Make the folder in /etc/rtsp-simple-server
     mkdir -p ${RTSP_SIMPLE_SERVER_PATH}
+    # Remove if anything is found.
+    if [ -f "${TEMP_DOWNLOAD_PATH}" ]; then
+        rm -f ${TEMP_DOWNLOAD_PATH}
+    fi
     # Download the latest build of the application in the /tmp/
     curl -L "${LATEST_RELEASE}" -o ${TEMP_DOWNLOAD_PATH}
     # Extract the application from /tmp/ to /etc/rtsp-simple-server
     tar -xvf ${TEMP_DOWNLOAD_PATH} -C ${RTSP_SIMPLE_SERVER_PATH}
+    # Remove the old ${TEMP_DOWNLOAD_PATH}
+    rm -f ${TEMP_DOWNLOAD_PATH}
     # Download the latest config for the application.
     curl ${RTSP_CONFIG_FILE_GITHUB_URL} -o ${RTSP_SIMPLE_SERVER_CONFIG}
   }
