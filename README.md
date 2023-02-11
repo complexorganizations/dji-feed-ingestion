@@ -12,10 +12,7 @@
 - Forward video from RTMP to aws kinesis `upload-feed-to-aws-kinesis.sh`
 - Forward video from RTMP to gcp vertex ai `upload-feed-into-vertex-ai.sh`
 - Forward video from RTMP to azure video analyzer `upload-feed-into-video-analyzer.sh`
-- using waypoints automate the missions.
-- loop;
-- Using aws u can train your own ML model for other purposes too.
-- Using waypoints you can automated data collection.
+- Using waypoints automate the drone completely.
 
 #### Why are only these drone supported?
 - Currently only these drones are supported since the flight path can be fully automated.
