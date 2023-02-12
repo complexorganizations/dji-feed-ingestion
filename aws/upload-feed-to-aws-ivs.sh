@@ -1,3 +1,5 @@
+sudo apt-get install ffmpeg -y
+
 # Global variables
 RTSP_CONNECTION_STRING="rtsp://Administrator:Password@localhost:8554/drone_0"
 RTSP_VIDEO_PATH="/etc/rtsp-simple-server/main.ts"
