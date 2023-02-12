@@ -57,11 +57,53 @@ function installing-system-requirements() {
 installing-system-requirements
 
 # Global variables
+RTSP_SIMPLE_SERVER_PATH="/etc/rtsp-simple-server"
+RTSP_SIMPLE_SERVER_CONFIG="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server.yml"
+RTSP_SIMPLE_SERVICE_APPLICATION="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server"
+RTSP_SIMPLE_SERVER_SERVICE="/etc/systemd/system/rtsp-simple-server.service"
+RTSP_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/rtsp/rtsp-simple-server.yml"
+RTSP_SIMPLE_SERVER_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/rtsp-simple-server/releases/latest | grep browser_download_url | cut -d'"' -f4 | grep $(dpkg --print-architecture) | grep linux)
+RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME=$(echo "${LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
+RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH="/tmp/${LASTEST_FILE_NAME}"
+
 AMAZON_KINESIS_VIDEO_STREAMS_GIT_PATH="https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git"
 AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH="/etc/amazon-kinesis-video-streams-producer-sdk-cpp"
 AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/build"
 AMAZON_KINESIS_VIDEO_STREAMS_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/kvs_gstreamer_sample"
 AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
+
+# Install rtsp application.
+function install-rtsp-application() {
+    mkdir -p ${RTSP_SIMPLE_SERVER_PATH}
+    curl -L "${RTSP_SIMPLE_SERVER_LATEST_RELEASE}" -o ${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH}
+    tar -xvf ${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH} -C ${RTSP_SIMPLE_SERVER_PATH}
+    rm -f ${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH}
+    curl ${RTSP_CONFIG_FILE_GITHUB_URL} -o ${RTSP_SIMPLE_SERVER_CONFIG}
+}
+
+  # Create the service file
+  function create-service-file() {
+    if [ ! -f "${RTSP_SIMPLE_SERVER_SERVICE}" ]; then
+      # This code creates the service file
+      # The service file is stored in /etc/systemd/system/rtsp-simple-server.service
+      echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION} ${RTSP_SIMPLE_SERVER_CONFIG}
+[Install]
+WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
+      if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+        systemctl daemon-reload
+        systemctl enable rtsp-simple-server
+        systemctl start rtsp-simple-server
+      elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+        service rtsp-simple-server start
+      fi
+    fi
+  }
+
+  # Create the service file
+  create-service-file
 
 # Build the application.
 function build-kensis-application() {
