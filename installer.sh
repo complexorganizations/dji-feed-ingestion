@@ -81,29 +81,29 @@ function install-rtsp-application() {
     curl ${RTSP_CONFIG_FILE_GITHUB_URL} -o ${RTSP_SIMPLE_SERVER_CONFIG}
 }
 
-  # Create the service file
-  function create-service-file() {
+# Create the service file
+function create-service-file() {
     if [ ! -f "${RTSP_SIMPLE_SERVER_SERVICE}" ]; then
-      # This code creates the service file
-      # The service file is stored in /etc/systemd/system/rtsp-simple-server.service
-      echo "[Unit]
+        # This code creates the service file
+        # The service file is stored in /etc/systemd/system/rtsp-simple-server.service
+        echo "[Unit]
 Wants=network.target
 [Service]
 ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION} ${RTSP_SIMPLE_SERVER_CONFIG}
 [Install]
 WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
-      if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-        systemctl daemon-reload
-        systemctl enable rtsp-simple-server
-        systemctl start rtsp-simple-server
-      elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-        service rtsp-simple-server start
-      fi
+        if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+            systemctl daemon-reload
+            systemctl enable rtsp-simple-server
+            systemctl start rtsp-simple-server
+        elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+            service rtsp-simple-server start
+        fi
     fi
-  }
+}
 
-  # Create the service file
-  create-service-file
+# Create the service file
+create-service-file
 
 # Build the application.
 function build-kensis-application() {
@@ -120,21 +120,22 @@ function build-kensis-application() {
 
 # Build the application.
 build-kensis-application
+
 # Run the application.
 # AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM} "${RTSP_SERVER}"
 
 # Install Google Cloud CLI
 function install-google-cloud-cli() {
-  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-  sudo apt-get update
-  sudo apt-get install google-cloud-cli -y
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+    sudo apt-get update
+    sudo apt-get install google-cloud-cli -y
 }
 
 # Install Google cloud vision ai
 function install-google-cloud-vision() {
-  wget https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb
-  sudo apt install ./visionai_0.0-4_amd64.deb
+    wget https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb
+    sudo apt install ./visionai_0.0-4_amd64.deb
 }
 
 # Feed the data into google cloud vision ai
