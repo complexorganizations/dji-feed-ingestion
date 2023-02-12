@@ -124,16 +124,15 @@ build-kensis-application
 # Run the application.
 # AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM} "${RTSP_SERVER}"
 
-# Install Google Cloud CLI
-function install-google-cloud-cli() {
+# Install Google Cloud
+function install-google-cloud() {
     echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
     sudo apt-get update
     sudo apt-get install google-cloud-cli -y
-}
-
-# Install Google cloud vision ai
-function install-google-cloud-vision() {
+    gcloud auth application-default login
+    gcloud services enable visionai.googleapis.com
+    # Install Google cloud vision ai
     wget https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb
     sudo apt install ./visionai_0.0-4_amd64.deb
 }
