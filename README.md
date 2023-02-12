@@ -7,11 +7,7 @@
 - Enterprise: DJI Matrice 30 & Dock ``
 
 #### How to use?
-- Setup a RTMP server using `rtsp-installer.sh`.
-- Forward all RTMP from DJI to rtsp server;
-- Forward video from RTMP to aws kinesis `upload-feed-to-aws-kinesis.sh`
-- Forward video from RTMP to gcp vertex ai `upload-feed-into-vertex-ai.sh`
-- Forward video from RTMP to azure video analyzer `upload-feed-into-video-analyzer.sh`
+- run `installer.sh`
 - Using waypoints automate the drone completely.
 
 #### Use Case:
