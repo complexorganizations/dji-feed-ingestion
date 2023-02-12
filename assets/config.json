@@ -1,0 +1,6 @@
+{
+    "stream_0": {
+        "amazon_kinesis_video_streams": "",
+        "google_cloud_vertex_ai_vision": ""
+    }
+}
