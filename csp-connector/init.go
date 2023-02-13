@@ -19,4 +19,5 @@ func init() {
 	if commandExists("git") == false {
 		exitTheApplication("Git is not installed in your system. Please install it and try again.")
 	}
+	// Check if the config has the correct format and all the info is correct.
 }
