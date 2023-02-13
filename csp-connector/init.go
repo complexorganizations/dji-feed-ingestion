@@ -26,7 +26,7 @@ func init() {
 		Host : ""
 	}
 	// Check if the config file exists in the current directory
-	if !fileExists(applicationConfigFile) {
+	if fileExists(applicationConfigFile) == false {
 		// Note Change the deafult config string to json encoding.
 		// Write a config file in the current directory if it doesn't exist
 		writeToFile(applicationConfigFile, []byte(encodeStructToJSON(jsonValue)))
