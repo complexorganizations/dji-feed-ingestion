@@ -19,6 +19,11 @@ func init() {
 		// The file has not been modified
 		exitTheApplication("The config file has not been modified. Please modify it and try again.")
 	}
+	// Can check for rtsp server but
+	// what u can easily do is run rtsp server on one server and run this on another server.
+	// The list of app required for this to work.
+	// kensis // google cloud vision ai.
+	requiredApplications:= []string{"vaictl"}
 	// Check if the required application are present in the system
 	if commandExists("git") == false {
 		exitTheApplication("Git is not installed in your system. Please install it and try again.")
