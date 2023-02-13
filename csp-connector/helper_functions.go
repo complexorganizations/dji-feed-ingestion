@@ -97,3 +97,12 @@ func encodeStructToJSON(content interface{}) []byte {
 	}
 	return contentJSON
 }
+
+// Unmarshal json into a struct and return the struct.
+func unmarshalJSONIntoStruct(content []byte, data interface{}) interface{} {
+	err := json.Unmarshal(content, &data)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return data
+}
