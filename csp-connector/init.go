@@ -2,6 +2,7 @@ package main
 
 var (
 	applicationConfigFile = "config.json"
+	applicationLogFile = "app.log"
 )
 
 func init() {
