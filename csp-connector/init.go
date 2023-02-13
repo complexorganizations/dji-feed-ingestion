@@ -25,9 +25,10 @@ func init() {
 	// kensis // google cloud vision ai.
 	requiredApplications:= []string{"vaictl"}
 	// Check if the required application are present in the system
-	if commandExists("git") == false {
-		exitTheApplication("Git is not installed in your system. Please install it and try again.")
-	}
+	for _, app := range requiredApplications {
+		if commandExists(app) == false {
+			exitTheApplication(app, "is not installed in your system. Please install it and try again.")
+		}
 	// Check if the config has the correct format and all the info is correct.
 	if !jsonValid(applicationConfigFile) {
 		exitTheApplication("The config file is not a valid json file")
