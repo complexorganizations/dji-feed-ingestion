@@ -88,3 +88,12 @@ func commandExists(application string) bool {
 func jsonValid(content []byte) bool {
 	return json.Valid(content)
 }
+
+// Encode struct data to JSON.
+func encodeStructToJSON(content interface{}) []byte {
+	contentJSON, err := json.Marshal(content)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return contentJSON
+}
