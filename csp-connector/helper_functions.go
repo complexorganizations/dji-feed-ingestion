@@ -106,3 +106,20 @@ func unmarshalJSONIntoStruct(content []byte, data interface{}) interface{} {
 	}
 	return data
 }
+
+// Read a file and than return the content as bytes
+func readFileAndReturnAsBytes(path string) []byte {
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	content, err := io.ReadAll(file)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	err = file.Close()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return content
+}
