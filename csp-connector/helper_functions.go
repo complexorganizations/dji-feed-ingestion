@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/sha512"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -43,7 +44,6 @@ func readAFileAsString(path string) string {
 	return string(content)
 }
 
-
 // Get the sha 256 of a file and return it as a string
 func sha256OfFile(filePath string) string {
 	file, err := os.Open(filePath)
@@ -82,4 +82,9 @@ func exitTheApplication(message string) {
 func commandExists(application string) bool {
 	_, err := exec.LookPath(application)
 	return err == nil
+}
+
+// Check if the json is valid.
+func jsonValid(content []byte) bool {
+	return json.Valid(content)
 }
