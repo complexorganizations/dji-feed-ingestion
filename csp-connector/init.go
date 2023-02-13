@@ -46,9 +46,9 @@ func init() {
 		if commandExists(app) == false {
 			exitTheApplication(app, "is not installed in your system. Please install it and try again.")
 		}
-		// Check if the config has the correct format and all the info is correct.
-		if !jsonValid(applicationConfigFile) {
-			exitTheApplication("The config file is not a valid json file")
-		}
+	}
+	// Check if the config has the correct format and all the info is correct.
+	if !jsonValid(applicationConfigFile) {
+		exitTheApplication("The config file is not a valid json file")
 	}
 }
