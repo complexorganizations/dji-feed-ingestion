@@ -8,9 +8,13 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/aler9/gortsplib/v2"
+	"github.com/aler9/gortsplib/v2/pkg/format"
+	"github.com/aler9/gortsplib/v2/pkg/media"
 	"github.com/aler9/gortsplib/v2/pkg/url"
+	"github.com/pion/rtp"
 )
 
 /*
@@ -134,15 +138,79 @@ func checkRTSPServerAlive(rtspURL string) bool {
 	if err != nil {
 		return false
 	}
-	// Connect to the server and close the connection when done
+	// Connect to the go RTSP server client
 	serverConnection := gortsplib.Client{}
+	// Start the connection
 	err = serverConnection.Start(parsedURL.Scheme, parsedURL.Host)
 	if err != nil {
 		return false
 	}
+	// Get the media data from the server connection
+	mediaData, baseURL, _, err := serverConnection.Describe(parsedURL)
+	if err != nil {
+		return false
+	}
+	// Setup the connection
+	err = serverConnection.SetupAll(mediaData, baseURL)
+	if err != nil {
+		return false
+	}
+	// List of invalid packets.
+	invalidPacketList := []string{
+		"&{audio  mediaUUID=59b4572b-6cfa-4424-8bdf-d06b9b31ef8d [MPEG4-audio]}",
+	}
+	// Counter for the number of packets received
+	invalidPacketCounter := 0
+	// Invalid return value; kill the connection
+	invalidReturnValue := false
+	// Get the packet from the server
+	serverConnection.OnPacketRTPAny(func(medi *media.Media, forma format.Format, pkt *rtp.Packet) {
+		mediaValueAsString := fmt.Sprintf("%v", medi)
+		// Add checks to make sure the packets are valid
+		for _, invalidPacket := range invalidPacketList {
+			if mediaValueAsString == invalidPacket {
+				invalidPacketCounter = invalidPacketCounter + 1
+				if invalidPacketCounter >= 500 {
+					invalidReturnValue = true
+					return
+				}
+			}
+		}
+	})
+	// Play the stream
+	_, err = serverConnection.Play(nil)
+	if err != nil {
+		log.Println("Error playing the stream from the RTSP server: ", err)
+		return false
+	}
+	// Kill the connection if the return value is invalid
+	if invalidReturnValue {
+		return false
+	}
+	// We will watch the connection for 30 seconds
+	time.Sleep(30 * time.Second)
 	// Close the connection
 	defer serverConnection.Close()
-	// Check if the server is alive
-	_, _, _, err = serverConnection.Describe(parsedURL)
-	return err == nil
+	return true
+}
+
+// Run this function in the background and check if a given RTSP server is alive
+func checkRTSPServerAliveInBackground(rtspURL string) {
+	for {
+		// Check if the server is alive
+		if checkRTSPServerAlive(rtspURL) {
+			rtspSeverOneStatus = true
+		} else {
+			rtspSeverOneStatus = false
+		}
+		// Check if the server is alive and sleep for 1 minute; else sleep for 30 second
+		if rtspSeverOneStatus {
+			time.Sleep(1 * time.Minute)
+			continue
+		} else {
+			time.Sleep(30 * time.Second)
+			continue
+		}
+	}
+	rtspServerWaitGroup.Done()
 }
