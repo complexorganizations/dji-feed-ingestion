@@ -9,6 +9,9 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+
+	"github.com/aler9/gortsplib/v2"
+	"github.com/aler9/gortsplib/v2/pkg/url"
 )
 
 /*
@@ -128,5 +131,25 @@ func readFileAndReturnAsBytes(path string) []byte {
 // Check if the given url is valid.
 func isUrlValid(uri string) bool {
 	_, err := url.ParseRequestURI(uri)
+	return err == nil
+}
+
+// Check if a given rtsp server is alive and responding to requests
+func checkRTSPServerAlive(rtspURL string) bool {
+	// parse the URL of the server
+	parsedURL, err := url.Parse(rtspURL)
+	if err != nil {
+		return false
+	}
+	// Connect to the server and close the connection when done
+	serverConnection := gortsplib.Client{}
+	err = serverConnection.Start(parsedURL.Scheme, parsedURL.Host)
+	if err != nil {
+		return false
+	}
+	// Close the connection
+	defer serverConnection.Close()
+	// Check if the server is alive
+	_, _, _, err = serverConnection.Describe(parsedURL)
 	return err == nil
 }
