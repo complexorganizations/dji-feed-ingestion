@@ -170,7 +170,7 @@ func checkRTSPServerAlive(rtspURL string) bool {
 		for _, invalidPacket := range invalidPacketList {
 			if mediaValueAsString == invalidPacket {
 				invalidPacketCounter = invalidPacketCounter + 1
-				if invalidPacketCounter >= 500 {
+				if invalidPacketCounter >= 100 {
 					invalidReturnValue = true
 					return
 				}
@@ -180,7 +180,6 @@ func checkRTSPServerAlive(rtspURL string) bool {
 	// Play the stream
 	_, err = serverConnection.Play(nil)
 	if err != nil {
-		log.Println("Error playing the stream from the RTSP server: ", err)
 		return false
 	}
 	// Kill the connection if the return value is invalid
