@@ -46,7 +46,7 @@ func init() {
 	// what u can easily do is run rtsp server on one server and run this on another server.
 	// The list of app required for this to work.
 	// kensis // google cloud vision ai.
-	requiredApplications := []string{"go"}
+	requiredApplications := []string{"vaictl"}
 	// Check if the required application are present in the system
 	for _, app := range requiredApplications {
 		if commandExists(app) == false {
