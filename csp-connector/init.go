@@ -52,7 +52,7 @@ func init() {
 		exitTheApplication("The config file is not a valid json file")
 	}
 	// Now import the json into the application.
-	testJSONValue := unmarshalJSONIntoStruct([]byte(readFileAndReturnAsBytes(applicationConfigFile)), &jsonValue)
+	// testJSONValue := unmarshalJSONIntoStruct([]byte(readFileAndReturnAsBytes(applicationConfigFile)), &jsonValue)
 	// Make sure non of the values are deafult; if it is than exit.
 	// Validate all the data thats imported in the app; test run the connection if possible.
 }
