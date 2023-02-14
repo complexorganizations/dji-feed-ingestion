@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/url"
 	"os"
 	"os/exec"
 
@@ -126,12 +125,6 @@ func readFileAndReturnAsBytes(path string) []byte {
 		log.Fatalln(err)
 	}
 	return content
-}
-
-// Check if the given url is valid.
-func isUrlValid(uri string) bool {
-	_, err := url.ParseRequestURI(uri)
-	return err == nil
 }
 
 // Check if a given rtsp server is alive and responding to requests
