@@ -54,7 +54,7 @@ func init() {
 		}
 	}
 	// Check if the config has the correct format and all the info is correct.
-	if !jsonValid(readFileAndReturnAsBytes(applicationConfigFile)) {
+	if jsonValid(readFileAndReturnAsBytes(applicationConfigFile)) == false {
 		exitTheApplication("The config file is not a valid json file")
 	}
 	// Now import the json into the application.
