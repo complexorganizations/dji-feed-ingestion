@@ -166,8 +166,8 @@ func checkRTSPServerAlive(rtspURL string) bool {
 	// Invalid return value; kill the connection
 	invalidReturnValue := false
 	// Get the packet from the server
-	serverConnection.OnPacketRTPAny(func(medi *media.Media, forma format.Format, pkt *rtp.Packet) {
-		mediaValueAsString := fmt.Sprintf("%v", medi)
+	serverConnection.OnPacketRTPAny(func(media *media.Media, format format.Format, packet *rtp.Packet) {
+		mediaValueAsString := fmt.Sprintf("%v", media)
 		// Add checks to make sure the packets are valid
 		for _, invalidPacket := range invalidPacketList {
 			if mediaValueAsString == invalidPacket {
