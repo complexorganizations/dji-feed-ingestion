@@ -155,6 +155,8 @@ func checkRTSPServerAlive(rtspURL string) bool {
 	if err != nil {
 		return false
 	}
+	// Note: This might be wrong and instead use the map to count how many times it happens.
+	// I think the last packet loops over and over.
 	// List of invalid packets.
 	invalidPacketList := []string{
 		"&{audio  mediaUUID=59b4572b-6cfa-4424-8bdf-d06b9b31ef8d [MPEG4-audio]}",
