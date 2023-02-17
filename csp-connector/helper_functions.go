@@ -138,61 +138,17 @@ func checkRTSPServerAlive(rtspURL string) bool {
 	if err != nil {
 		return false
 	}
-	// Connect to the go RTSP server client
+	// Connect to the server and close the connection when done
 	serverConnection := gortsplib.Client{}
-	// Start the connection
 	err = serverConnection.Start(parsedURL.Scheme, parsedURL.Host)
 	if err != nil {
 		return false
 	}
-	// Get the media data from the server connection
-	mediaData, baseURL, _, err := serverConnection.Describe(parsedURL)
-	if err != nil {
-		return false
-	}
-	// Setup the connection
-	err = serverConnection.SetupAll(mediaData, baseURL)
-	if err != nil {
-		return false
-	}
-	// Note: This might be wrong and instead use the map to count how many times it happens.
-	// I think the last packet loops over and over.
-	// List of invalid packets.
-	invalidPacketList := []string{
-		"&{audio  mediaUUID=59b4572b-6cfa-4424-8bdf-d06b9b31ef8d [MPEG4-audio]}",
-	}
-	// Counter for the number of packets received
-	invalidPacketCounter := 0
-	// Invalid return value; kill the connection
-	invalidReturnValue := false
-	// Get the packet from the server
-	serverConnection.OnPacketRTPAny(func(media *media.Media, format format.Format, packet *rtp.Packet) {
-		mediaValueAsString := fmt.Sprintf("%v", media)
-		// Add checks to make sure the packets are valid
-		for _, invalidPacket := range invalidPacketList {
-			if mediaValueAsString == invalidPacket {
-				invalidPacketCounter = invalidPacketCounter + 1
-				if invalidPacketCounter >= 100 {
-					invalidReturnValue = true
-					return
-				}
-			}
-		}
-	})
-	// Play the stream
-	_, err = serverConnection.Play(nil)
-	if err != nil {
-		return false
-	}
-	// Kill the connection if the return value is invalid
-	if invalidReturnValue {
-		return false
-	}
-	// We will watch the connection for 30 seconds
-	time.Sleep(30 * time.Second)
 	// Close the connection
 	defer serverConnection.Close()
-	return true
+	// Check if the server is alive
+	_, _, _, err = serverConnection.Describe(parsedURL)
+	return err == nil
 }
 
 // Run this function in the background and check if a given RTSP server is alive
