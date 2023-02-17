@@ -11,10 +11,7 @@ import (
 	"time"
 
 	"github.com/aler9/gortsplib/v2"
-	"github.com/aler9/gortsplib/v2/pkg/format"
-	"github.com/aler9/gortsplib/v2/pkg/media"
 	"github.com/aler9/gortsplib/v2/pkg/url"
-	"github.com/pion/rtp"
 )
 
 /*
