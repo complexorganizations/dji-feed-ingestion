@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/aler9/gortsplib/v2 v2.1.2
 	github.com/pion/rtcp v1.2.9 // indirect
-	github.com/pion/rtp v0.0.0-20230107162714-c3ea6851e25b
+	github.com/pion/rtp v0.0.0-20230107162714-c3ea6851e25b // indirect
 )
 
 require (
