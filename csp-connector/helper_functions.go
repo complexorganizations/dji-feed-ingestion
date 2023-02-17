@@ -162,7 +162,7 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 		}
 		// Check if the server is alive and sleep for 1 minute; else sleep for 30 second
 		if rtspSeverOneStatus {
-			time.Sleep(1 * time.Minute)
+			time.Sleep(3 * time.Minute)
 			continue
 		} else {
 			time.Sleep(30 * time.Second)
@@ -172,9 +172,9 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 	rtspServerWaitGroup.Done()
 }
 
-// Run a command in the system terminal.
-func runSystemTerminalCommand(content string) {
-	cmd := exec.Command(content)
+// Forward data to google cloud vertex AI
+func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string) {
+	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
 	if err != nil {
 		log.Fatalln(err)
