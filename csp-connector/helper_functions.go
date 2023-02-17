@@ -148,6 +148,9 @@ func checkRTSPServerAlive(rtspURL string) bool {
 	return err == nil
 }
 
+// Note: Check the packets of the rtsp server in the background.
+// Note: If the packets loop than do a counter and end the stream since its a bad stream; recheck and do it again. (loop)
+
 // Run this function in the background and check if a given RTSP server is alive
 func checkRTSPServerAliveInBackground(rtspURL string) {
 	for {
