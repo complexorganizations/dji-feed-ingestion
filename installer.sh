@@ -109,6 +109,9 @@ WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
     fi
 }
 
+# Install the rtsp server.
+install-rtsp-application
+
 # Build the application.
 function build-kensis-application() {
     if [ ! -d "${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}" ]; then
