@@ -74,6 +74,14 @@ AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUC
 AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
 AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/src/gstreamer/gstkvssink.cpp"
 
+CSP_CONNECTOR_PATH="/etc/csp-connector"
+CSP_CONNECTOR_CONFIG="${CSP_CONNECTOR_PATH}/config.json"
+CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service"
+CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/csp-connector"
+CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/csp-connector/releases/latest | grep browser_download_url | cut -d'"' -f4 | grep $(dpkg --print-architecture) | grep linux)
+CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
+CSP_CONNECTOR_TEMP_DOWNLOAD_PATH="/tmp/${CSP_CONNECTOR_LATEST_FILE_NAME}"
+
 # Install rtsp application.
 function install-rtsp-application() {
     mkdir -p ${RTSP_SIMPLE_SERVER_PATH}
@@ -81,10 +89,7 @@ function install-rtsp-application() {
     tar -xvf ${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH} -C ${RTSP_SIMPLE_SERVER_PATH}
     rm -f ${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH}
     curl ${RTSP_CONFIG_FILE_GITHUB_URL} -o ${RTSP_SIMPLE_SERVER_CONFIG}
-}
-
-# Create the service file
-function create-service-file() {
+    chmod +x ${RTSP_SIMPLE_SERVICE_APPLICATION}
     if [ ! -f "${RTSP_SIMPLE_SERVER_SERVICE}" ]; then
         # This code creates the service file
         # The service file is stored in /etc/systemd/system/rtsp-simple-server.service
@@ -103,9 +108,6 @@ WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
         fi
     fi
 }
-
-# Create the service file
-create-service-file
 
 # Build the application.
 function build-kensis-application() {
@@ -128,6 +130,7 @@ build-kensis-application
 
 # Run the application.
 # AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM} "${RTSP_SERVER}"
+# AWS_ACCESS_KEY_ID=AKIARU5ZVQQS27COC3U6 AWS_SECRET_ACCESS_KEY=jsb8vgt8pxnCFwbpjaWOM/+eKozJAVVhQr7xZeyV AWS_DEFAULT_REGION=us-east-1 ./kvs_gstreamer_sample dji-stream-0 rtsp://Administrator:Password@localhost:8554/drone_0
 
 # Install Google Cloud
 function install-google-cloud() {
@@ -144,3 +147,34 @@ function install-google-cloud() {
 
 # Feed the data into google cloud vision ai
 # vaictl -p github-code-snippets -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams dji-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/drone_0
+
+# Install the cloud connector.
+function install-cps-connetor() {
+    if [ ! -d "${CSP_CONNECTOR_PATH}" ]; then
+        mkdir -p ${CSP_CONNECTOR_PATH}
+        curl -L "${CSP_CONNECTOR_LATEST_RELEASE}" -o ${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}
+        tar -xvf ${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH} -C ${CSP_CONNECTOR_PATH}
+        rm -f ${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}
+        chmod +x ${CSP_CONNECTOR_APPLICATION}
+        if [ ! -f "${CSP_CONNECTOR_SERVICE}" ]; then
+            # This code creates the service file
+            # The service file is stored in /etc/systemd/system/csp-connector.service
+            echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=${CSP_CONNECTOR_APPLICATION} ${CSP_CONNECTOR_CONFIG}
+[Install]
+WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
+            if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+                systemctl daemon-reload
+                systemctl enable csp-connector
+                systemctl start csp-connector
+            elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+                service csp-connector start
+            fi
+        fi
+    fi
+}
+
+# Install the cloud connector
+install-cps-connetor
