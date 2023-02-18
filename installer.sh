@@ -130,7 +130,6 @@ build-kensis-application
 
 # Run the application.
 # AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM} "${RTSP_SERVER}"
-# AWS_ACCESS_KEY_ID=AKIARU5ZVQQS27COC3U6 AWS_SECRET_ACCESS_KEY=jsb8vgt8pxnCFwbpjaWOM/+eKozJAVVhQr7xZeyV AWS_DEFAULT_REGION=us-east-1 ./kvs_gstreamer_sample dji-stream-0 rtsp://Administrator:Password@localhost:8554/drone_0
 
 # Install Google Cloud
 function install-google-cloud() {
