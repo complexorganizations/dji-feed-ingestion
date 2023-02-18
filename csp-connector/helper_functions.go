@@ -180,3 +180,21 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		log.Fatalln(err)
 	}
 }
+
+// Forward data to AWS Kinesis Video Streams
+func forwardDataToAWSKinesisVideoStreams(host string, awsRegion string, awsAccessKeyID string, awsSecretAccessKey string, awsKinesisVideoStreamName string) {
+	changeToDirectory("/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build")
+	cmd := exec.Command("AWS_ACCESS_KEY_ID="+awsAccessKeyID, "AWS_SECRET_ACCESS_KEY="+awsSecretAccessKey, "AWS_DEFAULT_REGION="+awsRegion, "./kvs_gstreamer_sample", awsKinesisVideoStreamName, host)
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+// Change to a given directory.
+func changeToDirectory(path string) {
+	err := os.Chdir(path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
