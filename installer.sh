@@ -35,16 +35,15 @@ function installing-system-requirements() {
             if { [ "${CURRENT_DISTRO}" == "ubuntu" ] || [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "raspbian" ] || [ "${CURRENT_DISTRO}" == "pop" ] || [ "${CURRENT_DISTRO}" == "kali" ] || [ "${CURRENT_DISTRO}" == "linuxmint" ] || [ "${CURRENT_DISTRO}" == "neon" ]; }; then
                 apt-get update
                 apt-get install coreutils git ffmpeg curl openssl tar apt-transport-https ca-certificates gnupg -y
-            elif { [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
+            elif { [ "${CURRENT_DISTRO}" == "ol" ] || [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
                 yum check-update
+                yum install coreutils git ffmpeg curl openssl tar gpg -y
             elif { [ "${CURRENT_DISTRO}" == "arch" ] || [ "${CURRENT_DISTRO}" == "archarm" ] || [ "${CURRENT_DISTRO}" == "manjaro" ]; }; then
                 pacman -Sy --noconfirm archlinux-keyring
             elif [ "${CURRENT_DISTRO}" == "alpine" ]; then
                 apk update
             elif [ "${CURRENT_DISTRO}" == "freebsd" ]; then
                 pkg update
-            elif [ "${CURRENT_DISTRO}" == "ol" ]; then
-                yum check-update
             fi
         fi
     else
@@ -115,7 +114,7 @@ install-rtsp-application
 # Build the application.
 function build-kensis-application() {
     if [ ! -d "${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}" ]; then
-        sudo apt-get install build-essential pkg-config cmake m4 libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
+        apt-get install build-essential pkg-config cmake m4 libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
         git clone ${AMAZON_KINESIS_VIDEO_STREAMS_GIT_PATH} ${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}
         # Change the path to the log file so the correct path is build everytime.
         sed -i "s|../kvs_log_configuration|${AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH}|g" ${AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG}
@@ -138,13 +137,14 @@ build-kensis-application
 function install-google-cloud() {
     echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    sudo apt-get update
-    sudo apt-get install google-cloud-cli -y
+    apt-get update
+    apt-get install google-cloud-cli -y
+    gcloud auth login
     gcloud auth application-default login
     gcloud services enable visionai.googleapis.com
     # Install Google cloud vision ai
-    wget https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb
-    sudo apt install ./visionai_0.0-4_amd64.deb
+    curl https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb -o visionai_0.0-4_amd64.deb
+    apt-get install ./visionai_0.0-4_amd64.deb
 }
 
 # Feed the data into google cloud vision ai
