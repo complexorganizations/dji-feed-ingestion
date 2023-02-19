@@ -164,7 +164,7 @@ function install-cps-connetor() {
             echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=${CSP_CONNECTOR_APPLICATION} ${CSP_CONNECTOR_CONFIG}
+ExecStart=${CSP_CONNECTOR_APPLICATION} -config=${CSP_CONNECTOR_CONFIG}
 [Install]
 WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
