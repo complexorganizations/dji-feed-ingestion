@@ -35,16 +35,15 @@ function installing-system-requirements() {
             if { [ "${CURRENT_DISTRO}" == "ubuntu" ] || [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "raspbian" ] || [ "${CURRENT_DISTRO}" == "pop" ] || [ "${CURRENT_DISTRO}" == "kali" ] || [ "${CURRENT_DISTRO}" == "linuxmint" ] || [ "${CURRENT_DISTRO}" == "neon" ]; }; then
                 apt-get update
                 apt-get install coreutils git ffmpeg curl openssl tar apt-transport-https ca-certificates gnupg -y
-            elif { [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
+            elif { [ "${CURRENT_DISTRO}" == "ol" ] || [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
                 yum check-update
+                yum install coreutils git ffmpeg curl openssl tar gpg -y
             elif { [ "${CURRENT_DISTRO}" == "arch" ] || [ "${CURRENT_DISTRO}" == "archarm" ] || [ "${CURRENT_DISTRO}" == "manjaro" ]; }; then
                 pacman -Sy --noconfirm archlinux-keyring
             elif [ "${CURRENT_DISTRO}" == "alpine" ]; then
                 apk update
             elif [ "${CURRENT_DISTRO}" == "freebsd" ]; then
                 pkg update
-            elif [ "${CURRENT_DISTRO}" == "ol" ]; then
-                yum check-update
             fi
         fi
     else
@@ -74,6 +73,14 @@ AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUC
 AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
 AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/src/gstreamer/gstkvssink.cpp"
 
+CSP_CONNECTOR_PATH="/etc/csp-connector"
+CSP_CONNECTOR_CONFIG="${CSP_CONNECTOR_PATH}/config.json"
+CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service"
+CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/csp-connector"
+CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/csp-connector/releases/latest | grep browser_download_url | cut -d'"' -f4 | grep $(dpkg --print-architecture) | grep linux)
+CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
+CSP_CONNECTOR_TEMP_DOWNLOAD_PATH="/tmp/${CSP_CONNECTOR_LATEST_FILE_NAME}"
+
 # Install rtsp application.
 function install-rtsp-application() {
     mkdir -p ${RTSP_SIMPLE_SERVER_PATH}
@@ -81,10 +88,7 @@ function install-rtsp-application() {
     tar -xvf ${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH} -C ${RTSP_SIMPLE_SERVER_PATH}
     rm -f ${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH}
     curl ${RTSP_CONFIG_FILE_GITHUB_URL} -o ${RTSP_SIMPLE_SERVER_CONFIG}
-}
-
-# Create the service file
-function create-service-file() {
+    chmod +x ${RTSP_SIMPLE_SERVICE_APPLICATION}
     if [ ! -f "${RTSP_SIMPLE_SERVER_SERVICE}" ]; then
         # This code creates the service file
         # The service file is stored in /etc/systemd/system/rtsp-simple-server.service
@@ -104,13 +108,13 @@ WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
     fi
 }
 
-# Create the service file
-create-service-file
+# Install the rtsp server.
+install-rtsp-application
 
 # Build the application.
 function build-kensis-application() {
     if [ ! -d "${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}" ]; then
-        sudo apt-get install pkg-config cmake m4 libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
+        apt-get install build-essential pkg-config cmake m4 libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools -y
         git clone ${AMAZON_KINESIS_VIDEO_STREAMS_GIT_PATH} ${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}
         # Change the path to the log file so the correct path is build everytime.
         sed -i "s|../kvs_log_configuration|${AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH}|g" ${AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG}
@@ -133,14 +137,46 @@ build-kensis-application
 function install-google-cloud() {
     echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    sudo apt-get update
-    sudo apt-get install google-cloud-cli -y
+    apt-get update
+    apt-get install google-cloud-cli -y
+    gcloud auth login
     gcloud auth application-default login
     gcloud services enable visionai.googleapis.com
     # Install Google cloud vision ai
-    wget https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb
-    sudo apt install ./visionai_0.0-4_amd64.deb
+    curl https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb -o visionai_0.0-4_amd64.deb
+    apt-get install ./visionai_0.0-4_amd64.deb
 }
 
 # Feed the data into google cloud vision ai
 # vaictl -p github-code-snippets -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams dji-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/drone_0
+
+# Install the cloud connector.
+function install-cps-connetor() {
+    if [ ! -d "${CSP_CONNECTOR_PATH}" ]; then
+        mkdir -p ${CSP_CONNECTOR_PATH}
+        curl -L "${CSP_CONNECTOR_LATEST_RELEASE}" -o ${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}
+        tar -xvf ${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH} -C ${CSP_CONNECTOR_PATH}
+        rm -f ${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}
+        chmod +x ${CSP_CONNECTOR_APPLICATION}
+        if [ ! -f "${CSP_CONNECTOR_SERVICE}" ]; then
+            # This code creates the service file
+            # The service file is stored in /etc/systemd/system/csp-connector.service
+            echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=${CSP_CONNECTOR_APPLICATION} -config=${CSP_CONNECTOR_CONFIG}
+[Install]
+WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
+            if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+                systemctl daemon-reload
+                systemctl enable csp-connector
+                systemctl start csp-connector
+            elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+                service csp-connector start
+            fi
+        fi
+    fi
+}
+
+# Install the cloud connector
+install-cps-connetor

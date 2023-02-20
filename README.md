@@ -27,9 +27,10 @@
 
 #### Which controlls are supported?
 - RC-N1
+- DJI RC Pro
 
 #### Why are the other conrollers not supported?
-- Since they don't support rtmp.
+- DJI RC
 
 #### Is it better to use android or ios?
 - Android has a bitrate of 5 while ios has a bitrate of 3.

@@ -1,14 +1,16 @@
 {
-  "host": "rtsp://Administrator:Password@localhost:8554/drone_0",
-  "amazon_kinesis_video_streams": {
-    "aws_access_key_id": "",
-    "aws_secret_access_key": "",
-    "aws_default_region": "",
-    "kinesis_stream": ""
-  },
-  "google_cloud_vertex_ai_vision": {
-    "project_name": "",
-    "gcp_region": "",
-    "vertex_streams": ""
-  }
+    "0": {
+        "host": "",
+        "amazon_kinesis_video_streams": {
+            "aws_access_key_id": "",
+            "aws_secret_access_key": "",
+            "aws_default_region": "",
+            "kinesis_stream": ""
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "",
+            "gcp_region": "",
+            "vertex_streams": ""
+        }
+    }
 }
