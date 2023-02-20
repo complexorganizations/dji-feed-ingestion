@@ -145,6 +145,7 @@ function install-google-cloud() {
     # Install Google cloud vision ai
     curl https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb -o visionai_0.0-4_amd64.deb
     apt-get install ./visionai_0.0-4_amd64.deb
+    rm -f visionai_0.0-4_amd64.deb
 }
 
 # Install Google Cloud
