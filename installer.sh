@@ -145,19 +145,29 @@ build-kensis-application
 
 # Install Google Cloud
 function install-google-cloud() {
-if { [ ! -x "$(command -v gcloud)" ] || [ ! -x "$(command -v vaictl)" ]; }; then
-    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    apt-get update
-    apt-get install google-cloud-cli -y
-    # gcloud auth login
-    # gcloud auth application-default login
-    # gcloud services enable visionai.googleapis.com
-    # Install Google cloud vision ai
-    curl -L https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb -o visionai_0.0-4_amd64.deb
-    apt-get install ./visionai_0.0-4_amd64.deb
-    rm -f visionai_0.0-4_amd64.deb
-fi
+    if { [ ! -x "$(command -v gcloud)" ] || [ ! -x "$(command -v vaictl)" ]; }; then
+        if { [ "${CURRENT_DISTRO}" == "ubuntu" ] || [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "raspbian" ] || [ "${CURRENT_DISTRO}" == "pop" ] || [ "${CURRENT_DISTRO}" == "kali" ] || [ "${CURRENT_DISTRO}" == "linuxmint" ] || [ "${CURRENT_DISTRO}" == "neon" ]; }; then
+            echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+            curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+            apt-get update
+            apt-get install google-cloud-cli -y
+            # gcloud auth login
+            # gcloud auth application-default login
+            # gcloud services enable visionai.googleapis.com
+            # Install Google cloud vision ai
+            curl -L https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb -o visionai_0.0-4_amd64.deb
+            apt-get install ./visionai_0.0-4_amd64.deb
+            rm -f visionai_0.0-4_amd64.deb
+        elif { [ "${CURRENT_DISTRO}" == "ol" ] || [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
+        #
+        elif { [ "${CURRENT_DISTRO}" == "arch" ] || [ "${CURRENT_DISTRO}" == "archarm" ] || [ "${CURRENT_DISTRO}" == "manjaro" ]; }; then
+        #
+        elif [ "${CURRENT_DISTRO}" == "alpine" ]; then
+        #
+        elif [ "${CURRENT_DISTRO}" == "freebsd" ]; then
+        #
+        fi
+    fi
 }
 
 # Install Google Cloud
