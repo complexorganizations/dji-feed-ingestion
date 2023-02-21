@@ -1,4 +1,4 @@
-module main
+module csp-connector
 
 go 1.20
 
