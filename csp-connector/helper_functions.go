@@ -160,12 +160,12 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 		} else {
 			rtspSeverOneStatus = false
 		}
-		// Check if the server is alive and sleep for 1 minute; else sleep for 30 second
+		// Check if the server is alive and sleep for 30 seconds; else sleep for 15 seconds
 		if rtspSeverOneStatus {
-			time.Sleep(3 * time.Minute)
+			time.Sleep(30 * time.Second)
 			continue
 		} else {
-			time.Sleep(30 * time.Second)
+			time.Sleep(15 * time.Second)
 			continue
 		}
 	}
