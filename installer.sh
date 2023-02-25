@@ -153,7 +153,7 @@ function install-google-cloud() {
             apt-get update
             apt-get install google-cloud-cli -y
             # gcloud auth login --no-launch-browser
-            # gcloud auth application-default login
+            # gcloud auth application-default login --no-launch-browser
             # gcloud services enable visionai.googleapis.com
             # Install Google cloud vision ai
             curl -L https://github.com/google/visionai/releases/download/v0.0.4/visionai_0.0-4_amd64.deb -o visionai_0.0-4_amd64.deb
