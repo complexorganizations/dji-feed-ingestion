@@ -152,7 +152,7 @@ function install-google-cloud() {
             curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
             apt-get update
             apt-get install google-cloud-cli -y
-            # gcloud auth login
+            # gcloud auth login --no-launch-browser
             # gcloud auth application-default login
             # gcloud services enable visionai.googleapis.com
             # Install Google cloud vision ai
