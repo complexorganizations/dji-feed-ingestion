@@ -55,6 +55,23 @@ function installing-system-requirements() {
 # check for requirements
 installing-system-requirements
 
+# Only allow certain init systems
+function check-current-init-system() {
+  # This code checks if the current init system is systemd or sysvinit
+  # If it is neither, the script exits
+  CURRENT_INIT_SYSTEM=$(ps --no-headers -o comm 1)
+  case ${CURRENT_INIT_SYSTEM} in
+  *"systemd"* | *"init"*) ;;
+  *)
+    echo "${CURRENT_INIT_SYSTEM} init is not supported (yet)."
+    exit
+    ;;
+  esac
+}
+
+# Check if the current init system is supported
+check-current-init-system
+
 # Global variables
 RTSP_SIMPLE_SERVER_PATH="/etc/rtsp-simple-server"
 RTSP_SIMPLE_SERVER_CONFIG="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server.yml"
