@@ -160,13 +160,13 @@ function install-google-cloud() {
             apt-get install ./visionai_0.0-4_amd64.deb
             rm -f visionai_0.0-4_amd64.deb
         elif { [ "${CURRENT_DISTRO}" == "ol" ] || [ "${CURRENT_DISTRO}" == "fedora" ] || [ "${CURRENT_DISTRO}" == "centos" ] || [ "${CURRENT_DISTRO}" == "rhel" ] || [ "${CURRENT_DISTRO}" == "almalinux" ] || [ "${CURRENT_DISTRO}" == "rocky" ]; }; then
-        #
+            yum check-update
         elif { [ "${CURRENT_DISTRO}" == "arch" ] || [ "${CURRENT_DISTRO}" == "archarm" ] || [ "${CURRENT_DISTRO}" == "manjaro" ]; }; then
-        #
+            pacman -Sy
         elif [ "${CURRENT_DISTRO}" == "alpine" ]; then
-        #
+            apk update
         elif [ "${CURRENT_DISTRO}" == "freebsd" ]; then
-        #
+             pkg update
         fi
     fi
 }
