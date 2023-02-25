@@ -223,3 +223,9 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
 
 # Install the cloud connector
 # install-cps-connetor
+
+
+
+### Feed random fake data into the RTSP server.
+# curl -L https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/assets/output.ts -o /etc/rtsp-simple-server/output.ts
+# ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.ts -c copy -f rtsp rtsp://localhost:8554/test_stream_one
