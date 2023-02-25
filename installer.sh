@@ -21,7 +21,6 @@ function system-information() {
         # shellcheck source=/dev/null
         source /etc/os-release
         CURRENT_DISTRO=${ID}
-        CURRENT_DISTRO_VERSION=${VERSION_ID}
     fi
 }
 
@@ -47,7 +46,7 @@ function installing-system-requirements() {
             fi
         fi
     else
-        echo "Error: ${CURRENT_DISTRO} ${CURRENT_DISTRO_VERSION} is not supported."
+        echo "Error: ${CURRENT_DISTRO} is not supported."
         exit
     fi
 }
