@@ -1,0 +1,16 @@
+{
+    "0": {
+        "host": "rtsp://Administrator:Password@localhost:8554/test_0",
+        "amazon_kinesis_video_streams": {
+            "aws_access_key_id": "00000000000000000000",
+            "aws_secret_access_key": "1111111111111111111111111111111111111111",
+            "aws_default_region": "us-east-1",
+            "kinesis_stream": "stream-0"
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "project-0",
+            "gcp_region": "us-central1",
+            "vertex_streams": "stream-0"
+        }
+    }
+}
