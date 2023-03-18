@@ -51,19 +51,23 @@
 - Record in 4k 60fps; use the auto feature.
 
 #### Which cloud services are used?
+
+##### Amazon
 - Amazon Virtual Private Cloud
 - Amazon Elastic Load Balancer (ELB)
 - Amazon Elastic Compute Cloud
 - Amazon Auto Scaling
 - Amazon Kinesis Video Streams
 - Amazon S3
----
+
+##### Google Cloud
 - Virtual Private Cloud (VPC) | Google Cloud
 - Cloud Load Balancing | Google Cloud
 - Compute Engine Virtual Machines (VMs) | Google Cloud
 - Vertex AI Vision | Google Cloud
 - Cloud Storage | Google Cloud
----
+
+##### Microsoft
 - Microsoft Azure Virtual Network
 - Microsoft Azure Load Balancer
 - Microsoft Azure Virtual Machines
