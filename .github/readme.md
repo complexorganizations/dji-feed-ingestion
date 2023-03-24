@@ -1,7 +1,5 @@
 ### DJI feed analysis
 
-[![](https://i.ytimg.com/vi/TMG4yqfH7Cc/hqdefault.jpg)](https://www.youtube.com/watch?v=TMG4yqfH7Cc "")
-
 ### If you would want to participate in this project, kindly join the discord server.
 ### Discord: https://discord.gg/Zrd68kbK
 
