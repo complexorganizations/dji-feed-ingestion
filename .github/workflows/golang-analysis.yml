@@ -1,4 +1,4 @@
-name: Go
+name: Build the middleware application.
 on: [push, pull_request]
 jobs:
   build:
@@ -10,9 +10,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-            go-version-file: "middleware/go.mod"
+          go-version-file: "middleware/go.mod"
+          cache: true
+          check-latest: true.
         id: go
-      - name: Get dependencies
-        run: go get -v middleware/
-      - name: Build Test
-        run: go build -v middleware/
+      - name: Build the application
+        run: cd middleware/ && go build .
+      - name: Build the application.
+        run: go build -v middleware/ && go build .
+      - name: Run the application.
+        run: .\csp-connector
