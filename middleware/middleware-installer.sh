@@ -134,7 +134,7 @@ function install-rtsp-application() {
             echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION} ${RTSP_SIMPLE_SERVER_CONFIG}
+ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION}
 [Install]
 WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
             # Reload the daemon.
