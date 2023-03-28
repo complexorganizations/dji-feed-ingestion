@@ -136,7 +136,7 @@ Wants=network.target
 [Service]
 ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION}
 [Install]
-WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
+WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE} ${RTSP_SIMPLE_SERVER_CONFIG}
             # Reload the daemon.
             systemctl daemon-reload
             # Enable the service.
