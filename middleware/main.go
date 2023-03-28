@@ -23,6 +23,7 @@ func main() {
 				// Remove a 1 from the counter; the rtsp server has stopped
 				rtspConnectionCounter = rtspConnectionCounter - 1
 				// vaictl -p github-code-snippets -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams dji-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/test_0
+				runGstPipeline(rtspSource, streamName, accessKey, secretKey, awsRegion)
 			}
 		}
 		// Sleep for 30 seconds
