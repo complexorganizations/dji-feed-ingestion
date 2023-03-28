@@ -181,6 +181,7 @@ build-kensis-application
 
 # Run the application.
 # AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM} "${RTSP_SERVER}"
+# gst-launch-1.0 rtspsrc location=rtsp://<your_rtsp_source> ! rtph264depay ! h264parse ! video/x-h264,stream-format=avc ! kvssink stream-name=<your_stream_name> access-key=<your_access_key> secret-key=<your_secret_key> aws-region=<your_aws_region>
 
 # Install Google Cloud
 function install-google-cloud() {
