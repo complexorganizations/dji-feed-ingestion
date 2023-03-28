@@ -184,3 +184,12 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		log.Fatalln(err)
 	}
 }
+
+// Forward data to AWS Kinesis Video Streams using gstreamer
+func runGstPipeline(host string, streamName string, accessKey string, secretKey string, awsRegion string) {
+	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
