@@ -6,7 +6,7 @@ logLevel: info
 # Destinations of log messages; available values are "stdout", "file" and "syslog".
 logDestinations: [stdout]
 # If "file" is in logDestinations, this is the file which will receive the logs.
-logFile: rtsp-simple-server.log
+logFile: /etc/rtsp-simple-server/rtsp-simple-server.log
 
 # Timeout of read operations.
 readTimeout: 10s
@@ -87,9 +87,9 @@ multicastRTCPPort: 8003
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-serverKey: server.key
+serverKey: /etc/rtsp-simple-server/server.key
 # Path to the server certificate. This is needed only when encryption is "strict" or "optional".
-serverCert: server.crt
+serverCert: /etc/rtsp-simple-server/server.crt
 # Authentication methods.
 authMethods: [basic, digest]
 
@@ -109,9 +109,9 @@ rtmpsAddress: :1936
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-rtmpServerKey: server.key
+rtmpServerKey: /etc/rtsp-simple-server/server.key
 # Path to the server certificate. This is needed only when encryption is "strict" or "optional".
-rtmpServerCert: server.crt
+rtmpServerCert: /etc/rtsp-simple-server/server.crt
 
 ###############################################
 # HLS parameters
@@ -127,9 +127,9 @@ hlsEncryption: yes
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-hlsServerKey: server.key
+hlsServerKey: /etc/rtsp-simple-server/server.key
 # Path to the server certificate.
-hlsServerCert: server.crt
+hlsServerCert: /etc/rtsp-simple-server/server.crt
 # By default, HLS is generated only when requested by a user.
 # This option allows to generate it always, avoiding the delay between request and generation.
 hlsAlwaysRemux: no
@@ -178,9 +178,9 @@ webrtcEncryption: yes
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-webrtcServerKey: server.key
+webrtcServerKey: /etc/rtsp-simple-server/server.key
 # Path to the server certificate.
-webrtcServerCert: server.crt
+webrtcServerCert: /etc/rtsp-simple-server/server.crt
 # Value of the Access-Control-Allow-Origin header provided in every HTTP response.
 # This allows to play the WebRTC stream from an external website.
 webrtcAllowOrigin: '*'
