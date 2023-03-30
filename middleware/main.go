@@ -51,7 +51,7 @@ func init() {
 	// Print the sha256 of the file
 	// log.Println(sha256OfFile(applicationConfigFile))
 	// Check if the config file has not been modified
-	if sha256OfFile(applicationConfigFile) == "b40313672e23c3eb96a55b4e88dfc184dca23ad472c7e47e1db0b5d28f38087e814cc612853017e7c830fea3a0df973e673383e0a01bd151cbeab3e97647befc" {
+	if sha256OfFile(applicationConfigFile) == "ccc102b45cfe689069ba0322547d286b6997cca1f221ab748ed9f2c139e0f19ea33b807a735dfd5c5af900abb395901398410e7a3d6558189f26ce66041349a7" {
 		// The file has not been modified
 		exitTheApplication("Error: The config file has not been modified, Please modify it and try again.")
 	}
