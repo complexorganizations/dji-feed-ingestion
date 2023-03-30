@@ -77,38 +77,38 @@ function check-inside-docker() {
 check-inside-docker
 
 # Global variables
-AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/repos/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/releases/latest | grep zipball_url | cut -d'"' -f4)
-AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME=$(echo "${AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE}" | cut --delimiter="/" --fields=6)
-AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH="/etc/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}"
-AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/src/gstreamer/gstkvssink.cpp"
-AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/kvs_log_configuration"
-AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
-AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/build"
-AMAZON_KINESIS_VIDEO_STREAMS_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/kvs_gstreamer_sample"
-AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}.zip"
+AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/repos/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/releases/latest | grep zipball_url | cut -d'"' -f4) # Assigns the latest release of the Amazon Kinesis Video Streams Producer SDK to a variable
+AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME=$(echo "${AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE}" | cut --delimiter="/" --fields=6) # Extracts the file name from the latest release URL and assigns it to a variable
+AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH="/etc/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}" # Assigns a path for the Kinesis Video Streams Producer SDK
+AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/src/gstreamer/gstkvssink.cpp" # Assigns a path for the GStreamer configuration file
+AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/kvs_log_configuration" # Assigns a path for the Kinesis Video Streams log configuration file
+AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib" # Assigns a path for the Kinesis Video Streams Producer SDK local libraries
+AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/build" # Assigns a path for building the Kinesis Video Streams Producer SDK
+AMAZON_KINESIS_VIDEO_STREAMS_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/kvs_gstreamer_sample" # Assigns a path for the Kinesis Video Streams sample application
+AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}.zip" # Assigns a temporary download path for the Kinesis Video Streams Producer SDK zip file
 
-CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/csp-connector/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux)
-CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/csp-connector"
-CSP_CONNECTOR_CONFIG="${CSP_CONNECTOR_PATH}/config.json"
-CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
-CSP_CONNECTOR_PATH="/etc/csp-connector"
-CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service"
-CSP_CONNECTOR_TEMP_DOWNLOAD_PATH="/tmp/${CSP_CONNECTOR_LATEST_FILE_NAME}"
+CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/csp-connector/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux) # Assigns the latest release of the CSP Connector to a variable
+CSP_CONNECTOR_PATH="/etc/csp-connector" # Assigns a path for the CSP Connector
+CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/csp-connector" # Assigns a path for the CSP Connector application
+CSP_CONNECTOR_CONFIG="${CSP_CONNECTOR_PATH}/config.json" # Assigns a path for the CSP Connector configuration file
+CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9) # Extracts the file name from the latest release URL and assigns it to a variable
+CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service" # Assigns a path for the CSP Connector service file
+CSP_CONNECTOR_TEMP_DOWNLOAD_PATH="/tmp/${CSP_CONNECTOR_LATEST_FILE_NAME}" # Assigns a temporary download path for the CSP Connector zip file
 
-GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE=$(curl -s https://api.github.com/repos/google/visionai/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4)
-GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME=$(echo "${GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
-GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH="/tmp/${GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME}"
+GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE=$(curl -s https://api.github.com/repos/google/visionai/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4) # Assigns the
+GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME=$(echo "${GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE}" | cut --delimiter="/" --fields=9) # Extracts the file name from the latest release URL and assigns it to a variable
+GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH="/tmp/${GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME}" # Assigns a temporary download path for the Google Cloud Vision AI zip file
 
-RTSP_SIMPLE_SERVER_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/rtsp-simple-server/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux)
-RTSP_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/rtsp-simple-server.yml"
-RTSP_SIMPLE_SERVER_PATH="/etc/rtsp-simple-server"
-RTSP_SIMPLE_SERVER_CONFIG="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server.yml"
-RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME=$(echo "${RTSP_SIMPLE_SERVER_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
-RTSP_SIMPLE_SERVER_SERVICE="/etc/systemd/system/rtsp-simple-server.service"
-RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH="/tmp/${RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME}"
-RTSP_SIMPLE_SERVICE_APPLICATION="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server"
-RTSP_SIMPLE_SERVICE_PRIVATE_KEY="${RTSP_SIMPLE_SERVER_PATH}/server.key"
-RTSP_SIMPLE_SERVICE_PRIVATE_CERT="${RTSP_SIMPLE_SERVER_PATH}/server.crt"
+RTSP_SIMPLE_SERVER_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/rtsp-simple-server/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux) # Assigns the latest release of RTSP Simple Server to a variable
+RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME=$(echo "${RTSP_SIMPLE_SERVER_LATEST_RELEASE}" | cut --delimiter="/" --fields=9) # Extracts the file name from the latest release URL and assigns it to a variable
+RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH="/tmp/${RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME}" # Assigns a temporary download path for the RTSP Simple Server zip file
+RTSP_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/rtsp-simple-server.yml" # Assigns a URL for the RTSP Simple Server configuration file
+RTSP_SIMPLE_SERVER_PATH="/etc/rtsp-simple-server" # Assigns a path for RTSP Simple Server
+RTSP_SIMPLE_SERVER_CONFIG="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server.yml" # Assigns a path for the RTSP Simple Server configuration file
+RTSP_SIMPLE_SERVER_SERVICE="/etc/systemd/system/rtsp-simple-server.service" # Assigns a path for the RTSP Simple Server service file
+RTSP_SIMPLE_SERVICE_APPLICATION="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server" # Assigns a path for the RTSP Simple Server application
+RTSP_SIMPLE_SERVICE_PRIVATE_KEY="${RTSP_SIMPLE_SERVER_PATH}/server.key" # Assigns a path for the RTSP Simple Server private key file
+RTSP_SIMPLE_SERVICE_PRIVATE_CERT="${RTSP_SIMPLE_SERVER_PATH}/server.crt" # Assigns a path for the RTSP Simple Server private certificate file
 
 # Install rtsp application.
 function install-rtsp-application() {
