@@ -2,31 +2,33 @@ package main
 
 import (
 	"log"
-	// "time"
+	"time"
 )
 
 func main() {
+	time.Sleep(3 * time.Second)
 	// RTSP Connection Counter
+	log.Println("We are outside the loop, about to start the loop")
 	rtspConnectionCounter := 0
 	for {
-		log.Println("We are here")
+		log.Println("We are inside the loop")
 		// Check the ammount of time the rtsp server has run
 		if rtspConnectionCounter == 0 {
-			log.Println(<-rtspServerStatusChannel)
+			log.Println(rtspServerOneStatus)
+			log.Println("We got the status of the rtsp server.")
 			// Check if the rtsp server is alive and responding to requests; run the upload in the background
-			if <-rtspServerStatusChannel {
+			if rtspServerOneStatus {
+				log.Println("The rtsp server is alive and we are about to start the upload.")
 				// Add a 1 to the counter
 				rtspConnectionCounter = rtspConnectionCounter + 1
-				log.Println("We are here 2")
-				// Forward the data to google cloud vertex ai
-				forwardDataToGoogleCloudVertexAI(TestJSONValue.Num0.Host, TestJSONValue.Num0.GoogleCloudVertexAiVision.ProjectName, TestJSONValue.Num0.GoogleCloudVertexAiVision.GcpRegion, TestJSONValue.Num0.GoogleCloudVertexAiVision.VertexStreams)
-				// vaictl -p github-code-snippets -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams dji-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/test_0
-				runGstPipeline(TestJSONValue.Num0.Host, TestJSONValue.Num0.AmazonKinesisVideoStreams.KinesisStream, TestJSONValue.Num0.AmazonKinesisVideoStreams.AwsAccessKeyID, TestJSONValue.Num0.AmazonKinesisVideoStreams.AwsSecretAccessKey, TestJSONValue.Num0.AmazonKinesisVideoStreams.AwsDefaultRegion)
-				// Remove a 1 from the counter; the rtsp server has stopped
+				// Start the upload
+				// Docs: Upload mock test data.
+				log.Println("We are about to remove a 1 from the counter.")
+				// Remove a 1 from the counter when the upload is done
 				rtspConnectionCounter = rtspConnectionCounter - 1
 			}
 		}
 		// Sleep for 30 seconds
-		// time.Sleep(30 * time.Second)
+		time.Sleep(30 * time.Second)
 	}
 }
