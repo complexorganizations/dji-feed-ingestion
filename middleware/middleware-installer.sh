@@ -256,6 +256,13 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
 ### Feed a test video into RTSP server.
 # ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
 
+# echo "[Unit]
+# Wants=network.target
+# [Service]
+# ExecStart=ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
+# [Install]
+# WantedBy=multi-user.target" > /etc/systemd/system/feed-test-video-0.service
+
 # Install Go Language
 # curl -LO https://get.golang.org/$(uname)/go_installer && chmod +x go_installer && ./go_installer && rm go_installer
 
