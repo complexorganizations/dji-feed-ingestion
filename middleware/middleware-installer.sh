@@ -257,7 +257,7 @@ function setup-test-feed() {
     # Check if a test video exists
     if [ ! -f "/etc/rtsp-simple-server/output.mp4" ]; then
         # Download a test video
-        yt-dlp -S ext:mp4:m4a https://www.youtube.com/watch?v=lWqylqgAwgU -o /etc/rtsp-simple-server/output_0.mp4
+        yt-dlp -S ext:mp4:m4a https://www.youtube.com/watch?v=lWqylqgAwgU -o /etc/rtsp-simple-server/output.mp4
     fi
     # Create a test feed if it does not exist already
     if [ ! -f "/etc/systemd/system/feed-test-video-0.service" ]; then
