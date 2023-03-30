@@ -134,9 +134,9 @@ function install-rtsp-application() {
             echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION}
+ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION} ${RTSP_SIMPLE_SERVER_CONFIG}
 [Install]
-WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE} ${RTSP_SIMPLE_SERVER_CONFIG}
+WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
             # Reload the daemon.
             systemctl daemon-reload
             # Enable the service.
@@ -251,9 +251,10 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
 # chmod +x /usr/bin/yt-dlp
 # yt-dlp -S ext:mp4:m4a https://www.youtube.com/watch?v=lWqylqgAwgU
 # mv DJI\ Mavic\ 3\ -\ Making\ Of\ ＂A\ Journey\ Above＂\ \[lWqylqgAwgU\].mp4 output.mp4
+# mv output.mp4 /etc/rtsp-simple-server/
 
 ### Feed a test video into RTSP server.
-# ffmpeg -re -stream_loop -1 -i output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
+# ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
 
 # Install Go Language
 # curl -LO https://get.golang.org/$(uname)/go_installer && chmod +x go_installer && ./go_installer && rm go_installer
