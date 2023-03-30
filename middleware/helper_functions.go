@@ -152,28 +152,28 @@ func checkRTSPServerAlive(rtspURL string) bool {
 // Note: If the packets loop than do a counter and end the stream since its a bad stream; recheck and do it again. (loop)
 
 // Run this function in the background and check if a given RTSP server is alive
-func checkRTSPServerAliveInBackground(rtspURL string, rtspServerStatusChannel chan bool) {
+func checkRTSPServerAliveInBackground(rtspURL string) {
+	testCounterToValidate := 0
 	for {
+		// Add a 1 to the test counter to validate.
+		testCounterToValidate = testCounterToValidate + 1
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
-			// Return true on the channel
-			rtspServerStatusChannel <- true
+			log.Println("RTSP Server is alive")
+			rtspServerOneStatus = true
 		} else {
-			// Return false on the channel
-			rtspServerStatusChannel <- false
+			log.Println("RTSP Server is not alive")
+			rtspServerOneStatus = false
 		}
 		// Sleep for 30 seconds if the server is alive.
-		if <-rtspServerStatusChannel {
+		if rtspServerOneStatus {
 			time.Sleep(30 * time.Second)
 		} else {
-			// Sleep for 5 seconds if the server is not alive.
-			time.Sleep(5 * time.Second)
+			// Sleep for 15 seconds if the server is not alive.
+			time.Sleep(15 * time.Second)
 		}
+		log.Println("Test how many times the counter has been looped on the rtsp server checker.", testCounterToValidate)
 	}
-	// Send a done signal to the wait group
-	rtspServerWaitGroup.Done()
-	// Close the channel
-	close(rtspServerStatusChannel)
 }
 
 // Forward data to google cloud vertex AI
