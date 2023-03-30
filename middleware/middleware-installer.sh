@@ -246,22 +246,37 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
 ### Record a stream in the middleware instead of CSP
 # ffmpeg -i rtsp://Administrator:Password@localhost:8554/drone_0 -c copy output.mp4
 
-# Download and install youtube downloader
-# curl -L https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp_linux -o /usr/bin/yt-dlp
-# chmod +x /usr/bin/yt-dlp
-# yt-dlp -S ext:mp4:m4a https://www.youtube.com/watch?v=lWqylqgAwgU
-# mv DJI\ Mavic\ 3\ -\ Making\ Of\ ＂A\ Journey\ Above＂\ \[lWqylqgAwgU\].mp4 output.mp4
-# mv output.mp4 /etc/rtsp-simple-server/
+# Setup the rest feed for the stream
+function setup-test-feed() {
+    # Check if youtube dlp is installed
+    if [ ! -x "$(command -v yt-dlp)" ]; then
+        # Install youtube dlp
+        curl -L https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp_linux -o /usr/bin/yt-dlp
+        chmod +x /usr/bin/yt-dlp
+    fi
+    # Check if a test video exists
+    if [ ! -f "/etc/rtsp-simple-server/output.mp4" ]; then
+        # Download a test video
+        yt-dlp -S ext:mp4:m4a https://www.youtube.com/watch?v=lWqylqgAwgU -o /etc/rtsp-simple-server/output_0.mp4
+    fi
+    # Create a test feed if it does not exist already
+    if [ ! -f "/etc/systemd/system/feed-test-video-0.service" ]; then
+        # Create a test feed
+        echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
+[Install]
+WantedBy=multi-user.target" >/etc/systemd/system/feed-test-video-0.service
+        # Reload the daemon
+        systemctl daemon-reload
+        # Start the service
+        service feed-test-video-0 start
+    fi
+}
 
-### Feed a test video into RTSP server.
-# ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
-
-# echo "[Unit]
-# Wants=network.target
-# [Service]
-# ExecStart=ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
-# [Install]
-# WantedBy=multi-user.target" > /etc/systemd/system/feed-test-video-0.service
+# Setup the test feed
+# setup-test-feed
 
 # Install Go Language
 # curl -LO https://get.golang.org/$(uname)/go_installer && chmod +x go_installer && ./go_installer && rm go_installer
