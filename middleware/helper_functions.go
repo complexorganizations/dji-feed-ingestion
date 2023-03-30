@@ -153,16 +153,13 @@ func checkRTSPServerAlive(rtspURL string) bool {
 
 // Run this function in the background and check if a given RTSP server is alive
 func checkRTSPServerAliveInBackground(rtspURL string) {
-	testCounterToValidate := 0
 	for {
-		// Add a 1 to the test counter to validate.
-		testCounterToValidate = testCounterToValidate + 1
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
-			log.Println("RTSP Server is alive")
+			log.Println("Note: The RTSP server is alive")
 			rtspServerOneStatus = true
 		} else {
-			log.Println("RTSP Server is not alive")
+			log.Println("Note: The RTSP server is dead")
 			rtspServerOneStatus = false
 		}
 		// Sleep for 30 seconds if the server is alive.
@@ -172,7 +169,6 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 			// Sleep for 15 seconds if the server is not alive.
 			time.Sleep(15 * time.Second)
 		}
-		log.Println("Test how many times the counter has been looped on the rtsp server checker.", testCounterToValidate)
 	}
 }
 
