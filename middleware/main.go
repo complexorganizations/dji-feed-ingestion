@@ -108,7 +108,7 @@ func main() {
 				rtspConnectionCounter = rtspConnectionCounter - 1
 			}
 		}
-		// Sleep for 30 seconds
-		time.Sleep(30 * time.Second)
+		// Sleep for 3 seconds
+		time.Sleep(3 * time.Second)
 	}
 }
