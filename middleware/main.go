@@ -83,8 +83,6 @@ func init() {
 }
 
 func main() {
-	// Sleep for 3 seconds to make sure the rtsp server is alive and responding to requests
-	time.Sleep(3 * time.Second)
 	// RTSP Connection Counter
 	log.Println("We are outside the loop, about to start the loop")
 	rtspConnectionCounter := 0
