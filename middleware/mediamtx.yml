@@ -73,7 +73,7 @@ rtspDisable: no
 protocols: [udp, multicast, tcp]
 # Encrypt handshakes and TCP streams with TLS (RTSPS).
 # Available values are "no", "strict", "optional".
-encryption: "optional"
+encryption: "no"
 # Address of the TCP/RTSP listener. This is needed only when encryption is "no" or "optional".
 rtspAddress: :8554
 # Address of the TCP/TLS/RTSPS listener. This is needed only when encryption is "strict" or "optional".
@@ -92,9 +92,9 @@ multicastRTCPPort: 8003
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-serverKey: /etc/mediamtx/server.key
+serverKey: server.key
 # Path to the server certificate. This is needed only when encryption is "strict" or "optional".
-serverCert: /etc/mediamtx/server.crt
+serverCert: server.crt
 # Authentication methods.
 authMethods: [basic, digest]
 
@@ -107,16 +107,16 @@ rtmpDisable: no
 rtmpAddress: :1935
 # Encrypt connections with TLS (RTMPS).
 # Available values are "no", "strict", "optional".
-rtmpEncryption: "optional"
+rtmpEncryption: "no"
 # Address of the RTMPS listener. This is needed only when encryption is "strict" or "optional".
 rtmpsAddress: :1936
 # Path to the server key. This is needed only when encryption is "strict" or "optional".
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-rtmpServerKey: /etc/mediamtx/server.key
+rtmpServerKey: server.key
 # Path to the server certificate. This is needed only when encryption is "strict" or "optional".
-rtmpServerCert: /etc/mediamtx/server.crt
+rtmpServerCert: server.crt
 
 ###############################################
 # HLS parameters
@@ -127,14 +127,14 @@ hlsDisable: yes
 hlsAddress: :8888
 # Enable TLS/HTTPS on the HLS server.
 # This is required for Low-Latency HLS.
-hlsEncryption: yes
+hlsEncryption: no
 # Path to the server key. This is needed only when encryption is yes.
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-hlsServerKey: /etc/mediamtx/server.key
+hlsServerKey: server.key
 # Path to the server certificate.
-hlsServerCert: /etc/mediamtx/server.crt
+hlsServerCert: server.crt
 # By default, HLS is generated only when requested by a user.
 # This option allows to generate it always, avoiding the delay between request and generation.
 hlsAlwaysRemux: no
@@ -182,14 +182,14 @@ webrtcDisable: yes
 # Address of the WebRTC listener.
 webrtcAddress: :8889
 # Enable TLS/HTTPS on the WebRTC server.
-webrtcEncryption: yes
+webrtcEncryption: no
 # Path to the server key.
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-webrtcServerKey: /etc/mediamtx/server.key
+webrtcServerKey: server.key
 # Path to the server certificate.
-webrtcServerCert: /etc/mediamtx/server.crt
+webrtcServerCert: server.crt
 # Value of the Access-Control-Allow-Origin header provided in every HTTP response.
 # This allows to play the WebRTC stream from an external website.
 webrtcAllowOrigin: '*'
