@@ -77,6 +77,28 @@ function check-inside-docker() {
 check-inside-docker
 
 # Global variables
+
+# Assigns the latest release of RTSP Simple Server to a variable
+RTSP_SIMPLE_SERVER_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/mediamtx/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux)
+# Extracts the file name from the latest release URL and assigns it to a variable
+RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME=$(echo "${RTSP_SIMPLE_SERVER_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
+# Assigns a temporary download path for the RTSP Simple Server zip file
+RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH="/tmp/${RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME}"
+# Assigns a URL for the RTSP Simple Server configuration file
+RTSP_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/rtsp-simple-server.yml"
+# Assigns a path for RTSP Simple Server
+RTSP_SIMPLE_SERVER_PATH="/etc/rtsp-simple-server"
+# Assigns a path for the RTSP Simple Server configuration file
+RTSP_SIMPLE_SERVER_CONFIG="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server.yml"
+# Assigns a path for the RTSP Simple Server service file
+RTSP_SIMPLE_SERVER_SERVICE="/etc/systemd/system/rtsp-simple-server.service"
+# Assigns a path for the RTSP Simple Server application
+RTSP_SIMPLE_SERVICE_APPLICATION="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server"
+# Assigns a path for the RTSP Simple Server private key file
+RTSP_SIMPLE_SERVICE_PRIVATE_KEY="${RTSP_SIMPLE_SERVER_PATH}/server.key"
+# Assigns a path for the RTSP Simple Server private certificate file
+RTSP_SIMPLE_SERVICE_PRIVATE_CERT="${RTSP_SIMPLE_SERVER_PATH}/server.crt"
+
 # Assigns the latest release of the Amazon Kinesis Video Streams Producer SDK to a variable
 AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/repos/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/releases/latest | grep zipball_url | cut -d'"' -f4)
 # Extracts the file name from the latest release URL and assigns it to a variable
@@ -117,27 +139,6 @@ GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE=$(curl -s https://api.github.com/repos/goo
 GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME=$(echo "${GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
 # Assigns a temporary download path for the Google Cloud Vision AI zip file
 GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH="/tmp/${GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME}"
-
-# Assigns the latest release of RTSP Simple Server to a variable
-RTSP_SIMPLE_SERVER_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/rtsp-simple-server/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux)
-# Extracts the file name from the latest release URL and assigns it to a variable
-RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME=$(echo "${RTSP_SIMPLE_SERVER_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
-# Assigns a temporary download path for the RTSP Simple Server zip file
-RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH="/tmp/${RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME}"
-# Assigns a URL for the RTSP Simple Server configuration file
-RTSP_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/rtsp-simple-server.yml"
-# Assigns a path for RTSP Simple Server
-RTSP_SIMPLE_SERVER_PATH="/etc/rtsp-simple-server"
-# Assigns a path for the RTSP Simple Server configuration file
-RTSP_SIMPLE_SERVER_CONFIG="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server.yml"
-# Assigns a path for the RTSP Simple Server service file
-RTSP_SIMPLE_SERVER_SERVICE="/etc/systemd/system/rtsp-simple-server.service"
-# Assigns a path for the RTSP Simple Server application
-RTSP_SIMPLE_SERVICE_APPLICATION="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server"
-# Assigns a path for the RTSP Simple Server private key file
-RTSP_SIMPLE_SERVICE_PRIVATE_KEY="${RTSP_SIMPLE_SERVER_PATH}/server.key"
-# Assigns a path for the RTSP Simple Server private certificate file
-RTSP_SIMPLE_SERVICE_PRIVATE_CERT="${RTSP_SIMPLE_SERVER_PATH}/server.crt"
 
 # Install rtsp application.
 function install-rtsp-application() {
@@ -222,6 +223,7 @@ function install-google-cloud() {
         apt-get update
         apt-get install google-cloud-cli -y
         # gcloud auth login --no-launch-browser
+        # gcloud config set project gcloud config set project
         # gcloud auth application-default login --no-launch-browser
         # gcloud services enable visionai.googleapis.com
         # Install Google cloud vision ai
