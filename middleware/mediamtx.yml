@@ -6,7 +6,7 @@ logLevel: info
 # Destinations of log messages; available values are "stdout", "file" and "syslog".
 logDestinations: [stdout]
 # If "file" is in logDestinations, this is the file which will receive the logs.
-logFile: /etc/rtsp-simple-server/rtsp-simple-server.log
+logFile: /etc/mediamtx/mediamtx.log
 
 # Timeout of read operations.
 readTimeout: 10s
@@ -14,7 +14,10 @@ readTimeout: 10s
 writeTimeout: 10s
 # Number of read buffers.
 # A higher value allows a wider throughput, a lower value allows to save RAM.
-readBufferCount: 2048
+readBufferCount: 512
+# Maximum size of payload of outgoing UDP packets.
+# This can be decreased to avoid fragmentation on networks with a low UDP MTU.
+udpMaxPayloadSize: 1472
 
 # HTTP URL to perform external authentication.
 # Every time a user wants to authenticate, the server calls this URL
@@ -24,8 +27,10 @@ readBufferCount: 2048
 #   "user": "user",
 #   "password": "password",
 #   "path": "path",
-#   "action": "read|publish"
-#   "query": "url's raw query"
+#   "protocol": "rtsp|rtmp|hls|webrtc",
+#   "id": "id",
+#   "action": "read|publish",
+#   "query": "query"
 # }
 # If the response code is 20x, authentication is accepted, otherwise
 # it is discarded.
@@ -87,9 +92,9 @@ multicastRTCPPort: 8003
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-serverKey: /etc/rtsp-simple-server/server.key
+serverKey: /etc/mediamtx/server.key
 # Path to the server certificate. This is needed only when encryption is "strict" or "optional".
-serverCert: /etc/rtsp-simple-server/server.crt
+serverCert: /etc/mediamtx/server.crt
 # Authentication methods.
 authMethods: [basic, digest]
 
@@ -109,9 +114,9 @@ rtmpsAddress: :1936
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-rtmpServerKey: /etc/rtsp-simple-server/server.key
+rtmpServerKey: /etc/mediamtx/server.key
 # Path to the server certificate. This is needed only when encryption is "strict" or "optional".
-rtmpServerCert: /etc/rtsp-simple-server/server.crt
+rtmpServerCert: /etc/mediamtx/server.crt
 
 ###############################################
 # HLS parameters
@@ -127,9 +132,9 @@ hlsEncryption: yes
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-hlsServerKey: /etc/rtsp-simple-server/server.key
+hlsServerKey: /etc/mediamtx/server.key
 # Path to the server certificate.
-hlsServerCert: /etc/rtsp-simple-server/server.crt
+hlsServerCert: /etc/mediamtx/server.crt
 # By default, HLS is generated only when requested by a user.
 # This option allows to generate it always, avoiding the delay between request and generation.
 hlsAlwaysRemux: no
@@ -137,7 +142,7 @@ hlsAlwaysRemux: no
 # * mpegts - uses MPEG-TS segments, for maximum compatibility.
 # * fmp4 - uses fragmented MP4 segments, more efficient.
 # * lowLatency - uses Low-Latency HLS.
-hlsVariant: mpegts
+hlsVariant: lowLatency
 # Number of HLS segments to keep on the server.
 # Segments allow to seek through the stream.
 # Their number doesn't influence latency.
@@ -164,6 +169,10 @@ hlsAllowOrigin: '*'
 # If the server receives a request from one of these entries, IP in logs
 # will be taken from the X-Forwarded-For header.
 hlsTrustedProxies: []
+# Directory in which to save segments, instead of keeping them in the RAM.
+# This decreases performance, since reading from disk is less performant than
+# reading from RAM, but allows to save RAM.
+hlsDirectory: ''
 
 ###############################################
 # WebRTC parameters
@@ -178,9 +187,9 @@ webrtcEncryption: yes
 # This can be generated with:
 # openssl genrsa -out server.key 2048
 # openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
-webrtcServerKey: /etc/rtsp-simple-server/server.key
+webrtcServerKey: /etc/mediamtx/server.key
 # Path to the server certificate.
-webrtcServerCert: /etc/rtsp-simple-server/server.crt
+webrtcServerCert: /etc/mediamtx/server.crt
 # Value of the Access-Control-Allow-Origin header provided in every HTTP response.
 # This allows to play the WebRTC stream from an external website.
 webrtcAllowOrigin: '*'
@@ -228,6 +237,7 @@ paths:
     # * rtmps://existing-url -> the stream is pulled from another RTMP server / camera with RTMPS
     # * http://existing-url/stream.m3u8 -> the stream is pulled from another HLS server
     # * https://existing-url/stream.m3u8 -> the stream is pulled from another HLS server with HTTPS
+    # * udp://ip:port -> the stream is pulled from UDP, by listening on the specified IP and port
     # * redirect -> the stream is provided by another path or server
     # * rpiCamera -> the stream is provided by a Raspberry Pi Camera
     source: publisher
@@ -296,8 +306,8 @@ paths:
     # values: auto, incandescent, tungsten, fluorescent, indoor, daylight, cloudy, custom
     rpiCameraAWB: auto
     # denoise operating mode.
-    # values: auto, off, cdn_off, cdn_fast, cdn_hq
-    rpiCameraDenoise: auto
+    # values: off, cdn_off, cdn_fast, cdn_hq
+    rpiCameraDenoise: "off"
     # fixed shutter speed, in microseconds.
     rpiCameraShutter: 0
     # metering mode of the AEC/AGC algorithm.
@@ -324,7 +334,30 @@ paths:
     rpiCameraProfile: main
     # H264 level
     rpiCameraLevel: '4.1'
-    
+    # Autofocus mode
+    # values: auto, manual, continuous
+    rpiCameraAfMode: auto
+    # Autofocus range
+    # values: normal, macro, full
+    rpiCameraAfRange: normal
+    # Autofocus speed
+    # values: normal, fast
+    rpiCameraAfSpeed: normal
+    # Lens position (for manual autofocus only), will be set to focus to a specific distance
+    # calculated by the following formula: d = 1 / value
+    # Examples: 0 moves the lens to infinity.
+    #           0.5 moves the lens to focus on objects 2m away.
+    #           2 moves the lens to focus on objects 50cm away.
+    rpiCameraLensPosition: 0.0
+    # Specifies the autofocus window, in the form x,y,width,height where the coordinates
+    # are given as a proportion of the entire image.
+    rpiCameraAfWindow:
+    # enables printing text on each frame.
+    rpiCameraTextOverlayEnable: false
+    # text that is printed on each frame.
+    # format is the one of the strftime() function.
+    rpiCameraTextOverlay: '%Y-%m-%d %H:%M:%S - MediaMTX'
+
     # Username required to publish.
     # SHA256-hashed values can be inserted with the "sha256:" prefix.
     publishUser: Administrator
