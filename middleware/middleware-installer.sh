@@ -78,26 +78,26 @@ check-inside-docker
 
 # Global variables
 
-# Assigns the latest release of RTSP Simple Server to a variable
-RTSP_SIMPLE_SERVER_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/mediamtx/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux)
+# Assigns the latest release of MediaMTX to a variable
+MEDIAMTX_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/mediamtx/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux)
 # Extracts the file name from the latest release URL and assigns it to a variable
-RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME=$(echo "${RTSP_SIMPLE_SERVER_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
-# Assigns a temporary download path for the RTSP Simple Server zip file
-RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH="/tmp/${RTSP_SIMPLE_SERVER_LASTEST_FILE_NAME}"
-# Assigns a URL for the RTSP Simple Server configuration file
-RTSP_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/rtsp-simple-server.yml"
-# Assigns a path for RTSP Simple Server
-RTSP_SIMPLE_SERVER_PATH="/etc/rtsp-simple-server"
-# Assigns a path for the RTSP Simple Server configuration file
-RTSP_SIMPLE_SERVER_CONFIG="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server.yml"
-# Assigns a path for the RTSP Simple Server service file
-RTSP_SIMPLE_SERVER_SERVICE="/etc/systemd/system/rtsp-simple-server.service"
-# Assigns a path for the RTSP Simple Server application
-RTSP_SIMPLE_SERVICE_APPLICATION="${RTSP_SIMPLE_SERVER_PATH}/rtsp-simple-server"
-# Assigns a path for the RTSP Simple Server private key file
-RTSP_SIMPLE_SERVICE_PRIVATE_KEY="${RTSP_SIMPLE_SERVER_PATH}/server.key"
-# Assigns a path for the RTSP Simple Server private certificate file
-RTSP_SIMPLE_SERVICE_PRIVATE_CERT="${RTSP_SIMPLE_SERVER_PATH}/server.crt"
+MEDIAMTX_LASTEST_FILE_NAME=$(echo "${MEDIAMTX_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
+# Assigns a temporary download path for the MediaMTX zip file
+MEDIAMTX_TEMP_DOWNLOAD_PATH="/tmp/${MEDIAMTX_LASTEST_FILE_NAME}"
+# Assigns a URL for the MediaMTX configuration file
+MEDIAMTX_CONFIG_FILE_GITHUB_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/mediamtx.yml"
+# Assigns a path for the MediaMTX directory
+MEDIAMTX_LOCAL_PATH="/etc/mediamtx"
+# Assigns a path for the mediamtx configuration file
+MEDIAMTX_LOCAL_CONFIG_PATH="${MEDIAMTX_LOCAL_PATH}/mediamtx.yml"
+# Assigns a path for the mediamtx service file
+MEDIAMTX_SERVICE_FILE_PATH="/etc/systemd/system/mediamtx.service"
+# Assigns a path for the mediamtx binary
+MEDIAMTX_BINARY_PATH="${MEDIAMTX_LOCAL_PATH}/mediamtx"
+# Assigns a path for the mediamtx private key file
+MEDIAMTX_PRIVATE_KEY_PATH="${MEDIAMTX_LOCAL_PATH}/server.key"
+# Assigns a path for the mediamtx certificate file
+MEDIAMTX_CERTIFICATE_PATH="${MEDIAMTX_LOCAL_PATH}/server.crt"
 
 # Assigns the latest release of the Amazon Kinesis Video Streams Producer SDK to a variable
 AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/repos/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/releases/latest | grep zipball_url | cut -d'"' -f4)
@@ -140,43 +140,46 @@ GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME=$(echo "${GOOGLE_CLOUD_VISION_AI_LATEST_R
 # Assigns a temporary download path for the Google Cloud Vision AI zip file
 GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH="/tmp/${GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME}"
 
-# Install rtsp application.
-function install-rtsp-application() {
-    if [ ! -d "${RTSP_SIMPLE_SERVER_PATH}" ]; then
+# Install mediamtx application.
+function install-mediamtx-application() {
+    if [ ! -d "${MEDIAMTX_LOCAL_PATH}" ]; then
         # Create the directory.
-        mkdir -p "${RTSP_SIMPLE_SERVER_PATH}"
+        mkdir -p "${MEDIAMTX_LOCAL_PATH}"
         # Download the application.
-        curl -L "${RTSP_SIMPLE_SERVER_LATEST_RELEASE}" -o "${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH}"
+        curl -L "${MEDIAMTX_LATEST_RELEASE}" -o "${MEDIAMTX_TEMP_DOWNLOAD_PATH}"
         # Extract the application.
-        tar -xvf "${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH}" -C "${RTSP_SIMPLE_SERVER_PATH}"
+        tar -xvf "${MEDIAMTX_TEMP_DOWNLOAD_PATH}" -C "${MEDIAMTX_LOCAL_PATH}"
         # Remove the downloaded file.
-        rm -f "${RTSP_SIMPLE_SERVER_TEMP_DOWNLOAD_PATH}"
+        rm -f "${MEDIAMTX_TEMP_DOWNLOAD_PATH}"
         # Download the configuration file.
-        curl -L "${RTSP_CONFIG_FILE_GITHUB_URL}" -o "${RTSP_SIMPLE_SERVER_CONFIG}"
+        curl -L "${MEDIAMTX_CONFIG_FILE_GITHUB_URL}" -o "${MEDIAMTX_LOCAL_CONFIG_PATH}"
         # Change the permissions.
-        chmod +x ${RTSP_SIMPLE_SERVICE_APPLICATION}
+        chmod +x ${MEDIAMTX_BINARY_PATH}
         # Create the private key and certificate.
-        openssl genrsa -out ${RTSP_SIMPLE_SERVICE_PRIVATE_KEY} 2048
-        openssl req -new -x509 -sha256 -key ${RTSP_SIMPLE_SERVICE_PRIVATE_KEY} -out ${RTSP_SIMPLE_SERVICE_PRIVATE_CERT} -days 3650 -subj "/C=US/ST=NewYork/L=NewYorkCity/CN=github.com"
-        if [ ! -f "${RTSP_SIMPLE_SERVER_SERVICE}" ]; then
+        openssl genrsa -out ${MEDIAMTX_PRIVATE_KEY_PATH} 2048
+        openssl req -new -x509 -sha256 -key ${MEDIAMTX_PRIVATE_KEY_PATH} -out ${MEDIAMTX_CERTIFICATE_PATH} -days 3650 -subj "/C=US/ST=NewYork/L=NewYorkCity/CN=github.com"
+        if [ ! -f "${MEDIAMTX_SERVICE_FILE_PATH}" ]; then
             # This code creates the service file
-            # The service file is stored in /etc/systemd/system/rtsp-simple-server.service
+            # The service file is stored in /etc/systemd/system/mediamtx.service
             echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=${RTSP_SIMPLE_SERVICE_APPLICATION} ${RTSP_SIMPLE_SERVER_CONFIG}
+ExecStart=${MEDIAMTX_BINARY_PATH} ${MEDIAMTX_LOCAL_CONFIG_PATH}
 [Install]
-WantedBy=multi-user.target" >${RTSP_SIMPLE_SERVER_SERVICE}
+WantedBy=multi-user.target" >${MEDIAMTX_SERVICE_FILE_PATH}
             # Reload the daemon.
             systemctl daemon-reload
-            # Enable the service.
-            service rtsp-simple-server start
+            # Enable the service
+            systemctl enable mediamtx
+            systemctl start mediamtx
+            # Check the status of the service
+            systemctl status mediamtx
         fi
     fi
 }
 
-# Install the rtsp server.
-install-rtsp-application
+# Install the mediamtx server.
+install-mediamtx-application
 
 # Build the application.
 function build-kensis-application() {
