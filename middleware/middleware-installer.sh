@@ -69,7 +69,8 @@ virt-check
 function check-inside-docker() {
     if [ ! -f /.dockerenv ]; then
         echo "Error: This script isn't running inside docker."
-        exit
+        # exit
+        # Note: Remove the comment above and close the app in production.
     fi
 }
 
