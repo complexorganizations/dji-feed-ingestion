@@ -156,8 +156,8 @@ function install-mediamtx-application() {
         # Change the permissions.
         chmod +x ${MEDIAMTX_BINARY_PATH}
         # Create the private key and certificate.
-        openssl genrsa -out ${MEDIAMTX_PRIVATE_KEY_PATH} 2048
-        openssl req -new -x509 -sha256 -key ${MEDIAMTX_PRIVATE_KEY_PATH} -out ${MEDIAMTX_CERTIFICATE_PATH} -days 3650 -subj "/C=US/ST=NewYork/L=NewYorkCity/CN=github.com"
+        # openssl genrsa -out ${MEDIAMTX_PRIVATE_KEY_PATH} 2048
+        # openssl req -new -x509 -sha256 -key ${MEDIAMTX_PRIVATE_KEY_PATH} -out ${MEDIAMTX_CERTIFICATE_PATH} -days 3650 -subj "/C=US/ST=NewYork/L=NewYorkCity/CN=github.com"
         if [ ! -f "${MEDIAMTX_SERVICE_FILE_PATH}" ]; then
             # This code creates the service file
             # The service file is stored in /etc/systemd/system/mediamtx.service
