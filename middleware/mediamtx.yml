@@ -122,7 +122,7 @@ rtmpServerCert: /etc/mediamtx/server.crt
 # HLS parameters
 
 # Disable support for the HLS protocol.
-hlsDisable: no
+hlsDisable: yes
 # Address of the HLS listener.
 hlsAddress: :8888
 # Enable TLS/HTTPS on the HLS server.
@@ -178,7 +178,7 @@ hlsDirectory: ''
 # WebRTC parameters
 
 # Disable support for the WebRTC protocol.
-webrtcDisable: no
+webrtcDisable: yes
 # Address of the WebRTC listener.
 webrtcAddress: :8889
 # Enable TLS/HTTPS on the WebRTC server.
