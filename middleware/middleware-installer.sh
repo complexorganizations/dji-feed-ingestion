@@ -98,6 +98,13 @@ MEDIAMTX_BINARY_PATH="${MEDIAMTX_LOCAL_PATH}/mediamtx"
 MEDIAMTX_PRIVATE_KEY_PATH="${MEDIAMTX_LOCAL_PATH}/server.key"
 # Assigns a path for the mediamtx certificate file
 MEDIAMTX_CERTIFICATE_PATH="${MEDIAMTX_LOCAL_PATH}/server.crt"
+# The variable to stream a test video feed as an test connection.
+MEDIAMTX_TEST_CONNECTION="rtsp://Administrator:Password@localhost:8554/test_0"
+# The path in the system that will host the test feed.
+MEDIAMTX_TEST_FEED_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed.service"
+# The path to the video file where the video is hosted.
+MEDIAMTX_TEST_VIDEO_PATH="${MEDIAMTX_LOCAL_PATH}/output.mp4"
+
 
 # Assigns the latest release of the Amazon Kinesis Video Streams Producer SDK to a variable
 AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/repos/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/releases/latest | grep zipball_url | cut -d'"' -f4)
@@ -139,6 +146,13 @@ GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE=$(curl -s https://api.github.com/repos/goo
 GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME=$(echo "${GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
 # Assigns a temporary download path for the Google Cloud Vision AI zip file
 GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH="/tmp/${GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME}"
+
+
+# Get the latest release of youtube DLP.
+YOUTUBE_DLP_LATEST_RELEASE_URL="https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp_linux"
+YOUTUBE_DLP_LOCAL_PATH="/usr/bin/yt-dlp"
+YOUTUBE_DLP_TEST_VIDEO_URL="https://www.youtube.com/watch?v=lWqylqgAwgU"
+
 
 # Install mediamtx application.
 function install-mediamtx-application() {
@@ -285,27 +299,27 @@ function setup-test-feed() {
     # Check if youtube dlp is installed
     if [ ! -x "$(command -v yt-dlp)" ]; then
         # Install youtube dlp
-        curl -L https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp_linux -o /usr/bin/yt-dlp
-        chmod +x /usr/bin/yt-dlp
+        curl -L ${YOUTUBE_DLP_LATEST_RELEASE_URL} -o ${YOUTUBE_DLP_LOCAL_PATH}
+        chmod +x ${YOUTUBE_DLP_LOCAL_PATH}
     fi
     # Check if a test video exists
-    if [ ! -f "/etc/rtsp-simple-server/output.mp4" ]; then
+    if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH} ]; then
         # Download a test video
-        yt-dlp -S ext:mp4:m4a https://www.youtube.com/watch?v=lWqylqgAwgU -o /etc/rtsp-simple-server/output.mp4
+        yt-dlp -S ext:mp4:m4a ${YOUTUBE_DLP_TEST_VIDEO_URL} -o ${MEDIAMTX_TEST_VIDEO_PATH}
     fi
     # Create a test feed if it does not exist already
-    if [ ! -f "/etc/systemd/system/feed-test-video-0.service" ]; then
+    if [ ! -f "${MEDIAMTX_TEST_FEED_SERVICE_PATH}" ]; then
         # Create a test feed
         echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=ffmpeg -re -stream_loop -1 -i /etc/rtsp-simple-server/output.mp4 -c copy -f rtsp rtsp://Administrator:Password@localhost:8554/test_0
+ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION}
 [Install]
-WantedBy=multi-user.target" >/etc/systemd/system/feed-test-video-0.service
+WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_SERVICE_PATH}
         # Reload the daemon
         systemctl daemon-reload
         # Start the service
-        service feed-test-video-0 start
+        service mediamtx-test-feed start
     fi
 }
 
