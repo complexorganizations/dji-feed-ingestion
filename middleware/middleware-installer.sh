@@ -241,7 +241,7 @@ function install-google-cloud() {
         apt-get update
         apt-get install google-cloud-cli -y
         # gcloud auth login --no-launch-browser
-        # gcloud config set project gcloud config set project
+        # gcloud config set project complexorganizations-github
         # gcloud auth application-default login --no-launch-browser
         # gcloud services enable visionai.googleapis.com
         # Install Google cloud vision ai
@@ -257,7 +257,7 @@ function install-google-cloud() {
 install-google-cloud
 
 # Feed the data into google cloud vision ai
-# vaictl -p github-code-snippets -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams dji-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/drone_0
+# vaictl -p complexorganizations-github -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams test-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/drone_0
 
 # Install the cloud connector.
 function install-cps-connetor() {
