@@ -226,7 +226,7 @@ function build-kensis-application() {
 build-kensis-application
 
 # Run this command to manually feed data into Amazon Kinesis Video Streams
-# gst-launch-1.0 rtspsrc location=rtsp://<your_rtsp_source> ! rtph264depay ! h264parse ! video/x-h264,stream-format=avc ! kvssink stream-name=<your_stream_name> access-key=<your_access_key> secret-key=<your_secret_key> aws-region=<your_aws_region>
+# gst-launch-1.0 rtspsrc location=<rtsp_address> ! rtph264depay ! h264parse ! video/x-h264,stream-format=avc ! kvssink stream-name=<stream_id> access-key=<access_key> secret-key=<secret_key> aws-region=<aws_region>
 
 # Install Google Cloud
 function install-google-cloud() {
@@ -254,7 +254,7 @@ function install-google-cloud() {
 install-google-cloud
 
 # Run this command manually to feed data to GCP Vertex AI.
-# vaictl -p PROJECT_ID -l LOCATION_ID -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams STREAM_ID --rtsp-uri RTSP_ADDRESS
+# vaictl -p <project_id> -l <location_id> -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams <stream_id> --rtsp-uri <rtsp_address>
 
 # Install the cloud connector.
 function install-cps-connetor() {
