@@ -31,7 +31,7 @@
 - ``
 
 #### How to watch the stream live via vlc?
-- VLC APP > Media > Open Network Stream > `rtsp://Administrator:Password@localhost:8554/drone_0`
+- VLC APP > Media > Open Network Stream > `rtsp://Administrator:Password@localhost:8554/test_0`
 
 #### Which controlls are supported?
 - RC-N1
