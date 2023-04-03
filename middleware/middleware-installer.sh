@@ -78,7 +78,6 @@ function check-inside-docker() {
 check-inside-docker
 
 # Global variables
-
 # Assigns the latest release of MediaMTX to a variable
 MEDIAMTX_LATEST_RELEASE=$(curl -s https://api.github.com/repos/aler9/mediamtx/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep $(dpkg --print-architecture) | grep linux)
 # Extracts the file name from the latest release URL and assigns it to a variable
@@ -105,7 +104,6 @@ MEDIAMTX_TEST_CONNECTION="rtsp://Administrator:Password@localhost:8554/test_0"
 MEDIAMTX_TEST_FEED_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed.service"
 # The path to the video file where the video is hosted.
 MEDIAMTX_TEST_VIDEO_PATH="${MEDIAMTX_LOCAL_PATH}/output.mp4"
-
 
 # Assigns the latest release of the Amazon Kinesis Video Streams Producer SDK to a variable
 AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/repos/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/releases/latest | grep zipball_url | cut -d'"' -f4)
@@ -148,12 +146,12 @@ GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME=$(echo "${GOOGLE_CLOUD_VISION_AI_LATEST_R
 # Assigns a temporary download path for the Google Cloud Vision AI zip file
 GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH="/tmp/${GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME}"
 
-
-# Get the latest release of youtube DLP.
+# Get the latest release of youtube DLP
 YOUTUBE_DLP_LATEST_RELEASE_URL="https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp_linux"
+# The system's local path where the yt-dlp should be placed
 YOUTUBE_DLP_LOCAL_PATH="/usr/bin/yt-dlp"
+# Test video to download and evaluate from YouTube
 YOUTUBE_DLP_TEST_VIDEO_URL="https://www.youtube.com/watch?v=lWqylqgAwgU"
-
 
 # Install mediamtx application.
 function install-mediamtx-application() {
@@ -227,8 +225,7 @@ function build-kensis-application() {
 # Build the application.
 build-kensis-application
 
-# Run the application.
-# AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} ${AMAZON_KINESIS_VIDEO_STREAMS_PATH} ${KINESIS_STREAM} "${RTSP_SERVER}"
+# Run this command to manually feed data into Amazon Kinesis Video Streams
 # gst-launch-1.0 rtspsrc location=rtsp://<your_rtsp_source> ! rtph264depay ! h264parse ! video/x-h264,stream-format=avc ! kvssink stream-name=<your_stream_name> access-key=<your_access_key> secret-key=<your_secret_key> aws-region=<your_aws_region>
 
 # Install Google Cloud
@@ -256,8 +253,8 @@ function install-google-cloud() {
 # Install Google Cloud
 install-google-cloud
 
-# Feed the data into google cloud vision ai
-# vaictl -p complexorganizations-github -l us-central1 -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams test-stream-0 --rtsp-uri rtsp://Administrator:Password@localhost:8554/drone_0
+# Run this command manually to feed data to GCP Vertex AI.
+# vaictl -p PROJECT_ID -l LOCATION_ID -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams STREAM_ID --rtsp-uri RTSP_ADDRESS
 
 # Install the cloud connector.
 function install-cps-connetor() {
