@@ -30,9 +30,9 @@ system-information
 
 # Pre-Checks system requirements
 function installing-system-requirements() {
-    if [ "${CURRENT_DISTRO}" == "debian" ]; then
+    if { [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "ubuntu" ]; }; then
         if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ]; }; then
-            if [ "${CURRENT_DISTRO}" == "debian" ]; then
+            if { [ "${CURRENT_DISTRO}" == "debian" ] || [ "${CURRENT_DISTRO}" == "ubuntu" ]; }; then
                 apt-get update
                 apt-get install coreutils git ffmpeg curl openssl tar apt-transport-https ca-certificates gnupg zip unzip systemd -y
             fi
