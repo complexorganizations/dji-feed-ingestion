@@ -17,4 +17,4 @@ jobs:
       - name: Build the application
         run: cd middleware/ && go build .
       - name: Run the application.
-        run: .\middleware\csp-connector
+        run: ./middleware/csp-connector -config=middleware/config.json
