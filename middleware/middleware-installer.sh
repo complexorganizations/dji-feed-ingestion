@@ -94,10 +94,6 @@ MEDIAMTX_LOCAL_CONFIG_PATH="${MEDIAMTX_LOCAL_PATH}/mediamtx.yml"
 MEDIAMTX_SERVICE_FILE_PATH="/etc/systemd/system/mediamtx.service"
 # Assigns a path for the mediamtx binary
 MEDIAMTX_BINARY_PATH="${MEDIAMTX_LOCAL_PATH}/mediamtx"
-# Assigns a path for the mediamtx private key file
-MEDIAMTX_PRIVATE_KEY_PATH="${MEDIAMTX_LOCAL_PATH}/server.key"
-# Assigns a path for the mediamtx certificate file
-MEDIAMTX_CERTIFICATE_PATH="${MEDIAMTX_LOCAL_PATH}/server.crt"
 # The variable to stream a test video feed as an test connection.
 MEDIAMTX_TEST_CONNECTION="rtsp://Administrator:Password@localhost:8554/test_0"
 # The path in the system that will host the test feed.
@@ -111,16 +107,10 @@ AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/rep
 AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME=$(echo "${AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE}" | cut --delimiter="/" --fields=6)
 # Assigns a path for the Kinesis Video Streams Producer SDK
 AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH="/etc/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}"
-# Assigns a path for the GStreamer configuration file
-AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/src/gstreamer/gstkvssink.cpp"
-# Assigns a path for the Kinesis Video Streams log configuration file
-AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/kvs_log_configuration"
 # Assigns a path for the Kinesis Video Streams Producer SDK local libraries
 AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/open-source/local/lib"
 # Assigns a path for building the Kinesis Video Streams Producer SDK
 AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}/build"
-# Assigns a path for the Kinesis Video Streams sample application
-AMAZON_KINESIS_VIDEO_STREAMS_PATH="${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}/kvs_gstreamer_sample"
 # Assigns a temporary download path for the Kinesis Video Streams Producer SDK zip file
 AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}.zip"
 
@@ -168,9 +158,6 @@ function install-mediamtx-application() {
         curl -L "${MEDIAMTX_CONFIG_FILE_GITHUB_URL}" -o "${MEDIAMTX_LOCAL_CONFIG_PATH}"
         # Change the permissions.
         chmod +x ${MEDIAMTX_BINARY_PATH}
-        # Create the private key and certificate.
-        # openssl genrsa -out ${MEDIAMTX_PRIVATE_KEY_PATH} 2048
-        # openssl req -new -x509 -sha256 -key ${MEDIAMTX_PRIVATE_KEY_PATH} -out ${MEDIAMTX_CERTIFICATE_PATH} -days 3650 -subj "/C=US/ST=NewYork/L=NewYorkCity/CN=github.com"
         if [ ! -f "${MEDIAMTX_SERVICE_FILE_PATH}" ]; then
             # This code creates the service file
             # The service file is stored in /etc/systemd/system/mediamtx.service
@@ -207,8 +194,6 @@ function build-kensis-application() {
         mv /etc/awslabs-amazon-kinesis-video-streams-producer-sdk-cpp-* /etc/"${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}"
         # Remove the downloaded file.
         rm -f "${AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH}"
-        # Change the path to the log file so the correct path is build everytime.
-        # sed -i "s|../kvs_log_configuration|${AMAZON_KINESIS_VIDEO_STREAMS_KVS_LOG_PATH}|g" ${AMAZON_KINESIS_VIDEO_STREAMS_GST_STREAMER_CONFIG}
         # Prepare the build directory.
         mkdir -p "${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}"
         # Build the application.
@@ -303,7 +288,7 @@ function setup-test-feed() {
     # Check if a test video exists
     if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH} ]; then
         # Download a test video
-        yt-dlp -S ext:mp4:m4a ${YOUTUBE_DLP_TEST_VIDEO_URL} -o ${MEDIAMTX_TEST_VIDEO_PATH}
+        yt-dlp -S ext:mp4:m4a "${YOUTUBE_DLP_TEST_VIDEO_URL}" -o ${MEDIAMTX_TEST_VIDEO_PATH}
     fi
     # Create a test feed if it does not exist already
     if [ ! -f "${MEDIAMTX_TEST_FEED_SERVICE_PATH}" ]; then
