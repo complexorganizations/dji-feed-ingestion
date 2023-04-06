@@ -16,5 +16,7 @@ jobs:
         id: go
       - name: Build the application
         run: cd middleware/ && go build .
+      - name: Run the app help.
+        run: ./middleware/csp-connector -help
       - name: Run the application.
         run: ./middleware/csp-connector -config=middleware/config.json
