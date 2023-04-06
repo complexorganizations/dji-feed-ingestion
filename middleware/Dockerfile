@@ -1,5 +1,5 @@
 # The operating system for the OS.
-FROM debian:latest
+FROM ubuntu:latest
 
 # Install the RTSP server
 RUN apt-get update && \
