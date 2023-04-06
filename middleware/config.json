@@ -1,6 +1,6 @@
 {
     "0": {
-        "host": "rtsp://Administrator:Password@137.184.241.28:8554/test_0",
+        "host": "rtsp://Administrator:Password@137.184.68.170:8554/test_0",
         "amazon_kinesis_video_streams": {
             "aws_access_key_id": "",
             "aws_secret_access_key": "",
