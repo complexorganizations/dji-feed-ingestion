@@ -3,9 +3,11 @@ on:
   push:
     paths:
       - "**.sh"
+      - "**.go"
   pull_request:
     paths:
       - "**.sh"
+      - "**.go"
   workflow_dispatch:
 jobs:
   build:
@@ -14,5 +16,18 @@ jobs:
     steps:
       - name: Check out code into the directory
         uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+            go-version-file: "middleware/go.mod"
+            cache: true
+            check-latest: true
+        id: go
       - name: Install the latest version of the script.
         run: sudo bash middleware/middleware-installer.sh
+      - name: Build the application
+        run: cd middleware/ && go build .
+      - name: Run the app help.
+        run: cd middleware/ && ./csp-connector -help
+      - name: Run the application.
+        run: cd middleware/ && ./csp-connector -config=config.json
