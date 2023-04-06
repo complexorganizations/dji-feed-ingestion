@@ -44,6 +44,7 @@ func init() {
 		// if there are no flags provided than we close the application.
 		log.Fatal("Error: No flags provided. Please use -help for more information.")
 	}
+	os.Exit(1)
 	// Check if the config file exists in the current directory
 	if fileExists(applicationConfigFile) == false {
 		// Write a config file in the current directory if it doesn't exist
