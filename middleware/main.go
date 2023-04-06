@@ -42,7 +42,7 @@ func init() {
 		applicationConfigFile = *tempUpdate
 	} else {
 		// if there are no flags provided than we close the application.
-		log.Fatal("Error: No flags provided. Please use -help for more information.")
+		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Check if the config file exists in the current directory
 	if fileExists(applicationConfigFile) == false {
