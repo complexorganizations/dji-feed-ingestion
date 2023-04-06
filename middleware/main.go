@@ -13,6 +13,7 @@ var (
 	// Note: Future update for now we are using a temp bool var
 	// rtspServerStatusChannel = make(map[string]bool)
 	rtspServerOneStatus bool
+	debug bool
 )
 
 // The layout for the json stuff.
@@ -37,9 +38,11 @@ func init() {
 	// Check if there are any user provided flags in the request.
 	if len(os.Args) > 1 {
 		// Check if the config path is provided.
-		tempUpdate := flag.String("config", "config.json", "The location of the config file.")
+		tempConfig := flag.String("config", "config.json", "The location of the config file.")
+		tempDebug := flag.Bool("debug", false, "Determine if this is a debug run.")
 		flag.Parse()
-		applicationConfigFile = *tempUpdate
+		applicationConfigFile = *tempConfig
+		debug = *tempDebug
 	} else {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
@@ -117,5 +120,10 @@ func main() {
 		}
 		// Sleep for 5 seconds
 		time.Sleep(5 * time.Second)
+		// debug
+		if debug {
+			log.Println("Debug session, ending now")
+			os.Exit(1)
+		}
 	}
 }
