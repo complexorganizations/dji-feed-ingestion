@@ -30,4 +30,4 @@ jobs:
       - name: Run the app help.
         run: cd middleware/ && ./csp-connector -help
       - name: Run the application.
-        run: cd middleware/ && ./csp-connector -config=config.json
+        run: cd middleware/ && ./csp-connector -config=config.json -debug=true
