@@ -185,7 +185,7 @@ install-mediamtx-application
 function build-kensis-application() {
     if [ ! -d "${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_PATH}" ]; then
         # Install the dependencies.
-        apt-get install libssl-dev libcurl4-openssl-dev libgstreamer1.0-dev liblog4cplus-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools build-essential pkg-config cmake m4 byacc curl g++ git maven openjdk-8-jdk python2.7 -y
+        apt-get install libssl-dev libcurl4-openssl-dev libunwind-dev libgstreamer1.0-dev liblog4cplus-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools build-essential pkg-config cmake m4 byacc curl g++ git maven openjdk-8-jdk python2.7 -y
         # Download the application.
         curl -L "${AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE}" -o "${AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH}"
         # Extract the application.
