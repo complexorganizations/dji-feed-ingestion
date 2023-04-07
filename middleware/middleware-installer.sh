@@ -182,7 +182,7 @@ WantedBy=multi-user.target" >${MEDIAMTX_SERVICE_FILE_PATH}
 }
 
 # Install the mediamtx server.
-# install-mediamtx-application
+install-mediamtx-application
 
 # Build the application.
 function build-kensis-application() {
@@ -212,7 +212,7 @@ function build-kensis-application() {
 }
 
 # Build the application.
-# build-kensis-application
+build-kensis-application
 
 # Run this command to manually feed data into Amazon Kinesis Video Streams
 # gst-launch-1.0 rtspsrc location=<rtsp_address> ! rtph264depay ! h264parse ! video/x-h264,stream-format=avc ! kvssink stream-name=<stream_id> access-key=<access_key> secret-key=<secret_key> aws-region=<aws_region>
@@ -240,7 +240,7 @@ function install-google-cloud() {
 }
 
 # Install Google Cloud
-# install-google-cloud
+install-google-cloud
 
 # Run this command manually to feed data to GCP Vertex AI.
 # vaictl -p <project_id> -l <location_id> -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams <stream_id> --rtsp-uri <rtsp_address>
