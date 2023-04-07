@@ -123,7 +123,7 @@ func main() {
 		// debug
 		if debug {
 			log.Println("Debug session, ending now")
-			os.Exit(1)
+			os.Exit(0)
 		}
 	}
 }
