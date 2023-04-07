@@ -3,7 +3,7 @@ function build-golang-app() {
     APPLICATION="CSP-Connector"
     VERSION="v0.0.1"
     SOURCE_CODE="./main.go"
-    BIN="bin/"
+    BIN="binaries/"
     if [ -n "$(ls ./*.go)" ]; then
         GOOS=linux GOARCH=386 go build -o ${BIN}${APPLICATION}-${VERSION}-linux-386 ${SOURCE_CODE}
         GOOS=linux GOARCH=amd64 go build -o ${BIN}${APPLICATION}-${VERSION}-linux-amd64 ${SOURCE_CODE}
