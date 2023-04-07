@@ -8,9 +8,17 @@ jobs:
     steps:
     - name: Check out code into the directory
       uses: actions/checkout@v3
-
-    - run: make binaries
-
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+          go-version-file: "middleware/go.mod"
+          cache: true
+          check-latest: true
+      id: go
+      
+    - name: Build the Application.
+      run: sudo bash middleware/go-build-script.sh
+      
     - uses: actions/upload-artifact@v3
       with:
         name: binaries
