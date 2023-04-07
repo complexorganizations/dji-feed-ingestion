@@ -13,7 +13,7 @@ var (
 	// Note: Future update for now we are using a temp bool var
 	// rtspServerStatusChannel = make(map[string]bool)
 	rtspServerOneStatus bool
-	debug bool
+	debug               bool
 )
 
 // The layout for the json stuff.
