@@ -116,7 +116,7 @@ AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS
 AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}.zip"
 
 # Assigns the latest release of the CSP Connector to a variable
-CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/csp-connector/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep "$(dpkg --print-architecture)" | grep linux)
+CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/dji-feed-analysis/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep "$(dpkg --print-architecture)" | grep linux)
 # Assigns a path for the CSP Connector
 CSP_CONNECTOR_PATH="/etc/csp-connector"
 # Assigns a path for the CSP Connector application
