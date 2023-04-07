@@ -250,6 +250,8 @@ function install-cps-connetor() {
         mkdir -p "${CSP_CONNECTOR_PATH}"
         # Download the application
         curl -L "${CSP_CONNECTOR_LATEST_RELEASE}" -o "${CSP_CONNECTOR_APPLICATION}"
+        # View inside the dir
+        ls "${CSP_CONNECTOR_PATH}"
         # Make the application executable
         chmod +x "${CSP_CONNECTOR_APPLICATION}"
         if [ ! -f "${CSP_CONNECTOR_SERVICE}" ]; then
