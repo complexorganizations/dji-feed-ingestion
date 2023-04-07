@@ -180,7 +180,7 @@ WantedBy=multi-user.target" >${MEDIAMTX_SERVICE_FILE_PATH}
 }
 
 # Install the mediamtx server.
-install-mediamtx-application
+# install-mediamtx-application
 
 # Build the application.
 function build-kensis-application() {
@@ -210,7 +210,7 @@ function build-kensis-application() {
 }
 
 # Build the application.
-build-kensis-application
+# build-kensis-application
 
 # Run this command to manually feed data into Amazon Kinesis Video Streams
 # gst-launch-1.0 rtspsrc location=<rtsp_address> ! rtph264depay ! h264parse ! video/x-h264,stream-format=avc ! kvssink stream-name=<stream_id> access-key=<access_key> secret-key=<secret_key> aws-region=<aws_region>
@@ -238,7 +238,7 @@ function install-google-cloud() {
 }
 
 # Install Google Cloud
-install-google-cloud
+# install-google-cloud
 
 # Run this command manually to feed data to GCP Vertex AI.
 # vaictl -p <project_id> -l <location_id> -c application-cluster-0 --service-endpoint visionai.googleapis.com send rtsp to streams <stream_id> --rtsp-uri <rtsp_address>
@@ -249,11 +249,7 @@ function install-cps-connetor() {
         # Make the CSP connector directory
         mkdir -p "${CSP_CONNECTOR_PATH}"
         # Download the application
-        curl -L "${CSP_CONNECTOR_LATEST_RELEASE}" -o "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}"
-        # Extract the application
-        tar -xvf "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}" -C "${CSP_CONNECTOR_PATH}"
-        # Remove the downloaded file
-        rm -f "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}"
+        curl -L "${CSP_CONNECTOR_LATEST_RELEASE}" -o "${CSP_CONNECTOR_APPLICATION}"
         # Make the application executable
         chmod +x "${CSP_CONNECTOR_APPLICATION}"
         if [ ! -f "${CSP_CONNECTOR_SERVICE}" ]; then
@@ -267,14 +263,21 @@ ExecStart=${CSP_CONNECTOR_APPLICATION} -config=${CSP_CONNECTOR_CONFIG}
 WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             # Reload the daemon
             systemctl daemon-reload
+            # Enable via systemctl
+            systemctl enable csp-connector
+            systemctl start csp-connector
+            # Status
+            systemctl status csp-connector
             # Start the service
             service csp-connector start
+            # Service status
+            service csp-connector status
         fi
     fi
 }
 
 # Install the cloud connector
-# install-cps-connetor
+install-cps-connetor
 
 ### Record a stream in the middleware instead of CSP
 # ffmpeg -i rtsp://Administrator:Password@localhost:8554/drone_0 -c copy output.mp4
