@@ -25,9 +25,7 @@ jobs:
         id: go
       - name: Install the latest version of the script.
         run: sudo bash middleware/middleware-installer.sh
-      - name: Build the application
-        run: cd middleware/ && go build .
-      - name: Run the app help.
-        run: cd middleware/ && ./csp-connector -help
-      - name: Run the application.
+      - name: Build the application && Run the app help.
+        run: cd middleware/ && go build . && ./csp-connector -help
+      - name: Run the whole application.
         run: cd middleware/ && ./csp-connector -config=config.json -debug=true
