@@ -15,28 +15,25 @@ jobs:
           cache: true
           check-latest: true
       id: go
-      
     - name: Build the Application.
       run: sudo bash middleware/go-build-script.sh
-      
     - uses: actions/upload-artifact@v3
       with:
         name: binaries
         path: binaries
-
   github:
     needs: make_binaries
-    runs-on: ubuntu-22.04
-
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - uses: actions/download-artifact@v3
+    - name: Check out code into the directory
+      uses: actions/checkout@v3
+    - name: Download the artifact
+      uses: actions/download-artifact@v3
       with:
         name: binaries
         path: binaries
-
-    - uses: actions/github-script@v6
+    - name: Upload the files to github and create a release.
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
