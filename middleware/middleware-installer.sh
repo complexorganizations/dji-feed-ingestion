@@ -22,6 +22,7 @@ function system-information() {
         # shellcheck source=/dev/null
         source /etc/os-release
         CURRENT_DISTRO=${ID}
+        CURRENT_DISTRO_VERSION=${VERSION_ID}
     fi
 }
 
@@ -30,6 +31,11 @@ system-information
 
 # Pre-Checks system requirements
 function installing-system-requirements() {
+    # if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "ubuntu" ]; }; then
+    echo "---"
+    echo ${CURRENT_DISTRO_VERSION}
+    exit 1
+    echo "---"
     if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
         if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ]; }; then
             if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
