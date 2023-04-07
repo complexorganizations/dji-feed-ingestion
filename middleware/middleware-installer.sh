@@ -31,12 +31,7 @@ system-information
 
 # Pre-Checks system requirements
 function installing-system-requirements() {
-    # if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "ubuntu" ]; }; then
-    echo "---"
-    echo ${CURRENT_DISTRO_VERSION}
-    exit 1
-    echo "---"
-    if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
+    if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "22.04" ]; }; then
         if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ]; }; then
             if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
                 apt-get update
@@ -44,7 +39,7 @@ function installing-system-requirements() {
             fi
         fi
     else
-        echo "Error: ${CURRENT_DISTRO} is not supported."
+        echo "Error: ${CURRENT_DISTRO}, ${CURRENT_DISTRO_VERSION} is not supported."
         exit
     fi
 }
