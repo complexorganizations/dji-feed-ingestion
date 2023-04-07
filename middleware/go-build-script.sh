@@ -17,7 +17,6 @@ function build-golang-app() {
         GOOS=linux GOARCH=ppc64le go build -o ${BIN}${APPLICATION}-${VERSION}-linux-ppc64le ${SOURCE_CODE}
         GOOS=linux GOARCH=riscv64 go build -o ${BIN}${APPLICATION}-${VERSION}-linux-riscv64 ${SOURCE_CODE}
         GOOS=linux GOARCH=s390x go build -o ${BIN}${APPLICATION}-${VERSION}-linux-s390x ${SOURCE_CODE}
-     fi
     else
         echo "Error: The \".go\" files could not be found."
         exit
