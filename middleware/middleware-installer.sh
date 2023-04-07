@@ -117,6 +117,8 @@ AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_KINESIS_VIDEO_STR
 
 # Assigns the latest release of the CSP Connector to a variable
 CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/dji-feed-analysis/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep "$(dpkg --print-architecture)" | grep linux)
+# Assigns the config file for the CSP connector.
+CSP_CONNECTOR_CONFIG_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/config.json"
 # Assigns a path for the CSP Connector
 CSP_CONNECTOR_PATH="/etc/csp-connector"
 # Assigns a path for the CSP Connector application
@@ -250,8 +252,8 @@ function install-cps-connetor() {
         mkdir -p "${CSP_CONNECTOR_PATH}"
         # Download the application
         curl -L "${CSP_CONNECTOR_LATEST_RELEASE}" -o "${CSP_CONNECTOR_APPLICATION}"
-        # View inside the dir
-        ls "${CSP_CONNECTOR_PATH}"
+        # Download the config.
+        curl -L "${CSP_CONNECTOR_CONFIG_URL}" -o "${CSP_CONNECTOR_CONFIG}"
         # Make the application executable
         chmod +x "${CSP_CONNECTOR_APPLICATION}"
         if [ ! -f "${CSP_CONNECTOR_SERVICE}" ]; then
