@@ -3,7 +3,7 @@ function build-golang-app() {
     cd middleware/
     APPLICATION="csp-connector"
     VERSION="v0.0.1"
-    SOURCE_CODE="./main.go"
+    SOURCE_CODE="."
     BIN="../binaries/"
     GOOS=linux GOARCH=386 go build -o ${BIN}${APPLICATION}-${VERSION}-linux-386 ${SOURCE_CODE}
     GOOS=linux GOARCH=amd64 go build -o ${BIN}${APPLICATION}-${VERSION}-linux-amd64 ${SOURCE_CODE}
