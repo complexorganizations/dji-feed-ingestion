@@ -1,6 +1,6 @@
 # Build for all the OS
 function build-golang-app() {
-    cd middleware/ 
+    cd middleware/
     # Change directory to middleware
     APPLICATION="csp-connector"
     # Set application name
@@ -36,5 +36,5 @@ function build-golang-app() {
     GOOS=linux GOARCH=s390x CGO_ENABLED=0 go build -o ${BIN}${APPLICATION}-${VERSION}-linux-s390x ${SOURCE_CODE}
 }
 
-build-golang-app 
+build-golang-app
 # Call the function to execute the build process.
