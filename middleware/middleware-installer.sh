@@ -121,12 +121,12 @@ CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorgan
 CSP_CONNECTOR_CONFIG_URL="https://raw.githubusercontent.com/complexorganizations/dji-feed-analysis/main/middleware/config.json"
 # Assigns a path for the CSP Connector
 CSP_CONNECTOR_PATH="/etc/csp-connector"
-# Assigns a path for the CSP Connector application
-CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/csp-connector"
 # Assigns a path for the CSP Connector configuration file
 CSP_CONNECTOR_CONFIG="${CSP_CONNECTOR_PATH}/config.json"
 # Extracts the file name from the latest release URL and assigns it to a variable
-CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
+CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9 | cut --delimiter="-" --fields=1-2)
+# Assigns a path for the CSP Connector application
+CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/${CSP_CONNECTOR_LATEST_FILE_NAME}"
 # Assigns a path for the CSP Connector service file
 CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service"
 
