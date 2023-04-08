@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/aler9/gortsplib/v2"
@@ -181,4 +183,20 @@ func runGstPipeline(host string, streamName string, accessKey string, secretKey 
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+// Get the current working directory on where the executable is running
+func getCurrentWorkingDirectory() string {
+	currentFileName, err := os.Executable()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	osBasedSpliier := ""
+	// Check the current operating system.
+	if runtime.GOOS == "windows" {
+		osBasedSpliier = "\\"
+	} else if runtime.GOOS == "linux" {
+		osBasedSpliier = "/"
+	}
+	return filepath.Dir(currentFileName) + osBasedSpliier
 }
