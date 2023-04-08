@@ -129,8 +129,6 @@ CSP_CONNECTOR_CONFIG="${CSP_CONNECTOR_PATH}/config.json"
 CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9)
 # Assigns a path for the CSP Connector service file
 CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service"
-# Assigns a temporary download path for the CSP Connector zip file
-CSP_CONNECTOR_TEMP_DOWNLOAD_PATH="/tmp/${CSP_CONNECTOR_LATEST_FILE_NAME}"
 
 # Assigns the latest release of the Google Cloud Vision AI to a variable
 GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE=$(curl -s https://api.github.com/repos/google/visionai/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4)
