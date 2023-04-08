@@ -17,45 +17,5 @@ jobs:
       id: go
     - name: Build the Application.
       run: sudo bash middleware/go-build-script.sh
-    - uses: actions/upload-artifact@v3
-      with:
-        name: binaries
-        path: binaries
-  github:
-    needs: make_binaries
-    runs-on: ubuntu-latest
-    steps:
-    - name: Check out code into the directory
-      uses: actions/checkout@v3
-    - name: Download the artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: binaries
-        path: binaries
-    - name: Upload the files to github and create a release.
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const fs = require('fs').promises;
-          const { repo: { owner, repo } } = context;
-
-          const currentRelease = context.ref.split('/')[2];
-
-          const res = await github.rest.repos.createRelease({
-            owner,
-            repo,
-            tag_name: currentRelease,
-            name: currentRelease,
-          });
-          const release_id = res.data.id;
-
-          for (const name of await fs.readdir('./binaries/')) {
-            await github.rest.repos.uploadReleaseAsset({
-              owner,
-              repo,
-              release_id,
-              name,
-              data: await fs.readFile(`./binaries/${name}`),
-            });
-          }
+    - name: Create a release using the github CLI.
+      run: gh release create v0.0.1 && gh release upload v0.0.1 middleware/binaries/*
