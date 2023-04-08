@@ -1,16 +1,16 @@
 {
     "0": {
-        "host": "rtsp://Administrator:Password@137.184.68.170:8554/test_0",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_0",
         "amazon_kinesis_video_streams": {
-            "aws_access_key_id": "",
-            "aws_secret_access_key": "",
-            "aws_default_region": "us-east-1",
-            "kinesis_stream": "test-stream-0"
+            "access_key_id": "<ACCESS_KEY_ID>",
+            "secret_access_key": "<SECRET_ACCESS_KEY>",
+            "default_region": "us-east-1",
+            "kinesis_stream": "<KINESIS_STREAM>"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "github-code-snippets",
-            "gcp_region": "us-central1",
-            "vertex_streams": "dji-stream-0"
+            "project_name": "<PROJECT_NAME>",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "<VERTEX_AI_VISION_STREAM>"
         }
     }
 }
