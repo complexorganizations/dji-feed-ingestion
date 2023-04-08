@@ -1,6 +1,8 @@
 name: Release CSP Application
 on:
   workflow_dispatch:
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   make_binaries:
     name: Build on ubuntu
