@@ -6,16 +6,27 @@ jobs:
     name: Build on ubuntu
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code into the directory
-      uses: actions/checkout@v3
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
+      - name: Check out code into the directory
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
           go-version-file: "middleware/go.mod"
           cache: true
           check-latest: true
-      id: go
-    - name: Build the Application.
-      run: sudo bash middleware/go-build-script.sh
-    - name: Create a release using the github CLI.
-      run: gh release create v0.0.1 && gh release upload v0.0.1 middleware/binaries/*
+        id: go
+      - name: Build the Application.
+        run: sudo bash middleware/go-build-script.sh
+      - name: Create a release using the github CLI.
+        run: gh release create v0.0.1
+      - name: Upload all the files to github.
+        run: |
+          ALL_FILES_IN_DIRECTORY=$(find middleware/binaries/ -type f)
+          for CURRENT_FILE_IN_DIRECTORY in ${ALL_FILES_IN_DIRECTORY}; do
+            ALL_FILES_LIST[${ADD_CONTENT}]=${CURRENT_FILE_IN_DIRECTORY}
+            ADD_CONTENT=$(("${ADD_CONTENT}" + 1))
+          done
+          for FILE_LIST in "${ALL_FILES_LIST[@]}"; do
+            echo ${FILE_LIST}
+            gh release upload v0.0.1 ${FILE_LIST}
+          done
