@@ -1,7 +1,7 @@
 ### DJI feed analysis
 
 ### If you would want to participate in this project, kindly join the discord server.
-### Discord: https://discord.gg/Zrd68kbK
+### Discord: https://discord.gg/hHMW9Tr4
 
 ---
 ### Requirements:
