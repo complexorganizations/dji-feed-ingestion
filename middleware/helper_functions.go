@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/aler9/gortsplib/v2"
@@ -191,12 +192,23 @@ func getCurrentWorkingDirectory() string {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	osBasedSpliier := ""
-	// Check the current operating system.
-	if runtime.GOOS == "windows" {
-		osBasedSpliier = "\\"
-	} else if runtime.GOOS == "linux" {
-		osBasedSpliier = "/"
+	return filepath.Dir(currentFileName) + "/"
+}
+
+// Lockdown the application to a single linux operating system.
+func lockdownToLinuxOperatingSystem() {
+	// Check if the operating system is linux
+	if runtime.GOOS != "linux" {
+		exitTheApplication("This application is only supported on linux operating systems.")
 	}
-	return filepath.Dir(currentFileName) + osBasedSpliier
+	// Check if the file exists
+	validateEtcOsReleaseFileExists := fileExists("/etc/os-release")
+	if !validateEtcOsReleaseFileExists {
+		exitTheApplication("This application is only supported on Ubuntu.")
+	}
+	// Read the /etc/os-release file and check if it contains the word "Ubuntu"
+	completeEtcOsReleaseFileContent := readAFileAsString("/etc/os-release")
+	if !strings.Contains(completeEtcOsReleaseFileContent, "Ubuntu") {
+		exitTheApplication("This application is only supported on Ubuntu.")
+	}
 }
