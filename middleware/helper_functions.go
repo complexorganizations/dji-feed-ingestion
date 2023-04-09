@@ -185,6 +185,7 @@ func runGstPipeline(host string, streamName string, accessKey string, secretKey 
 	if err != nil {
 		log.Fatalln(err)
 	}
+	uploadWaitGroup.Done()
 }
 
 // Get the current working directory on where the executable is running
