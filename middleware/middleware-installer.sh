@@ -310,6 +310,12 @@ WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_SERVICE_PATH}
         systemctl daemon-reload
         # Start the service
         service mediamtx-test-feed start
+        # Enable the service
+        systemctl enable mediamtx-test-feed
+        # Start the service
+        systemctl start mediamtx-test-feed
+        # Service status
+        service mediamtx-test-feed status
     fi
 }
 
