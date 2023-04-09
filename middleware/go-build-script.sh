@@ -1,15 +1,15 @@
 # Build for all the OS
 function build-golang-app() {
-    cd middleware/
     # Change directory to middleware
-    APPLICATION="csp-connector"
+    cd middleware/
     # Set application name
-    VERSION="v0.0.1"
+    APPLICATION="csp-connector"
     # Set version number
-    SOURCE_CODE="."
+    VERSION="v0.0.1"
     # Set source code directory
-    BIN="binaries/"
+    SOURCE_CODE="."
     # Set binaries directory
+    BIN="binaries/"
     # Build for linux 386 architecture
     GOOS=linux GOARCH=386 CGO_ENABLED=0 go build -o ${BIN}${APPLICATION}-${VERSION}-linux-386 ${SOURCE_CODE}
     # Build for linux amd64 architecture
