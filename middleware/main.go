@@ -10,6 +10,7 @@ import (
 
 var (
 	applicationConfigFile = getCurrentWorkingDirectory() + "config.json"
+	applicationLogFile    = getCurrentWorkingDirectory() + "log.txt"
 	currentJsonValue      interface{}
 	// Note: Future update for now we are using a temp bool var
 	// rtspServerStatusChannel = make(map[string]bool)

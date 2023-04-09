@@ -67,8 +67,8 @@ func sha256OfFile(filePath string) string {
 }
 
 // Save all the errors in a single given path.
-func saveAllErrors(errors error, path string) {
-	filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func saveAllErrors(errors error) {
+	filePath, err := os.OpenFile(applicationLogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -82,6 +82,7 @@ func saveAllErrors(errors error, path string) {
 
 // exitTheApplication prints the message to the log and exits the application
 func exitTheApplication(message string) {
+	saveAllErrors(fmt.Errorf(message))
 	log.Fatalln(message)
 }
 
