@@ -175,6 +175,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	if err != nil {
 		log.Fatalln(err)
 	}
+	uploadWaitGroup.Done()
 }
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
