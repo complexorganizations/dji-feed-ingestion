@@ -208,7 +208,13 @@ func lockdownToLinuxOperatingSystem() {
 	}
 	// Read the /etc/os-release file and check if it contains the word "Ubuntu"
 	completeEtcOsReleaseFileContent := readAFileAsString("/etc/os-release")
-	if !strings.Contains(completeEtcOsReleaseFileContent, "Ubuntu") {
+	// Check the name of the operating system
+	if strings.Contains(completeEtcOsReleaseFileContent, "NAME=\"Ubuntu\"") {
+		// Check the version of the operating system
+		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"20.04\"") {
+			exitTheApplication("This application is only supported on Ubuntu 20.04.")
+		}
+	} else {
 		exitTheApplication("This application is only supported on Ubuntu.")
 	}
 }
