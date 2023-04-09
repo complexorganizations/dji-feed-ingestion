@@ -31,7 +31,7 @@ system-information
 
 # Pre-Checks system requirements
 function installing-system-requirements() {
-    if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "22.04" ]; }; then
+    if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "20.04" ]; }; then
         if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ]; }; then
             if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
                 apt-get update
@@ -180,45 +180,7 @@ WantedBy=multi-user.target" >${MEDIAMTX_SERVICE_FILE_PATH}
 }
 
 # Install the mediamtx server.
-install-mediamtx-application
-
-# Setup the rest feed for the stream
-function setup-test-feed() {
-    # Check if youtube dlp is installed
-    if [ ! -x "$(command -v yt-dlp)" ]; then
-        # Install youtube dlp
-        curl -L ${YOUTUBE_DLP_LATEST_RELEASE_URL} -o ${YOUTUBE_DLP_LOCAL_PATH}
-        chmod +x ${YOUTUBE_DLP_LOCAL_PATH}
-    fi
-    # Check if a test video exists
-    if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH} ]; then
-        # Download a test video
-        yt-dlp -S ext:mp4:m4a "${YOUTUBE_DLP_TEST_VIDEO_URL}" -o ${MEDIAMTX_TEST_VIDEO_PATH}
-    fi
-    # Create a test feed if it does not exist already
-    if [ ! -f "${MEDIAMTX_TEST_FEED_SERVICE_PATH}" ]; then
-        # Create a test feed
-        echo "[Unit]
-Wants=network.target
-[Service]
-ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION}
-[Install]
-WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_SERVICE_PATH}
-        # Reload the daemon
-        systemctl daemon-reload
-        # Start the service
-        service mediamtx-test-feed start
-        # Enable the service
-        systemctl enable mediamtx-test-feed
-        # Start the service
-        systemctl start mediamtx-test-feed
-        # Service status
-        service mediamtx-test-feed status
-    fi
-}
-
-# Setup the test feed
-# setup-test-feed
+# install-mediamtx-application
 
 # Build the application.
 function build-kensis-application() {
@@ -317,10 +279,48 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
 }
 
 # Install the cloud connector
-install-cps-connetor
+# install-cps-connetor
 
 ### Record a stream in the middleware instead of CSP
 # ffmpeg -i rtsp://Administrator:Password@localhost:8554/drone_0 -c copy output.mp4
+
+# Setup the rest feed for the stream
+function setup-test-feed() {
+    # Check if youtube dlp is installed
+    if [ ! -x "$(command -v yt-dlp)" ]; then
+        # Install youtube dlp
+        curl -L ${YOUTUBE_DLP_LATEST_RELEASE_URL} -o ${YOUTUBE_DLP_LOCAL_PATH}
+        chmod +x ${YOUTUBE_DLP_LOCAL_PATH}
+    fi
+    # Check if a test video exists
+    if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH} ]; then
+        # Download a test video
+        yt-dlp -S ext:mp4:m4a "${YOUTUBE_DLP_TEST_VIDEO_URL}" -o ${MEDIAMTX_TEST_VIDEO_PATH}
+    fi
+    # Create a test feed if it does not exist already
+    if [ ! -f "${MEDIAMTX_TEST_FEED_SERVICE_PATH}" ]; then
+        # Create a test feed
+        echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION}
+[Install]
+WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_SERVICE_PATH}
+        # Reload the daemon
+        systemctl daemon-reload
+        # Start the service
+        service mediamtx-test-feed start
+        # Enable the service
+        systemctl enable mediamtx-test-feed
+        # Start the service
+        systemctl start mediamtx-test-feed
+        # Service status
+        service mediamtx-test-feed status
+    fi
+}
+
+# Setup the test feed
+# setup-test-feed
 
 # Install Go Language
 # curl -LO https://get.golang.org/$(uname)/go_installer && chmod +x go_installer && ./go_installer && rm go_installer
