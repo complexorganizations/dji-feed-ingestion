@@ -195,7 +195,7 @@ func lockdownToLinuxOperatingSystem() {
 	// Check if the file exists
 	validateEtcOsReleaseFileExists := fileExists("/etc/os-release")
 	if !validateEtcOsReleaseFileExists {
-		saveAllErrors("This application is only supported on Ubuntu.")
+		saveAllErrors("The file /etc/os-release does not exist.")
 	}
 	// Read the /etc/os-release file and check if it contains the word "Ubuntu"
 	completeEtcOsReleaseFileContent := readAFileAsString("/etc/os-release")
