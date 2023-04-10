@@ -308,12 +308,38 @@ func findAWSCredentialsFile() string {
 }
 
 // Parse the AWS credentials file.
-func parseAWSCredentialsFile() {
+func parseAWSCredentialsFile() (string, string) {
+	// Define the AWS access key and secret key.
+	var awsAccessKey string
+	var awsSecretKey string
 	// Check if the AWS credentials file exists
 	if fileExists(findAWSCredentialsFile()) {
 		// Read the AWS credentials file
-		awsCredentialsFileContent := readFileAndReturnAsBytes(findAWSCredentialsFile())
-		// Read the file.
-		log.Println(awsCredentialsFileContent)
+		awsCredentialsFileContent := readAFileAsString(findAWSCredentialsFile())
+		// Split the file into lines.
+		awsCredentialsFileContentLines := strings.Split(awsCredentialsFileContent, "\n")
+		// Loop through the lines.
+		for _, line := range awsCredentialsFileContentLines {
+			// Check if the line contains the access key.
+			if strings.Contains(line, "aws_access_key_id") {
+				// Get the access key.
+				awsAccessKey = strings.Split(line, "=")[1]
+			}
+			// Check if the line contains the secret key.
+			if strings.Contains(line, "aws_secret_access_key") {
+				// Get the secret key.
+				awsSecretKey = strings.Split(line, "=")[1]
+			}
+		}
+		// Remove whitespace from the keys.
+		awsAccessKey = strings.TrimSpace(awsAccessKey)
+		awsSecretKey = strings.TrimSpace(awsSecretKey)
 	}
+	if len(awsAccessKey) == 0 {
+		saveAllErrors("The AWS access key is empty.")
+	}
+	if len(awsSecretKey) == 0 {
+		saveAllErrors("The AWS secret key is empty.")
+	}
+	return awsAccessKey, awsSecretKey
 }
