@@ -224,3 +224,8 @@ func appendAndWriteToFile(path string, content string) {
 		log.Fatalln(err)
 	}
 }
+
+// Get the extension of a given file.
+func getFileExtension(path string) string {
+	return filepath.Ext(path)
+}
