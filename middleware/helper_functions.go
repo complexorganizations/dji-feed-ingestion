@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"sync"
 	"log"
 	"os"
 	"os/exec"
@@ -157,23 +158,23 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 }
 
 // Forward data to google cloud vertex AI.
-func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string) {
+func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup) {
 	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	uploadWaitGroup.Done()
+	forwardingWaitGroup.Done()
 }
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
-func runGstPipeline(host string, streamName string, accessKey string, secretKey string, awsRegion string) {
+func runGstPipeline(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup) {
 	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
 	err := cmd.Run()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	uploadWaitGroup.Done()
+	forwardingWaitGroup.Done()
 }
 
 // Get the current working directory on where the executable is running
