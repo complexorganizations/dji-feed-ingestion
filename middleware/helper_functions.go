@@ -243,3 +243,23 @@ func validateJSONLength(key string, value string) bool {
 	}
 	return false
 }
+
+// Move file from one location to another
+func moveFile(source string, destination string) {
+	// Check if the source file exists
+	if fileExists(source) {
+		// Check if the destination file exists
+		if fileExists(destination) {
+			// Remove the destination file
+			err := os.Remove(destination)
+			if err != nil {
+				log.Fatalln(err)
+			}
+		}
+		// Move the file
+		err := os.Rename(source, destination)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
