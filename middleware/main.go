@@ -54,7 +54,13 @@ func init() {
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Check if the system has the required tools and is installed in path.
-	requiredApplications := []string{"vaictl", "gst-launch-1.0", "ffmpeg", "aws", "gcloud"}
+	requiredApplications := []string{
+		"vaictl",
+		"gst-launch-1.0",
+		"ffmpeg",
+		"aws",
+		"gcloud",
+	}
 	// Check if the required application are present in the system
 	for _, app := range requiredApplications {
 		if !commandExists(app) {
