@@ -67,23 +67,10 @@ func sha256OfFile(filePath string) string {
 }
 
 // Save all the errors in a single given path.
-func saveAllErrors(errors error) {
-	filePath, err := os.OpenFile(applicationLogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.SetOutput(filePath)
-	log.Println(errors)
-	err = filePath.Close()
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
-
-// exitTheApplication prints the message to the log and exits the application
-func exitTheApplication(message string) {
-	saveAllErrors(fmt.Errorf(message))
-	log.Fatalln(message)
+func saveAllErrors(errors string) {
+	// Save the errors in a file
+	appendAndWriteToFile(applicationLogFile, errors)
+	log.Fatalln(errors)
 }
 
 // Check if the application is installed and in path
@@ -202,12 +189,12 @@ func getCurrentWorkingDirectory() string {
 func lockdownToLinuxOperatingSystem() {
 	// Check if the operating system is linux
 	if runtime.GOOS != "linux" {
-		exitTheApplication("This application is only supported on linux operating systems.")
+		saveAllErrors("This application is only supported on linux operating systems.")
 	}
 	// Check if the file exists
 	validateEtcOsReleaseFileExists := fileExists("/etc/os-release")
 	if !validateEtcOsReleaseFileExists {
-		exitTheApplication("This application is only supported on Ubuntu.")
+		saveAllErrors("This application is only supported on Ubuntu.")
 	}
 	// Read the /etc/os-release file and check if it contains the word "Ubuntu"
 	completeEtcOsReleaseFileContent := readAFileAsString("/etc/os-release")
@@ -215,9 +202,25 @@ func lockdownToLinuxOperatingSystem() {
 	if strings.Contains(completeEtcOsReleaseFileContent, "ID=ubuntu") {
 		// Check the version of the operating system
 		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"20.04\"") {
-			exitTheApplication("This application is only supported on Ubuntu 20.04.")
+			saveAllErrors("This application is only supported on Ubuntu 20.04.")
 		}
 	} else {
-		exitTheApplication("This application is only supported on Ubuntu.")
+		saveAllErrors("This application is only supported on Ubuntu.")
+	}
+}
+
+// Append and write to file
+func appendAndWriteToFile(path string, content string) {
+	filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	_, err = filePath.WriteString(content + "\n")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	err = filePath.Close()
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
