@@ -59,6 +59,10 @@ func init() {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
+	// Both AWS and GCP can't be true at the same time.
+	if aws && gcp {
+		saveAllErrors("Error: Both AWS and GCP can't be true at the same time.")
+	}
 	// Check if the system has the required tools and is installed in path.
 	requiredApplications := []string{
 		"vaictl",
