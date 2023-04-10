@@ -39,7 +39,7 @@ It checks for errors and logs them.
 func writeToFile(path string, content []byte) {
 	err := os.WriteFile(path, content, 0644)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 }
 
@@ -47,7 +47,7 @@ func writeToFile(path string, content []byte) {
 func readAFileAsString(path string) string {
 	content, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return string(content)
 }
@@ -56,13 +56,13 @@ func readAFileAsString(path string) string {
 func sha256OfFile(filePath string) string {
 	file, err := os.Open(filePath)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	hash := sha512.New()
 	io.Copy(hash, file)
 	err = file.Close()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return fmt.Sprintf("%x", hash.Sum(nil))
 }
@@ -71,7 +71,7 @@ func sha256OfFile(filePath string) string {
 func saveAllErrors(errors string) {
 	// Save the errors in a file
 	appendAndWriteToFile(applicationLogFile, errors)
-	log.Fatalln(errors)
+	log.Println(errors)
 }
 
 // Check if the application is installed and in path
@@ -89,7 +89,7 @@ func jsonValid(content []byte) bool {
 func encodeStructToJSON(content interface{}) []byte {
 	contentJSON, err := json.Marshal(content)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return contentJSON
 }
@@ -98,7 +98,7 @@ func encodeStructToJSON(content interface{}) []byte {
 func unmarshalJSONIntoStruct(content []byte, data interface{}) interface{} {
 	err := json.Unmarshal(content, &data)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return data
 }
@@ -107,15 +107,15 @@ func unmarshalJSONIntoStruct(content []byte, data interface{}) interface{} {
 func readFileAndReturnAsBytes(path string) []byte {
 	file, err := os.Open(path)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	content, err := io.ReadAll(file)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	err = file.Close()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return content
 }
@@ -162,7 +162,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	// Once the data is forwarded, remove the temporary file.
 	moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
@@ -174,7 +174,7 @@ func runGstPipeline(host string, streamName string, accessKey string, secretKey 
 	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	forwardingWaitGroup.Done()
 }
@@ -183,7 +183,7 @@ func runGstPipeline(host string, streamName string, accessKey string, secretKey 
 func getCurrentWorkingDirectory() string {
 	currentFileName, err := os.Executable()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return filepath.Dir(currentFileName) + "/"
 }
@@ -216,15 +216,15 @@ func lockdownToLinuxOperatingSystem() {
 func appendAndWriteToFile(path string, content string) {
 	filePath, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	_, err = filePath.WriteString(content + "\n")
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	err = filePath.Close()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 }
 
@@ -255,13 +255,13 @@ func moveFile(source string, destination string) {
 			// Remove the destination file
 			err := os.Remove(destination)
 			if err != nil {
-				log.Fatalln(err)
+				log.Println(err)
 			}
 		}
 		// Move the file
 		err := os.Rename(source, destination)
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
 		}
 	}
 }
