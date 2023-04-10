@@ -239,7 +239,7 @@ func validateJSONLength(key string, value string) bool {
 	}
 	// Check if the key and value are not empty
 	if len(key) >= 1 && len(value) == 0 {
-		saveAllErrors("The value of the key '" + key + "' is empty.")
+		saveAllErrors("The value for the key '" + key + "' is empty.")
 	}
 	return false
 }
