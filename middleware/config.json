@@ -2,8 +2,6 @@
     "0": {
         "host": "rtsp://Administrator:Password@localhost:8554/test_0",
         "amazon_kinesis_video_streams": {
-            "access_key_id": "",
-            "secret_access_key": "",
             "default_region": "us-east-1",
             "kinesis_stream": ""
         },
