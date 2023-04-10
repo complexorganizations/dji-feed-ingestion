@@ -116,7 +116,7 @@ AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS
 AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}.zip"
 
 # Assigns the latest release of the AWS CLI to a variable
-AMAZON_CLI_LATEST_RELEASE="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+AMAZON_CLI_LATEST_RELEASE="https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip"
 # Extracts the file name from the latest release URL and assigns it to a variable
 AMAZON_CLI_FILE_NAME=$(echo "${AMAZON_CLI_LATEST_RELEASE}" | cut --delimiter="/" --fields=4)
 # Assigns a temporary download path for the AWS CLI zip file
