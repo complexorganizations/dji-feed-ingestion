@@ -284,3 +284,36 @@ func checkConfigChanges() {
 	}
 
 }
+
+/* Imports the "os" package which provides the UserHomeDir() function
+Defines the currentUserHomeDir() function
+Invokes the UserHomeDir() function
+Returns the home directory of the current user
+Returns -1 if no user home directory is found */
+func currentUserHomeDir() string {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "-1"
+	}
+	return homeDir
+}
+
+// Find the AWS credentials file.
+func findAWSCredentialsFile() string {
+	// Check if there is a AWS creditentials folder in the home dir.
+	if fileExists(currentUserHomeDir() + "/.aws/credentials") {
+		return currentUserHomeDir() + "/.aws/credentials"
+	}
+	return "Unknown"
+}
+
+// Parse the AWS credentials file.
+func parseAWSCredentialsFile() {
+	// Check if the AWS credentials file exists
+	if fileExists(findAWSCredentialsFile()) {
+		// Read the AWS credentials file
+		awsCredentialsFileContent := readFileAndReturnAsBytes(findAWSCredentialsFile())
+		// Read the file.
+		log.Println(awsCredentialsFileContent)
+	}
+}
