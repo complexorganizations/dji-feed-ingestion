@@ -54,6 +54,14 @@ func init() {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
+	// Check if the system has the required tools and is installed in path.
+	requiredApplications := []string{"vaictl"}
+	// Check if the required application are present in the system
+	for _, app := range requiredApplications {
+		if !commandExists(app) {
+			saveAllErrors("Error: " + app + "is not installed in your system, Please install it and try again.")
+		}
+	}
 	// Check if the config file exists in the current directory
 	if !fileExists(applicationConfigFile) {
 		// Write a config file in the current directory if it doesn't exist
@@ -61,23 +69,16 @@ func init() {
 		// Exit the application since the config file was written just now and content will not be in that file.
 		saveAllErrors("Error: Just created the default configuration; please edit the configuration and launch the program again.")
 	}
-	// Print the sha256 of the file
+	// Check if the file provided has a valid .json extension.
+	if !getFileExtension(applicationConfigFile) == ".json" {
+		saveAllErrors("Error: The extension of the config file isn't valid.")
+	}
+	// DEBUG: Print the Hash of the file to change it below.
 	// log.Println(sha256OfFile(applicationConfigFile))
-	// Check if the config file has not been modified
+	// Hash the file and get the SHA-256 and make sure its not the deafult config.
 	if sha256OfFile(applicationConfigFile) == "273dfdef0f9b697b5b76f23e23e17563c9ab56eff100093b5ac1ef411546da15e19c0aae8153c64691a4a86b5db2465bebd6943b863531149b4995a3f55ba0ad" {
 		// The file has not been modified
 		saveAllErrors("Error: The config file has not been modified, Please modify it and try again.")
-	}
-	// Can check for rtsp server but
-	// what u can easily do is run rtsp server on one server and run this on another server.
-	// The list of app required for this to work.
-	// kensis // google cloud vision ai.
-	requiredApplications := []string{"vaictl"}
-	// Check if the required application are present in the system
-	for _, app := range requiredApplications {
-		if !commandExists(app) {
-			saveAllErrors("Error: " + app + "is not installed in your system, Please install it and try again.")
-		}
 	}
 	// Check if the config has the correct format and all the info is correct.
 	if !jsonValid(readFileAndReturnAsBytes(applicationConfigFile)) {
