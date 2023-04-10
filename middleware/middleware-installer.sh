@@ -255,22 +255,22 @@ function build-kensis-application() {
         # Reload the .profile file.
         # shellcheck source=/dev/null
         source /root/.profile
-        # Check if the AWS CLI is installed.
-        if [ ! -x "$(command -v aws)" ]; then
-            # Install the AWS CLI
-            curl ${AMAZON_CLI_LATEST_RELEASE} -o ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
-            # Unzip the file
-            unzip ${AMAZON_CLI_TEMP_DOWNLOAD_PATH} -d /tmp/
-            # Install the AWS CLI
-            sudo ${AMAZON_CLI_INSTALL_SCRIPT_PATH}
-            # Remove the downloaded file.
-            rm -f ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
-            # Remove the downloaded file.
-            rm -rf ${AMAZON_CLI_TEMP_INSTALL_PATH}
-            # Login to aws.
-            # aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
-            # aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        fi
+    fi
+    # Check if the AWS CLI is installed.
+    if [ ! -x "$(command -v aws)" ]; then
+        # Install the AWS CLI
+        curl ${AMAZON_CLI_LATEST_RELEASE} -o ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
+        # Unzip the file
+        unzip ${AMAZON_CLI_TEMP_DOWNLOAD_PATH} -d /tmp/
+        # Install the AWS CLI
+        sudo ${AMAZON_CLI_INSTALL_SCRIPT_PATH}
+        # Remove the downloaded file.
+        rm -f ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
+        # Remove the downloaded file.
+        rm -rf ${AMAZON_CLI_TEMP_INSTALL_PATH}
+        # Login to aws.
+        # aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
+        # aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     fi
 }
 
