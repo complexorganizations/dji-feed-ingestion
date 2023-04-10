@@ -4,8 +4,8 @@ import (
 	"flag"
 	"log"
 	"os"
-	"time"
 	"sync"
+	"time"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 	// Note: Future update for now we are using a temp bool var
 	// rtspServerStatusChannel = make(map[string]bool)
 	rtspServerOneStatus bool
-	uploadWaitGroup sync.WaitGroup
+	uploadWaitGroup     sync.WaitGroup
 	debug               bool
 )
 
@@ -70,7 +70,7 @@ func init() {
 		saveAllErrors("Error: Just created the default configuration; please edit the configuration and launch the program again.")
 	}
 	// Check if the file provided has a valid .json extension.
-	if !getFileExtension(applicationConfigFile) == ".json" {
+	if getFileExtension(applicationConfigFile) != ".json" {
 		saveAllErrors("Error: The extension of the config file isn't valid.")
 	}
 	// DEBUG: Print the Hash of the file to change it below.
