@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"sync"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/bluenviron/gortsplib/v3"
@@ -229,4 +229,17 @@ func appendAndWriteToFile(path string, content string) {
 // Get the extension of a given file.
 func getFileExtension(path string) string {
 	return filepath.Ext(path)
+}
+
+// Validate the length of the JSON file.
+func validateJSONLength(key string, value string) bool {
+	// Check if the key and value are not empty
+	if len(key) >= 1 && len(value) >= 1 {
+		return true
+	}
+	// Check if the key and value are not empty
+	if len(key) >= 1 && len(value) == 0 {
+		saveAllErrors("The value of the key '" + key + "' is empty.")
+	}
+	return false
 }
