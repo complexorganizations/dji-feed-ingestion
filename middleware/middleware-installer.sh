@@ -244,6 +244,16 @@ function build-kensis-application() {
         # Reload the .profile file.
         # shellcheck source=/dev/null
         source /root/.profile
+        # Install the AWS CLI
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        # Unzip the file
+        unzip awscliv2.zip
+        # Install the AWS CLI
+        sudo ./aws/install
+        # Remove the downloaded file.
+        rm -f awscliv2.zip
+        # Remove the downloaded file.
+        rm -rf /aws/
     fi
 }
 
