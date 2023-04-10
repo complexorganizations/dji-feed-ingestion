@@ -202,8 +202,8 @@ func lockdownToLinuxOperatingSystem() {
 	// Check the name of the operating system
 	if strings.Contains(completeEtcOsReleaseFileContent, "ID=ubuntu") {
 		// Check the version of the operating system
-		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"20.04\"") {
-			saveAllErrors("This application is only supported on Ubuntu 20.04.")
+		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"22.04\"") {
+			saveAllErrors("This application is only supported on Ubuntu 22.04.")
 		}
 	} else {
 		saveAllErrors("This application is only supported on Ubuntu.")
