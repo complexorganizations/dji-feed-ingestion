@@ -115,6 +115,17 @@ AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH="${AMAZON_KINESIS_VIDEO_STREAMS
 # Assigns a temporary download path for the Kinesis Video Streams Producer SDK zip file
 AMAZON_KINESIS_VIDEO_STREAMS_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_KINESIS_VIDEO_STREAMS_FILE_NAME}.zip"
 
+# Assigns the latest release of the AWS CLI to a variable
+AMAZON_CLI_LATEST_RELEASE="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+# Extracts the file name from the latest release URL and assigns it to a variable
+AMAZON_CLI_FILE_NAME=$(echo "${AMAZON_CLI_LATEST_RELEASE}" | cut --delimiter="/" --fields=4)
+# Assigns a temporary download path for the AWS CLI zip file
+AMAZON_CLI_TEMP_DOWNLOAD_PATH="/tmp/${AMAZON_CLI_FILE_NAME}"
+# Assigns a temporary path for the AWS CLI installation files to be extracted to before installation.
+AMAZON_CLI_TEMP_INSTALL_PATH="/tmp/aws/"
+# The path to the aws installation script
+AMAZON_CLI_INSTALL_SCRIPT_PATH="${AMAZON_CLI_TEMP_INSTALL_PATH}install"
+
 # Assigns the latest release of the CSP Connector to a variable
 CSP_CONNECTOR_LATEST_RELEASE=$(curl -s https://api.github.com/repos/complexorganizations/dji-feed-analysis/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep "$(dpkg --print-architecture)" | grep linux)
 # Assigns the config file for the CSP connector.
@@ -244,16 +255,19 @@ function build-kensis-application() {
         # Reload the .profile file.
         # shellcheck source=/dev/null
         source /root/.profile
-        # Install the AWS CLI
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        # Unzip the file
-        unzip awscliv2.zip
-        # Install the AWS CLI
-        sudo ./aws/install
-        # Remove the downloaded file.
-        rm -f awscliv2.zip
-        # Remove the downloaded file.
-        rm -rf /aws/
+        # Check if the AWS CLI is installed.
+        if [ ! -x "$(command -v aws)" ]; then
+            # Install the AWS CLI
+            curl ${AMAZON_CLI_LATEST_RELEASE} -o ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
+            # Unzip the file
+            unzip ${AMAZON_CLI_TEMP_DOWNLOAD_PATH} -d /tmp/
+            # Install the AWS CLI
+            sudo ${AMAZON_CLI_INSTALL_SCRIPT_PATH}
+            # Remove the downloaded file.
+            rm -f ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
+            # Remove the downloaded file.
+            rm -rf ${AMAZON_CLI_TEMP_INSTALL_PATH}
+        fi
     fi
 }
 
