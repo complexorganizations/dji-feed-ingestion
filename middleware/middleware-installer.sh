@@ -267,6 +267,9 @@ function build-kensis-application() {
             rm -f ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
             # Remove the downloaded file.
             rm -rf ${AMAZON_CLI_TEMP_INSTALL_PATH}
+            # Login to aws.
+            # aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
+            # aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         fi
     fi
 }
