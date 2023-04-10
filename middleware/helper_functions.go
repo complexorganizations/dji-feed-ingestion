@@ -165,7 +165,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		log.Fatalln(err)
 	}
 	// Once the data is forwarded, remove the temporary file.
-	moveFile("/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so.tmp", "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so")
+	moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 	forwardingWaitGroup.Done()
 }
 
@@ -204,8 +204,8 @@ func lockdownToLinuxOperatingSystem() {
 	// Check the name of the operating system
 	if strings.Contains(completeEtcOsReleaseFileContent, "ID=ubuntu") {
 		// Check the version of the operating system
-		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"22.04\"") {
-			saveAllErrors("This application is only supported on Ubuntu 22.04.")
+		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"20.04\"") {
+			saveAllErrors("This application is only supported on Ubuntu 20.04.")
 		}
 	} else {
 		saveAllErrors("This application is only supported on Ubuntu.")
