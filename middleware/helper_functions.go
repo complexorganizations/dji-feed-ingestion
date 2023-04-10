@@ -164,6 +164,8 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	if err != nil {
 		log.Fatalln(err)
 	}
+	// Once the data is forwarded, remove the temporary file.
+	moveFile("/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so.tmp", "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so")
 	forwardingWaitGroup.Done()
 }
 
