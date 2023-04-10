@@ -30,4 +30,4 @@ jobs:
       - name: Run the whole application.
         run: cd middleware/ && ./csp-connector -config="config.json" -debug=true -log="log.txt"
       - name: View the application logs.
-        run: cat log.txt
+        run: cat middleware/log.txt
