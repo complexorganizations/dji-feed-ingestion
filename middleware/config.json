@@ -1,16 +1,16 @@
 {
     "0": {
-        "host": "rtsp://Administrator:Password@165.227.197.243:8554/test_0",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_0",
         "amazon_kinesis_video_streams": {
-            "access_key_id": "<ACCESS_KEY_ID>",
-            "secret_access_key": "<SECRET_ACCESS_KEY>",
+            "access_key_id": "",
+            "secret_access_key": "",
             "default_region": "us-east-1",
-            "kinesis_stream": "<KINESIS_STREAM>"
+            "kinesis_stream": ""
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "<PROJECT_NAME>",
+            "project_name": "",
             "default_region": "us-central1",
-            "vertex_ai_vision_stream": "<VERTEX_AI_VISION_STREAM>"
+            "vertex_ai_vision_stream": ""
         }
     }
 }
