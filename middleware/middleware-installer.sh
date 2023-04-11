@@ -198,7 +198,7 @@ function setup-test-feed() {
     # Check if youtube dlp is installed
     if [ ! -x "$(command -v yt-dlp)" ]; then
         # Install youtube dlp
-        curl -L ${YOUTUBE_DLP_LATEST_RELEASE_URL} -o ${YOUTUBE_DLP_LOCAL_PATH}
+        curl -L "${YOUTUBE_DLP_LATEST_RELEASE_URL}" -o ${YOUTUBE_DLP_LOCAL_PATH}
         chmod +x ${YOUTUBE_DLP_LOCAL_PATH}
     fi
     # Check if a test video exists
@@ -259,13 +259,13 @@ function build-kensis-application() {
     # Check if the AWS CLI is installed.
     if [ ! -x "$(command -v aws)" ]; then
         # Install the AWS CLI
-        curl ${AMAZON_CLI_LATEST_RELEASE} -o ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
+        curl "${AMAZON_CLI_LATEST_RELEASE}" -o "${AMAZON_CLI_TEMP_DOWNLOAD_PATH}"
         # Unzip the file
-        unzip ${AMAZON_CLI_TEMP_DOWNLOAD_PATH} -d /tmp/
+        unzip "${AMAZON_CLI_TEMP_DOWNLOAD_PATH}" -d /tmp/
         # Install the AWS CLI
         sudo ${AMAZON_CLI_INSTALL_SCRIPT_PATH}
         # Remove the downloaded file.
-        rm -f ${AMAZON_CLI_TEMP_DOWNLOAD_PATH}
+        rm -f "${AMAZON_CLI_TEMP_DOWNLOAD_PATH}"
         # Remove the downloaded file.
         rm -rf ${AMAZON_CLI_TEMP_INSTALL_PATH}
         # Login to aws.
