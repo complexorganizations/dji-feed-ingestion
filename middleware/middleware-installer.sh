@@ -149,7 +149,7 @@ GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME=$(echo "${GOOGLE_CLOUD_VISION_AI_LATEST_R
 GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH="/tmp/${GOOGLE_CLOUD_VISION_AI_LEAST_FILE_NAME}"
 
 # Get the latest release of youtube DLP
-YOUTUBE_DLP_LATEST_RELEASE_URL="https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp_linux"
+YOUTUBE_DLP_LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4 | grep linux | head -n1)
 # The system's local path where the yt-dlp should be placed
 YOUTUBE_DLP_LOCAL_PATH="/usr/bin/yt-dlp"
 # Test video to download and evaluate from YouTube
