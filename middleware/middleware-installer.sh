@@ -134,6 +134,8 @@ CSP_CONNECTOR_CONFIG_URL="https://raw.githubusercontent.com/complexorganizations
 CSP_CONNECTOR_PATH="/etc/csp-connector"
 # Assigns a path for the CSP Connector configuration file
 CSP_CONNECTOR_CONFIG="${CSP_CONNECTOR_PATH}/config.json"
+# Assigns a path for the CSP Connector log file.
+CSP_CONNECTOR_LOG_FILE="${CSP_CONNECTOR_PATH}/log.txt"
 # Extracts the file name from the latest release URL and assigns it to a variable
 CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --delimiter="/" --fields=9 | cut --delimiter="-" --fields=1-2)
 # Assigns a path for the CSP Connector application
@@ -325,7 +327,7 @@ function install-cps-connetor() {
             echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=${CSP_CONNECTOR_APPLICATION} -config=${CSP_CONNECTOR_CONFIG}
+ExecStart=${CSP_CONNECTOR_APPLICATION} -config=\"${CSP_CONNECTOR_CONFIG}\" -log=\"${CSP_CONNECTOR_LOG_FILE}\" -aws=true
 [Install]
 WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             # Reload the daemon
