@@ -193,7 +193,7 @@ WantedBy=multi-user.target" >${MEDIAMTX_SERVICE_FILE_PATH}
 }
 
 # Install the mediamtx server.
-# install-mediamtx-application
+install-mediamtx-application
 
 # Setup the rest feed for the stream
 function setup-test-feed() {
@@ -231,7 +231,7 @@ WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_SERVICE_PATH}
 }
 
 # Setup the test feed
-# setup-test-feed
+setup-test-feed
 
 # Build the application.
 function build-kensis-application() {
@@ -346,7 +346,7 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
 }
 
 # Install the cloud connector
-# install-cps-connetor
+install-cps-connetor
 
 ### Record a stream in the middleware instead of CSP
 # ffmpeg -i rtsp://Administrator:Password@localhost:8554/drone_0 -c copy output.mp4
