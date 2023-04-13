@@ -1,6 +1,6 @@
 {
     "0": {
-        "host": "rtsp://Administrator:Password@localhost:8554/test_0",
+        "host": "rtsp://Administrator:Password@165.227.197.243:8554/test_0",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": ""
