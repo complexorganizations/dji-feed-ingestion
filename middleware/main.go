@@ -10,7 +10,9 @@ import (
 )
 
 var (
+	// Application config file
 	applicationConfigFile = getCurrentWorkingDirectory() + "config.json"
+	// Application log file
 	applicationLogFile    = getCurrentWorkingDirectory() + "log.txt"
 	currentJsonValue      interface{}
 	// Note: Future update for now we are using a temp bool var
@@ -19,7 +21,8 @@ var (
 	debug               bool
 	aws                 bool
 	gcp                 bool
-	// TEMP VALUES
+	// Values for the aws file path stuff;
+	// This is the issue with in google to fix this stuff. /// https://github.com/google/visionai/issues/6
 	amazonKinesisDefaultPath = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so"
 	amazonKinesisTempPath    = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so.tmp"
 )
