@@ -22,8 +22,10 @@ var (
 	aws                 bool
 	gcp                 bool
 	// Values for the aws file path stuff;
+	amazonKinesisVideoStreamPath = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp"
+	amazonKinesisVideoStreamBuildPath = amazonKinesisVideoStreamPath + "/build"
 	// This is the issue with in google to fix this stuff. /// https://github.com/google/visionai/issues/6
-	amazonKinesisDefaultPath = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so"
+	amazonKinesisDefaultPath = amazonKinesisVideoStreamBuildPath + "/libgstkvssink.so"
 	amazonKinesisTempPath    = amazonKinesisDefaultPath + ".tmp"
 )
 
@@ -84,6 +86,19 @@ func init() {
 		if !commandExists(app) {
 			saveAllErrors("Error: " + app + "is not installed in your system, Please install it and try again.")
 		}
+	}
+	// Check the directory structure for the application
+	// Check if the amazon-kinesis-video-streams-producer-sdk-cpp is present in the system
+	if !directoryExists(amazonKinesisVideoStreamPath) {
+		saveAllErrors("Error: The amazon-kinesis-video-streams-producer-sdk-cpp is not present in the system.")
+	}
+	// Check if the amazon-kinesis-video-streams-producer-sdk-cpp/build is present in the system
+	if !directoryExists(amazonKinesisVideoStreamBuildPath) {
+		saveAllErrors("Error: The amazon-kinesis-video-streams-producer-sdk-cpp/build is not present in the system.")
+	}
+	// Check if the amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so is present in the system
+	if !fileExists(amazonKinesisDefaultPath) {
+		saveAllErrors("Error: The amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so is not present in the system.")
 	}
 	// Check if the config file exists in the current directory
 	if !fileExists(applicationConfigFile) {
