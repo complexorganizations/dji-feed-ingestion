@@ -32,6 +32,6 @@ jobs:
       - name: Build the application && Run the app help.
         run: cd middleware/ && go build . && ./csp-connector -help
       - name: Run the whole application.
-        run: sudo source /root/.bashrc && cd middleware/ && ./csp-connector -config="config.json" -log="log.txt" -aws=true
+        run: source <(sudo cat /root/.bashrc) && cd middleware/ && ./csp-connector -config="config.json" -log="log.txt" -aws=true
       - name: View the application logs.
         run: cat middleware/log.txt
