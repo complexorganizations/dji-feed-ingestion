@@ -3,12 +3,12 @@
         "host": "rtsp://Administrator:Password@165.227.197.243:8554/test_0",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
-            "kinesis_stream": ""
+            "kinesis_stream": "test-stream-0"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "",
+            "project_name": "null",
             "default_region": "us-central1",
-            "vertex_ai_vision_stream": ""
+            "vertex_ai_vision_stream": "null"
         }
     }
 }
