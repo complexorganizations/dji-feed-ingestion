@@ -347,3 +347,14 @@ func parseAWSCredentialsFile() (string, string) {
 	}
 	return awsAccessKey, awsSecretKey
 }
+
+/* Checks if the directory exists
+If it exists, return true.
+If it doesn't, return false. */
+func directoryExists(path string) bool {
+	directory, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return directory.IsDir()
+}
