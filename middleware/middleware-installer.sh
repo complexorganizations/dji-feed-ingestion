@@ -279,8 +279,7 @@ function build-kensis-application() {
         # Add the path to the .bashrc file so that it can be used in the future
         echo -e "export GST_PLUGIN_PATH=${AMAZON_KINESIS_VIDEO_STREAMS_PRODUCER_BUILD_PATH}:\$GST_PLUGIN_PATH\nexport LD_LIBRARY_PATH=${AMAZON_KINESIS_VIDEO_STREAMS_OPEN_SOURCE_LOCAL_LIB_PATH}:\$LD_LIBRARY_PATH" >>/root/.bashrc
         # Reload the .profile file.
-        # shellcheck source=/dev/null
-        source /root/.bashrc
+        . /root/.bashrc
     fi
     # Check if the AWS CLI is installed.
     if [ ! -x "$(command -v aws)" ]; then
