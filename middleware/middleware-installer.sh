@@ -370,7 +370,7 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
 }
 
 # Install the cloud connector
-install-cps-connetor
+# install-cps-connetor
 
 ### Record a stream in the middleware instead of CSP
 # ffmpeg -i rtsp://Administrator:Password@localhost:8554/drone_0 -c copy output.mp4
