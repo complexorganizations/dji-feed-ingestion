@@ -25,8 +25,10 @@ jobs:
         id: go
       - name: Install the latest version of the script.
         run: sudo bash middleware/middleware-installer.sh
-      - name: Setup AWS keys
-        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Setup AWS public keys
+        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
+      - name: Setup AWS private keys
+        run: aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Build the application && Run the app help.
         run: cd middleware/ && go build . && ./csp-connector -help
       - name: Run the whole application.
