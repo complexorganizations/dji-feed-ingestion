@@ -165,7 +165,9 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		log.Println(err)
 	}
 	// Once the data is forwarded, remove the temporary file.
-	moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+	if fileExists(amazonKinesisTempPath) {
+		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+	}
 	forwardingWaitGroup.Done()
 }
 
@@ -284,11 +286,14 @@ func checkConfigChanges() {
 
 }
 
-/* Imports the "os" package which provides the UserHomeDir() function
+/*
+	Imports the "os" package which provides the UserHomeDir() function
+
 Defines the currentUserHomeDir() function
 Invokes the UserHomeDir() function
 Returns the home directory of the current user
-Returns -1 if no user home directory is found */
+Returns -1 if no user home directory is found
+*/
 func currentUserHomeDir() string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
