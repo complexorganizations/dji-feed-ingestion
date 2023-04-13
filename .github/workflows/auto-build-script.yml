@@ -28,6 +28,6 @@ jobs:
       - name: Build the application && Run the app help.
         run: cd middleware/ && go build . && ./csp-connector -help
       - name: Run the whole application.
-        run: cd middleware/ && ./csp-connector -config="config.json" -debug=true -log="log.txt"
+        run: cd middleware/ && ./csp-connector -config="config.json" -log="log.txt" -debug=true -aws=true
       - name: View the application logs.
         run: cat middleware/log.txt
