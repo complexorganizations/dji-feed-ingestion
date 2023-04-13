@@ -6,6 +6,7 @@ on:
   pull_request:
     paths:
       - "**.go"
+  workflow_dispatch:
 jobs:
   build:
     name: Build the application
