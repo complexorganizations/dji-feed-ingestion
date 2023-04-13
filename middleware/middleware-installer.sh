@@ -32,7 +32,7 @@ system-information
 # Pre-Checks system requirements
 function installing-system-requirements() {
     if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
-    # if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "22.04" ]; }; then
+        # if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "22.04" ]; }; then
         if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ]; }; then
             if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
                 apt-get update
@@ -78,6 +78,30 @@ function check-inside-docker() {
 
 # Make sure the application is running inside docker.
 check-inside-docker
+
+# The following function checks if the current init system is one of the allowed options.
+function check-current-init-system() {
+    # This function checks if the current init system is systemd or sysvinit.
+    # If it is neither, the script exits.
+    CURRENT_INIT_SYSTEM=$(ps --no-headers -o comm 1)
+    # This line retrieves the current init system by checking the process name of PID 1.
+    case ${CURRENT_INIT_SYSTEM} in
+    # The case statement checks if the retrieved init system is one of the allowed options.
+    *"systemd"* | *"init"*)
+        # If the init system is systemd or sysvinit (init), continue with the script.
+        ;;
+    *)
+        # If the init system is not one of the allowed options, display an error message and exit.
+        echo "${CURRENT_INIT_SYSTEM} init is not supported (yet)."
+        exit
+        ;;
+    esac
+}
+
+# The check-current-init-system function is being called.
+
+check-current-init-system
+# Calls the check-current-init-system function.
 
 # Global variables
 # Assigns the latest release of MediaMTX to a variable
@@ -184,11 +208,12 @@ ExecStart=${MEDIAMTX_BINARY_PATH} ${MEDIAMTX_LOCAL_CONFIG_PATH}
 WantedBy=multi-user.target" >${MEDIAMTX_SERVICE_FILE_PATH}
             # Reload the daemon.
             systemctl daemon-reload
-            # Enable the service
-            systemctl enable mediamtx
-            systemctl start mediamtx
-            # Check the status of the service
-            systemctl status mediamtx
+            if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+                systemctl enable --now mediamtx
+                systemctl start mediamtx
+            elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+                service mediamtx start
+            fi
         fi
     fi
 }
@@ -220,14 +245,12 @@ ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH} -c copy -f r
 WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_SERVICE_PATH}
         # Reload the daemon
         systemctl daemon-reload
-        # Start the service
-        service mediamtx-test-feed start
-        # Enable the service
-        systemctl enable mediamtx-test-feed
-        # Start the service
-        systemctl start mediamtx-test-feed
-        # Service status
-        service mediamtx-test-feed status
+        if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+            systemctl enable --now mediamtx-test-feed
+            systemctl start mediamtx-test-feed
+        elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+            service mediamtx-test-feed start
+        fi
     fi
 }
 
@@ -333,15 +356,12 @@ ExecStart=${CSP_CONNECTOR_APPLICATION} -config=\"${CSP_CONNECTOR_CONFIG}\" -log=
 WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             # Reload the daemon
             systemctl daemon-reload
-            # Enable via systemctl
-            systemctl enable csp-connector
-            systemctl start csp-connector
-            # Status
-            systemctl status csp-connector
-            # Start the service
-            service csp-connector start
-            # Service status
-            service csp-connector status
+            if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+                systemctl enable --now csp-connector
+                systemctl start csp-connector
+            elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+                service csp-connector start
+            fi
         fi
     fi
 }
