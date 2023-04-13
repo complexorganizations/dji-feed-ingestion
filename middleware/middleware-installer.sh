@@ -31,7 +31,8 @@ system-information
 
 # Pre-Checks system requirements
 function installing-system-requirements() {
-    if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "22.04" ]; }; then
+    if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
+    # if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "22.04" ]; }; then
         if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ]; }; then
             if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
                 apt-get update
