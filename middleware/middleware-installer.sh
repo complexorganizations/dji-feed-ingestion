@@ -33,10 +33,14 @@ system-information
 function installing-system-requirements() {
     if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
         # if { [ "${CURRENT_DISTRO}" == "ubuntu" ] && [ "${CURRENT_DISTRO_VERSION}" == "22.04" ]; }; then
-        if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ]; }; then
+        if { [ ! -x "$(command -v cut)" ] || [ ! -x "$(command -v git)" ] || [ ! -x "$(command -v ffmpeg)" ] || [ ! -x "$(command -v zip)" ] || [ ! -x "$(command -v unzip)" ] || [ ! -x "$(command -v systemd-detect-virt)" ] || [ ! -x "$(command -v python)" ]; }; then
             if [ "${CURRENT_DISTRO}" == "ubuntu" ]; then
                 apt-get update
-                apt-get install coreutils git ffmpeg curl openssl tar apt-transport-https ca-certificates gnupg zip unzip systemd -y
+                apt-get install coreutils git ffmpeg curl openssl tar apt-transport-https ca-certificates gnupg zip unzip systemd python3 python3-pip -y
+                # Install the requirements for the pip packages
+                if [ -x "$(command -v pip)" ]; then
+                    pip install cmake
+                fi
             fi
         fi
     else
