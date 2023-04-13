@@ -24,7 +24,7 @@ var (
 	// Values for the aws file path stuff;
 	// This is the issue with in google to fix this stuff. /// https://github.com/google/visionai/issues/6
 	amazonKinesisDefaultPath = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so"
-	amazonKinesisTempPath    = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build/libgstkvssink.so.tmp"
+	amazonKinesisTempPath    = amazonKinesisDefaultPath + ".tmp"
 )
 
 // The config file struct for the application to use.
