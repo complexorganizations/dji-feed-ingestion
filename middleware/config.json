@@ -1,74 +1,74 @@
 {
     "0": {
-        "host": "null",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_0",
         "amazon_kinesis_video_streams": {
-            "default_region": "null",
-            "kinesis_stream": "null"
+            "default_region": "us-east-1",
+            "kinesis_stream": "test-stream-0"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "null",
-            "vertex_ai_vision_stream": "null"
+            "project_name": "project-name-0",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "vertex-ai-vision-stream-0"
         }
     },
     "1": {
-        "host": "null",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_1",
         "amazon_kinesis_video_streams": {
-            "default_region": "null",
-            "kinesis_stream": "null"
+            "default_region": "us-east-1",
+            "kinesis_stream": "test-stream-1"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "null",
-            "vertex_ai_vision_stream": "null"
+            "project_name": "project-name-1",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "vertex-ai-vision-stream-1"
         }
     },
     "2": {
-        "host": "null",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_2",
         "amazon_kinesis_video_streams": {
-            "default_region": "null",
-            "kinesis_stream": "null"
+            "default_region": "us-east-1",
+            "kinesis_stream": "test-stream-2"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "null",
-            "vertex_ai_vision_stream": "null"
+            "project_name": "project-name-2",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "vertex-ai-vision-stream-2"
         }
     },
     "3": {
-        "host": "null",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_3",
         "amazon_kinesis_video_streams": {
-            "default_region": "null",
-            "kinesis_stream": "null"
+            "default_region": "us-east-1",
+            "kinesis_stream": "test-stream-3"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "null",
-            "vertex_ai_vision_stream": "null"
+            "project_name": "project-name-3",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "vertex-ai-vision-stream-3"
         }
     },
     "4": {
-        "host": "null",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_4",
         "amazon_kinesis_video_streams": {
-            "default_region": "null",
-            "kinesis_stream": "null"
+            "default_region": "us-east-1",
+            "kinesis_stream": "test-stream-4"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "null",
-            "vertex_ai_vision_stream": "null"
+            "project_name": "project-name-4",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "vertex-ai-vision-stream-4"
         }
     },
     "5": {
-        "host": "null",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_5",
         "amazon_kinesis_video_streams": {
-            "default_region": "null",
-            "kinesis_stream": "null"
+            "default_region": "us-east-1",
+            "kinesis_stream": "test-stream-5"
         },
         "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "null",
-            "vertex_ai_vision_stream": "null"
+            "project_name": "project-name-5",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "vertex-ai-vision-stream-5"
         }
     }
 }
