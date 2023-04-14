@@ -148,9 +148,9 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 	for {
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
-			rtspServerOneStatus = true
+			addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
 		} else {
-			rtspServerOneStatus = false
+			addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 		}
 		// Sleep for 2 seconds, after each check.
 		time.Sleep(2 * time.Second)
@@ -357,4 +357,15 @@ func directoryExists(path string) bool {
 		return false
 	}
 	return directory.IsDir()
+}
+
+// Add a key-value pair to the given map.
+func addKeyValueToMap(providedMap map[string]bool, key string, value bool) map[string]bool {
+	providedMap[key] = value
+	return providedMap
+}
+
+// Get the value of a key from the given map.
+func getValueFromMap(providedMap map[string]bool, key string) bool {
+	return providedMap[key]
 }
