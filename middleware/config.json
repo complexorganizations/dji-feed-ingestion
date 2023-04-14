@@ -1,13 +1,73 @@
 {
     "0": {
-        "host": "rtsp://Administrator:Password@localhost:8554/test_0",
+        "host": "null",
         "amazon_kinesis_video_streams": {
-            "default_region": "us-east-1",
-            "kinesis_stream": "test-stream-0"
+            "default_region": "null",
+            "kinesis_stream": "null"
         },
         "google_cloud_vertex_ai_vision": {
             "project_name": "null",
-            "default_region": "us-central1",
+            "default_region": "null",
+            "vertex_ai_vision_stream": "null"
+        }
+    },
+    "1": {
+        "host": "null",
+        "amazon_kinesis_video_streams": {
+            "default_region": "null",
+            "kinesis_stream": "null"
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "null",
+            "default_region": "null",
+            "vertex_ai_vision_stream": "null"
+        }
+    },
+    "2": {
+        "host": "null",
+        "amazon_kinesis_video_streams": {
+            "default_region": "null",
+            "kinesis_stream": "null"
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "null",
+            "default_region": "null",
+            "vertex_ai_vision_stream": "null"
+        }
+    },
+    "3": {
+        "host": "null",
+        "amazon_kinesis_video_streams": {
+            "default_region": "null",
+            "kinesis_stream": "null"
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "null",
+            "default_region": "null",
+            "vertex_ai_vision_stream": "null"
+        }
+    },
+    "4": {
+        "host": "null",
+        "amazon_kinesis_video_streams": {
+            "default_region": "null",
+            "kinesis_stream": "null"
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "null",
+            "default_region": "null",
+            "vertex_ai_vision_stream": "null"
+        }
+    },
+    "5": {
+        "host": "null",
+        "amazon_kinesis_video_streams": {
+            "default_region": "null",
+            "kinesis_stream": "null"
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "null",
+            "default_region": "null",
             "vertex_ai_vision_stream": "null"
         }
     }
