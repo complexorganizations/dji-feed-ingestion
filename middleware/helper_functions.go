@@ -159,6 +159,9 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 
 // Forward data to google cloud vertex AI.
 func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup) {
+	if fileExists(amazonKinesisDefaultPath) {
+		moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
+	}
 	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
 	if err != nil {
@@ -173,6 +176,9 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
 func runGstPipeline(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup) {
+	if fileExists(amazonKinesisTempPath) {
+		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+	}
 	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
 	err := cmd.Run()
 	if err != nil {
