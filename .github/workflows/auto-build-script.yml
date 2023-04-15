@@ -29,9 +29,13 @@ jobs:
         run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
       - name: Setup AWS private keys
         run: aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
       - name: Build the application && Run the app help.
         run: cd middleware/ && go build . && ./csp-connector -help
       - name: Run the whole application.
-        run: cd middleware/ && ./csp-connector -config="config.json" -log="log.txt" -aws=true -debug=true
+        run: cd middleware/ && ./csp-connector -config="config.json" -log="log.txt" -gcp=true -debug=true
       - name: View the application logs.
         run: cat middleware/log.txt
