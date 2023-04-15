@@ -156,8 +156,8 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 				addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 			}
 		}
-		// Sleep for 2 seconds, after each check.
-		time.Sleep(2 * time.Second)
+		// Sleep for 3 seconds, after each check.
+		time.Sleep(3 * time.Second)
 	}
 }
 
@@ -297,8 +297,7 @@ func checkConfigChanges() {
 }
 
 /*
-	Imports the "os" package which provides the UserHomeDir() function
-
+Imports the "os" package which provides the UserHomeDir() function
 Defines the currentUserHomeDir() function
 Invokes the UserHomeDir() function
 Returns the home directory of the current user
