@@ -179,7 +179,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 }
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
-func runGstPipeline(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup) {
+func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup) {
 	if fileExists(amazonKinesisTempPath) {
 		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 	}

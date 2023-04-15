@@ -182,7 +182,7 @@ func main() {
 					log.Println("third: " + server.Host)
 					uploadWaitGroup.Add(1)
 					if aws {
-						go runGstPipeline(server.Host, server.AmazonKinesisVideoStreams.KinesisStream, accessKey, secretKey, server.AmazonKinesisVideoStreams.DefaultRegion, &uploadWaitGroup)
+						go forwardDataToAmazonKinesisStreams(server.Host, server.AmazonKinesisVideoStreams.KinesisStream, accessKey, secretKey, server.AmazonKinesisVideoStreams.DefaultRegion, &uploadWaitGroup)
 					} else if gcp {
 						go forwardDataToGoogleCloudVertexAI(server.Host, server.GoogleCloudVertexAiVision.ProjectName, server.GoogleCloudVertexAiVision.DefaultRegion, server.GoogleCloudVertexAiVision.VertexAiVisionStream, &uploadWaitGroup)
 					}
