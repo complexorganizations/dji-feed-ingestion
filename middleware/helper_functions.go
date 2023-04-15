@@ -18,6 +18,10 @@ import (
 	"github.com/bluenviron/gortsplib/v3/pkg/url"
 )
 
+var (
+	mutex = &sync.RWMutex{}
+)
+
 /*
 It checks if the file exists
 If the file exists, it returns true
@@ -148,13 +152,17 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 	for {
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
+			mutex.Lock()
 			if getValueFromMap(rtspServerStatusChannel, rtspURL) == false {
 				addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
 			}
+			mutex.Unlock()
 		} else {
+			mutex.RLock()
 			if getValueFromMap(rtspServerStatusChannel, rtspURL) == true {
 				addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 			}
+			mutex.RUnlock()
 		}
 		// Sleep for 3 seconds, after each check.
 		time.Sleep(3 * time.Second)
@@ -357,9 +365,11 @@ func parseAWSCredentialsFile() (string, string) {
 	return awsAccessKey, awsSecretKey
 }
 
-/* Checks if the directory exists
+/*
+Checks if the directory exists
 If it exists, return true.
-If it doesn't, return false. */
+If it doesn't, return false.
+*/
 func directoryExists(path string) bool {
 	directory, err := os.Stat(path)
 	if err != nil {
