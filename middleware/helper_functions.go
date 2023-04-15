@@ -148,9 +148,13 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 	for {
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
-			addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
+			if getValueFromMap(rtspServerStatusChannel, rtspURL) == false {
+				addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
+			}
 		} else {
-			addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
+			if getValueFromMap(rtspServerStatusChannel, rtspURL) == true {
+				addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
+			}
 		}
 		// Sleep for 2 seconds, after each check.
 		time.Sleep(2 * time.Second)
