@@ -216,7 +216,7 @@ func lockdownToLinuxOperatingSystem() {
 		// 	saveAllErrors("This application is only supported on Ubuntu 22.04.")
 		// }
 		// Note: Remove in the future build of the app.
-		log.Println("Note: Temp for now; remove in the future build of the app.")
+		log.Println("Note: This app is only supported on Ubuntu 22.04.")
 	} else {
 		saveAllErrors("This application is only supported on Ubuntu.")
 	}
