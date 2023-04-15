@@ -179,18 +179,15 @@ func main() {
 			if rtspServerRunCounter[host] == 0 {
 				// Add 1 to the counter
 				rtspServerRunCounter[host] = 1
-
 				if getValueFromMap(rtspServerStatusChannel, host) {
 					uploadWaitGroup.Add(1)
-
 					if aws {
 						go runGstPipeline(host, server.AmazonKinesisVideoStreams.KinesisStream, accessKey, secretKey, server.AmazonKinesisVideoStreams.DefaultRegion, &uploadWaitGroup)
 					} else if gcp {
 						go forwardDataToGoogleCloudVertexAI(host, server.GoogleCloudVertexAiVision.ProjectName, server.GoogleCloudVertexAiVision.DefaultRegion, server.GoogleCloudVertexAiVision.VertexAiVisionStream, &uploadWaitGroup)
 					}
-
-					rtspServerRunCounter[host] = 0
 				}
+				rtspServerRunCounter[host] = 0
 			}
 		}
 		// Wait for 5 seconds before checking again
