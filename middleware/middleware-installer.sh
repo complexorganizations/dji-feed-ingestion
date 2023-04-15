@@ -341,7 +341,7 @@ function build-kensis-application() {
         rm -f "${AMAZON_CLI_TEMP_DOWNLOAD_PATH}"
         # Remove the downloaded file.
         rm -rf ${AMAZON_CLI_TEMP_INSTALL_PATH}
-        # Login to aws.
+        # Login to aws. (https://us-east-1.console.aws.amazon.com/iamv2/home?region=us-east-1#/security_credentials)
         # aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
         # aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     fi
@@ -362,6 +362,7 @@ function install-google-cloud() {
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
         apt-get update
         apt-get install google-cloud-cli -y
+        # https://console.cloud.google.com/iam-admin/serviceaccounts
         # gcloud auth activate-service-account SERVICE_ACCOUNT@DOMAIN.COM --key-file=/path/key.json --project=PROJECT_ID
         # Install Google cloud vision ai
         curl -L "${GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE}" -o "${GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH}"
