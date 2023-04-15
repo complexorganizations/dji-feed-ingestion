@@ -1,6 +1,6 @@
 {
     "0": {
-        "host": "rtsp://Administrator:Password@localhost:8554/test_0",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_zero",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": "test-stream-0"
@@ -12,7 +12,7 @@
         }
     },
     "1": {
-        "host": "rtsp://Administrator:Password@localhost:8554/test_1",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_one",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": "test-stream-1"
@@ -24,7 +24,7 @@
         }
     },
     "2": {
-        "host": "rtsp://Administrator:Password@localhost:8554/test_2",
+        "host": "rtsp://Administrator:Password@localhost:8554/test_two",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": "test-stream-2"
