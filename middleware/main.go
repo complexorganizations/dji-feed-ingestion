@@ -201,10 +201,10 @@ func main() {
 				}
 			}
 		}
-		// Wait for the wait group to finish
+		// Wait for 5 seconds before checking again
+		time.Sleep(5 * time.Second)
+		// Wait for the upload to finish
 		uploadWaitGroup.Wait()
-		// Sleep for 30 seconds
-		time.Sleep(30 * time.Second)
 		// End if debug
 		if debug {
 			break
