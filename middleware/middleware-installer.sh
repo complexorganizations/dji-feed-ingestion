@@ -261,7 +261,8 @@ Wants=network.target
 ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_ZERO} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_ZERO}
 [Install]
 WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_ZERO_SERVICE_PATH}
-# Create a second test feed
+    fi
+    # Create a second test feed
     if [ ! -f "${MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH}" ]; then
         echo "[Unit]
 Wants=network.target
@@ -269,7 +270,8 @@ Wants=network.target
 ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_ONE} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_ONE}
 [Install]
 WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH}
-# Create a third test feed.
+    fi
+    # Create a third test feed.
     if [ ! -f "${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}" ]; then
         echo "[Unit]
 Wants=network.target
@@ -280,7 +282,7 @@ WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}
         # Reload the daemon
         systemctl daemon-reload
         if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-        # zero
+            # zero
             systemctl enable --now mediamtx-test-feed-zero
             systemctl start mediamtx-test-feed-zero
             # one
@@ -290,7 +292,7 @@ WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}
             systemctl enable --now mediamtx-test-feed-two
             systemctl start mediamtx-test-feed-two
         elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-        # zero
+            # zero
             service mediamtx-test-feed-zero start
             # one
             service mediamtx-test-feed-one start
