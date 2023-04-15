@@ -34,5 +34,17 @@
             "default_region": "us-central1",
             "vertex_ai_vision_stream": "test-stream-2"
         }
+    },
+    "3": {
+        "host": "rtsp://Administrator:Password@165.227.197.243:8554/test_three",
+        "amazon_kinesis_video_streams": {
+            "default_region": "us-east-1",
+            "kinesis_stream": "test-stream-3"
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "complexorganizations-github",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": "test-stream-3"
+        }
     }
 }
