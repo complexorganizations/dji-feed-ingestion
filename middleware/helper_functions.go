@@ -171,40 +171,45 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 
 // Forward data to google cloud vertex AI.
 func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup) {
+	// Set the rtspServerStreamingChannel to true
+	rtspServerStreamingChannel[host] = true
+	// Move the default file to a temporary file.
 	if fileExists(amazonKinesisDefaultPath) {
 		moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
 	}
-	// Set the rtspServerStreamingChannel to true
-	rtspServerStreamingChannel[host] = true
+	// Run the command to forward the data to vertex AI
 	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
-	// Set the rtspServerStreamingChannel to false
-	rtspServerStreamingChannel[host] = false
 	// Once the data is forwarded, remove the temporary file.
 	if fileExists(amazonKinesisTempPath) {
 		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 	}
+	// Done forwarding
 	forwardingWaitGroup.Done()
+	// Set the rtspServerStreamingChannel to false
+	rtspServerStreamingChannel[host] = false
 }
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
 func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup) {
+	// Set the rtspServerStreamingChannel to true
+	rtspServerStreamingChannel[host] = true
+	// Move the temporary file to the default file location if it exists.
 	if fileExists(amazonKinesisTempPath) {
 		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 	}
-	// Set the rtspServerStreamingChannel to true
-	rtspServerStreamingChannel[host] = true
+	// Run the gstreamer command to forward the data to AWS Kinesis Video Streams
 	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
+	forwardingWaitGroup.Done()
 	// Set the rtspServerStreamingChannel to false
 	rtspServerStreamingChannel[host] = false
-	forwardingWaitGroup.Done()
 }
 
 // Get the current working directory on where the executable is running

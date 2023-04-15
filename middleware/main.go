@@ -189,7 +189,9 @@ func main() {
 				}
 			}
 		}
-		time.Sleep(5 * time.Second)
+		// This sleep determins how often the program checks if the RTSP server is alive
+		time.Sleep(3 * time.Second)
+		// The counter for how many streams are being uploaded.
 		log.Println("Counter: " + strconv.Itoa(counter))
 		// End if debug
 		if debug {
