@@ -158,11 +158,11 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 			}
 			mutex.Unlock()
 		} else {
-			mutex.RLock()
+			mutex.Lock()
 			if getValueFromMap(rtspServerStatusChannel, rtspURL) == true {
 				addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 			}
-			mutex.RUnlock()
+			mutex.Unlock()
 		}
 		// Sleep for 3 seconds, after each check.
 		time.Sleep(3 * time.Second)
