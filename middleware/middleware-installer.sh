@@ -362,10 +362,7 @@ function install-google-cloud() {
         curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
         apt-get update
         apt-get install google-cloud-cli -y
-        # gcloud auth login --no-launch-browser
-        # gcloud config set project complexorganizations-github
-        # gcloud auth application-default login --no-launch-browser
-        # gcloud services enable visionai.googleapis.com
+        # gcloud auth activate-service-account SERVICE_ACCOUNT@DOMAIN.COM --key-file=/path/key.json --project=PROJECT_ID
         # Install Google cloud vision ai
         curl -L "${GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE}" -o "${GOOGLE_CLOUD_VISION_AI_TEMP_DOWNLOAD_PATH}"
         # Install the application from the downloaded file.
