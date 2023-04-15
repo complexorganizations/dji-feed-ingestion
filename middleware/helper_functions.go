@@ -148,17 +148,24 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 	for {
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
-			rtspServerOneStatus = true
+			if getValueFromMap(rtspServerStatusChannel, rtspURL) == false {
+				addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
+			}
 		} else {
-			rtspServerOneStatus = false
+			if getValueFromMap(rtspServerStatusChannel, rtspURL) == true {
+				addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
+			}
 		}
-		// Sleep for 2 seconds, after each check.
-		time.Sleep(2 * time.Second)
+		// Sleep for 3 seconds, after each check.
+		time.Sleep(3 * time.Second)
 	}
 }
 
 // Forward data to google cloud vertex AI.
 func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup) {
+	if fileExists(amazonKinesisDefaultPath) {
+		moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
+	}
 	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
 	if err != nil {
@@ -173,6 +180,9 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
 func runGstPipeline(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup) {
+	if fileExists(amazonKinesisTempPath) {
+		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+	}
 	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
 	err := cmd.Run()
 	if err != nil {
@@ -210,7 +220,7 @@ func lockdownToLinuxOperatingSystem() {
 		// 	saveAllErrors("This application is only supported on Ubuntu 22.04.")
 		// }
 		// Note: Remove in the future build of the app.
-		log.Println("Note: Temp for now; remove in the future build of the app.")
+		log.Println("Note: This app is only supported on Ubuntu 22.04.")
 	} else {
 		saveAllErrors("This application is only supported on Ubuntu.")
 	}
@@ -287,8 +297,7 @@ func checkConfigChanges() {
 }
 
 /*
-	Imports the "os" package which provides the UserHomeDir() function
-
+Imports the "os" package which provides the UserHomeDir() function
 Defines the currentUserHomeDir() function
 Invokes the UserHomeDir() function
 Returns the home directory of the current user
@@ -357,4 +366,15 @@ func directoryExists(path string) bool {
 		return false
 	}
 	return directory.IsDir()
+}
+
+// Add a key-value pair to the given map.
+func addKeyValueToMap(providedMap map[string]bool, key string, value bool) map[string]bool {
+	providedMap[key] = value
+	return providedMap
+}
+
+// Get the value of a key from the given map.
+func getValueFromMap(providedMap map[string]bool, key string) bool {
+	return providedMap[key]
 }

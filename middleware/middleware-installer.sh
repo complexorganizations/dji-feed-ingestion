@@ -125,11 +125,17 @@ MEDIAMTX_SERVICE_FILE_PATH="/etc/systemd/system/mediamtx.service"
 # Assigns a path for the mediamtx binary
 MEDIAMTX_BINARY_PATH="${MEDIAMTX_LOCAL_PATH}/mediamtx"
 # The variable to stream a test video feed as an test connection.
-MEDIAMTX_TEST_CONNECTION="rtsp://Administrator:Password@localhost:8554/test_0"
+MEDIAMTX_TEST_CONNECTION_ZERO="rtsp://Administrator:Password@localhost:8554/test_zero"
+MEDIAMTX_TEST_CONNECTION_ONE="rtsp://Administrator:Password@localhost:8554/test_one"
+MEDIAMTX_TEST_CONNECTION_TWO="rtsp://Administrator:Password@localhost:8554/test_two"
 # The path in the system that will host the test feed.
-MEDIAMTX_TEST_FEED_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed.service"
+MEDIAMTX_TEST_FEED_ZERO_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed-zero.service"
+MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed-one.service"
+MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed-two.service"
 # The path to the video file where the video is hosted.
-MEDIAMTX_TEST_VIDEO_PATH="${MEDIAMTX_LOCAL_PATH}/output.mp4"
+MEDIAMTX_TEST_VIDEO_PATH_ZERO="${MEDIAMTX_LOCAL_PATH}/output_zero.mp4"
+MEDIAMTX_TEST_VIDEO_PATH_ONE="${MEDIAMTX_LOCAL_PATH}/output_one.mp4"
+MEDIAMTX_TEST_VIDEO_PATH_TWO="${MEDIAMTX_LOCAL_PATH}/output_two.mp4"
 
 # Assigns the latest release of the Amazon Kinesis Video Streams Producer SDK to a variable
 AMAZON_KINESIS_VIDEO_STREAMS_LATEST_RELEASE=$(curl -s https://api.github.com/repos/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/releases/latest | grep zipball_url | cut -d'"' -f4)
@@ -184,7 +190,9 @@ YOUTUBE_DLP_LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/yt-dlp/yt-
 # The system's local path where the yt-dlp should be placed
 YOUTUBE_DLP_LOCAL_PATH="/usr/bin/yt-dlp"
 # Test video to download and evaluate from YouTube
-YOUTUBE_DLP_TEST_VIDEO_URL="https://www.youtube.com/watch?v=WcIcVapfqXw"
+YOUTUBE_DLP_TEST_VIDEO_URL_ZERO="https://www.youtube.com/watch?v=VYOjWnS4cMY"
+YOUTUBE_DLP_TEST_VIDEO_URL_ONE="https://www.youtube.com/watch?v=Yt3E3dqsFmo"
+YOUTUBE_DLP_TEST_VIDEO_URL_TWO="https://www.youtube.com/watch?v=0lkn0N6vAf8"
 
 # Install mediamtx application.
 function install-mediamtx-application() {
@@ -233,27 +241,63 @@ function setup-test-feed() {
         curl -L "${YOUTUBE_DLP_LATEST_RELEASE_URL}" -o ${YOUTUBE_DLP_LOCAL_PATH}
         chmod +x ${YOUTUBE_DLP_LOCAL_PATH}
     fi
-    # Check if a test video exists
-    if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH} ]; then
-        # Download a test video
-        yt-dlp -S ext:mp4:m4a "${YOUTUBE_DLP_TEST_VIDEO_URL}" -o ${MEDIAMTX_TEST_VIDEO_PATH}
+    # Downloading the zero test video.
+    if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH_ZERO} ]; then
+        yt-dlp -S ext:mp4:m4a "${YOUTUBE_DLP_TEST_VIDEO_URL_ZERO}" -o ${MEDIAMTX_TEST_VIDEO_PATH_ZERO}
+    fi
+    # Downloading the first test video.
+    if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH_ONE} ]; then
+        yt-dlp -S ext:mp4:m4a "${YOUTUBE_DLP_TEST_VIDEO_URL_ONE}" -o ${MEDIAMTX_TEST_VIDEO_PATH_ONE}
+    fi
+    # Downloading the second test video.
+    if [ ! -f ${MEDIAMTX_TEST_VIDEO_PATH_TWO} ]; then
+        yt-dlp -S ext:mp4:m4a "${YOUTUBE_DLP_TEST_VIDEO_URL_TWO}" -o ${MEDIAMTX_TEST_VIDEO_PATH_TWO}
     fi
     # Create a test feed if it does not exist already
-    if [ ! -f "${MEDIAMTX_TEST_FEED_SERVICE_PATH}" ]; then
-        # Create a test feed
+    if [ ! -f "${MEDIAMTX_TEST_FEED_ZERO_SERVICE_PATH}" ]; then
         echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION}
+ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_ZERO} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_ZERO}
 [Install]
-WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_SERVICE_PATH}
+WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_ZERO_SERVICE_PATH}
+    fi
+    # Create a second test feed
+    if [ ! -f "${MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH}" ]; then
+        echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_ONE} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_ONE}
+[Install]
+WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH}
+    fi
+    # Create a third test feed.
+    if [ ! -f "${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}" ]; then
+        echo "[Unit]
+Wants=network.target
+[Service]
+ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_TWO} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_TWO}
+[Install]
+WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}
         # Reload the daemon
         systemctl daemon-reload
         if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
-            systemctl enable --now mediamtx-test-feed
-            systemctl start mediamtx-test-feed
+            # zero
+            systemctl enable --now mediamtx-test-feed-zero
+            systemctl start mediamtx-test-feed-zero
+            # one
+            systemctl enable --now mediamtx-test-feed-one
+            systemctl start mediamtx-test-feed-one
+            # two
+            systemctl enable --now mediamtx-test-feed-two
+            systemctl start mediamtx-test-feed-two
         elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
-            service mediamtx-test-feed start
+            # zero
+            service mediamtx-test-feed-zero start
+            # one
+            service mediamtx-test-feed-one start
+            # two
+            service mediamtx-test-feed-two start
         fi
     fi
 }
