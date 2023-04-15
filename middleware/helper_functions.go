@@ -174,11 +174,15 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	if fileExists(amazonKinesisDefaultPath) {
 		moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
 	}
+	// Set the rtspServerStreamingChannel to true
+	rtspServerStreamingChannel[host] = true
 	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
+	// Set the rtspServerStreamingChannel to false
+	rtspServerStreamingChannel[host] = false
 	// Once the data is forwarded, remove the temporary file.
 	if fileExists(amazonKinesisTempPath) {
 		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
@@ -191,11 +195,15 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 	if fileExists(amazonKinesisTempPath) {
 		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 	}
+	// Set the rtspServerStreamingChannel to true
+	rtspServerStreamingChannel[host] = true
 	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
+	// Set the rtspServerStreamingChannel to false
+	rtspServerStreamingChannel[host] = false
 	forwardingWaitGroup.Done()
 }
 
