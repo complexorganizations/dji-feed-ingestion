@@ -346,32 +346,37 @@ func parseAWSCredentialsFile() (string, string) {
 	// Define the AWS access key and secret key.
 	var awsAccessKey string
 	var awsSecretKey string
-	// Check if the AWS credentials file exists
-	if fileExists(findAWSCredentialsFile()) {
-		// Read the AWS credentials file
-		awsCredentialsFileContent := readAFileAsString(findAWSCredentialsFile())
-		// Split the file into lines.
-		awsCredentialsFileContentLines := strings.Split(awsCredentialsFileContent, "\n")
-		// Loop through the lines.
-		for _, line := range awsCredentialsFileContentLines {
-			// Check if the line contains the access key.
-			if strings.Contains(line, "aws_access_key_id") {
-				// Get the access key.
-				awsAccessKey = strings.Split(line, "=")[1]
+	// Check if aws sts get-caller-identity is installed
+	if validateAWSSTSCallerIdentityCommand() {
+		// Check if the AWS credentials file exists
+		if fileExists(findAWSCredentialsFile()) {
+			// Read the AWS credentials file
+			awsCredentialsFileContent := readAFileAsString(findAWSCredentialsFile())
+			// Split the file into lines.
+			awsCredentialsFileContentLines := strings.Split(awsCredentialsFileContent, "\n")
+			// Loop through the lines.
+			for _, line := range awsCredentialsFileContentLines {
+				// Check if the line contains the access key.
+				if strings.Contains(line, "aws_access_key_id") {
+					// Get the access key.
+					awsAccessKey = strings.Split(line, "=")[1]
+				}
+				// Check if the line contains the secret key.
+				if strings.Contains(line, "aws_secret_access_key") {
+					// Get the secret key.
+					awsSecretKey = strings.Split(line, "=")[1]
+				}
 			}
-			// Check if the line contains the secret key.
-			if strings.Contains(line, "aws_secret_access_key") {
-				// Get the secret key.
-				awsSecretKey = strings.Split(line, "=")[1]
-			}
+			// Remove whitespace from the keys.
+			awsAccessKey = strings.TrimSpace(awsAccessKey)
+			awsSecretKey = strings.TrimSpace(awsSecretKey)
 		}
-		// Remove whitespace from the keys.
-		awsAccessKey = strings.TrimSpace(awsAccessKey)
-		awsSecretKey = strings.TrimSpace(awsSecretKey)
 	}
+	// Check if the AWS access key is empty.
 	if len(awsAccessKey) == 0 {
 		saveAllErrors("The AWS access key is empty.")
 	}
+	// Check if the AWS secret key is empty.
 	if len(awsSecretKey) == 0 {
 		saveAllErrors("The AWS secret key is empty.")
 	}
@@ -482,4 +487,15 @@ func countHosts() int {
 	configContent := readAFileAsString(applicationConfigFile)
 	// Check how many times the word "host" appears in the config file.
 	return strings.Count(configContent, "host")
+}
+
+// Validate the AWS STS GetCallerIdentity command.
+func validateAWSSTSCallerIdentityCommand() bool {
+	cmd := exec.Command("aws", "sts", "get-caller-identity")
+	out, err := cmd.Output()
+	if err != nil {
+		log.Println(err)
+	}
+	// Check if the output contains the word "arn"
+	return strings.Contains(string(out), "arn")
 }
