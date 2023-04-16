@@ -200,6 +200,11 @@ func init() {
 func main() {
 	// Get the AWS Credentials
 	accessKey, secretKey := parseAWSCredentialsFile()
+	// Get the Google Cloud Credentials
+	if !validateGoogleCloudCLI() {
+		// Exit the application.
+		saveAllErrors("Error: The google cloud cli active accounts is not found on the system.")
+	}
 	// Create a wait group for the upload
 	var uploadWaitGroup sync.WaitGroup
 	// Create a counter map for the RTSP Server
