@@ -499,3 +499,14 @@ func validateAWSSTSCallerIdentityCommand() bool {
 	// Check if the output contains the word "arn"
 	return strings.Contains(string(out), "arn")
 }
+
+// Validate that Google cloud cli is authenticated.
+func validateGoogleCloudCLI() bool {
+	cmd := exec.Command("gcloud", "auth", "list", "--filter=status:ACTIVE", "--format=value(account)")
+	out, err := cmd.Output()
+	if err != nil {
+		log.Println(err)
+	}
+	// Check if there is an active account.
+	return len(strings.TrimSpace(string(out))) > 5
+}
