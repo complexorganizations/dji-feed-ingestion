@@ -526,12 +526,14 @@ func validateAWSSTSCallerIdentityCommand() bool {
 }
 
 // Validate that Google cloud cli is authenticated.
-func validateGoogleCloudCLI() bool {
+func validateGoogleCloudCLI() {
 	cmd := exec.Command("gcloud", "auth", "list", "--filter=status:ACTIVE", "--format=value(account)")
 	out, err := cmd.Output()
 	if err != nil {
 		log.Println(err)
 	}
-	// Check if there is an active account.
-	return len(strings.TrimSpace(string(out))) > 5
+	// Exit the app if google cloud creds are there.
+	if len(strings.TrimSpace(string(out))) < 5 {
+		saveAllErrors("Error: didn't find any google cloud accounts.")
+	}
 }
