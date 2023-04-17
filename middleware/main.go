@@ -198,12 +198,12 @@ func init() {
 }
 
 func main() {
-	// Get the AWS Credentials
-	accessKey, secretKey := parseAWSCredentialsFile()
-	// Get the Google Cloud Credentials
-	if !validateGoogleCloudCLI() {
-		// Exit the application.
-		saveAllErrors("Error: The google cloud cli active accounts is not found on the system.")
+	if aws {
+		// Get the AWS Credentials
+		accessKey, secretKey := parseAWSCredentialsFile()
+	} else if gcp {
+		// Get the Google Cloud Credentials
+		validateGoogleCloudCLI()
 	}
 	// Create a wait group for the upload
 	var uploadWaitGroup sync.WaitGroup
