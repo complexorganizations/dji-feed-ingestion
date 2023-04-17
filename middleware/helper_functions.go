@@ -511,7 +511,7 @@ func countHosts() int {
 	// Read the config file.
 	configContent := readAFileAsString(applicationConfigFile)
 	// Check how many times the word "host" appears in the config file.
-	return strings.Count(configContent, "host")
+	return strings.Count(configContent, "amazon_kinesis_video_streams")
 }
 
 // Validate the AWS STS GetCallerIdentity command.
