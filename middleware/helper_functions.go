@@ -335,10 +335,10 @@ func checkConfigChanges() {
 				go checkRTSPServerAliveInBackground(server.Host)
 			}
 		}
-		// Sleep for 5 second
-		time.Sleep(5 * time.Second)
 		// Update the hash of the config file.
 		initialConfigHash = sha256OfFile(applicationConfigFile)
+		// Sleep for 5 second
+		time.Sleep(5 * time.Second)
 	}
 }
 
