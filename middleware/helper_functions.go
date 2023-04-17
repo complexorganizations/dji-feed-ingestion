@@ -337,8 +337,8 @@ func checkConfigChanges() {
 		}
 		// Update the hash of the config file.
 		initialConfigHash = sha256OfFile(applicationConfigFile)
-		// Sleep for 5 second
-		time.Sleep(5 * time.Second)
+		// Sleep for 30 second
+		time.Sleep(30 * time.Second)
 	}
 }
 
