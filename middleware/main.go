@@ -198,9 +198,12 @@ func init() {
 }
 
 func main() {
+	// Setup the variables for aws.
+	var accessKey string
+	var secretKey string
 	if aws {
 		// Get the AWS Credentials
-		accessKey, secretKey := parseAWSCredentialsFile()
+		accessKey, secretKey = parseAWSCredentialsFile()
 	} else if gcp {
 		// Get the Google Cloud Credentials
 		validateGoogleCloudCLI()
