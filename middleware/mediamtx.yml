@@ -360,19 +360,19 @@ paths:
 
     # Username required to publish.
     # SHA256-hashed values can be inserted with the "sha256:" prefix.
-    publishUser: Administrator
+    publishUser: PublishAdministrator
     # Password required to publish.
     # SHA256-hashed values can be inserted with the "sha256:" prefix.
-    publishPass: Password
+    publishPass: PublishPassword
     # IPs or networks (x.x.x.x/24) allowed to publish.
     publishIPs: []
 
     # Username required to read.
     # SHA256-hashed values can be inserted with the "sha256:" prefix.
-    readUser: Administrator
+    readUser: ReadAdministrator
     # password required to read.
     # SHA256-hashed values can be inserted with the "sha256:" prefix.
-    readPass: Password
+    readPass: ReadPassword
     # IPs or networks (x.x.x.x/24) allowed to read.
     readIPs: []
 
