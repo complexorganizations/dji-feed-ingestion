@@ -47,7 +47,7 @@ func main() {
 		}
 	}
 	// Move all the files from the SD card to the local storage
-	newLocation := "/home/prajwal/Projects/dji-feed-analysis/post-production/" + generateRandomString(10) + "/"
+	newLocation := getCurrentWorkingDirectory() + generateRandomString(10) + "/"
 	if !directoryExists(newLocation) {
 		createDirectory(newLocation, 0755)
 	}
