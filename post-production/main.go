@@ -38,8 +38,6 @@ func main() {
 		if fileExtension != ".MP4" && fileExtension != ".SRT" {
 			removeFile(file)
 		}
-		// Get the file path
-		log.Println("File:", file)
 	}
 	// Name all directories in the directory
 	for _, directory := range getAllDirectories {
@@ -47,14 +45,13 @@ func main() {
 		if isDirectoryEmpty(directory) {
 			removeDirectory(directory)
 		}
-		// Get the directory path
-		log.Println("Directory:", directory)
 	}
 
 	// Move all the files from the SD card to the local storage, in a new directory with the date and time.
 	for _, file := range getAllFiles {
 		// Move all the files from the SD card to the local storage
-		moveFile(file, "/home/prajwal/Projects/dji-feed-analysis/post-production/")
+		// moveFile(file, "/home/prajwal/Projects/dji-feed-analysis/post-production/")
+		log.Println("File:", file)
 	}
 	// Remove the directory
 	removeAllFilesInDirectory(filePath)
