@@ -25,6 +25,8 @@ func main() {
 	if directoryExists(filePath) {
 		// Get all files in the directory
 		getAllFiles := walkAndAppendPath(filePath)
+		// Get all directories in the directory
+		getAllDirectories := walkAndAppendDirectory(filePath)
 		// Name all files in the directory
 		for _, file := range getAllFiles {
 			// Get the file extension
@@ -36,5 +38,19 @@ func main() {
 			// Get the file path
 			log.Println("File:", file)
 		}
+		// Name all directories in the directory
+		for _, directory := range getAllDirectories {
+			// Remove all the empty directories
+			if isDirectoryEmpty(directory) {
+				removeDirectory(directory)
+			}
+			// Get the directory path
+			log.Println("Directory:", directory)
+		}
+	}
+	// Remove the directory
+	// removeAllFilesInDirectory(filePath)
+	if isDirectoryEmpty(filePath) {
+		log.Println("Directory is empty")
 	}
 }
