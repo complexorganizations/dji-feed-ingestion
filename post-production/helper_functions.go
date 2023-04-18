@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"log"
 	"os"
@@ -113,13 +114,11 @@ func isDirectoryEmpty(path string) bool {
 	return len(files) == 0
 }
 
-// Remove all the files in a directory
-func removeAllFilesInDirectory(path string) {
-	folders := walkAndAppendDirectory(path)
-	for _, folder := range folders {
-		files := walkAndAppendPath(folder)
-		for _, file := range files {
-			removeFile(file)
+// Nuke a given directory and all its contents.
+func nukeDirectory(path string) {
+	if directoryExists(path) {
+		if !isDirectoryEmpty(path) {
+			removeDirectory(path)
 		}
 	}
 }
@@ -130,8 +129,28 @@ func moveFile(source string, destination string) {
 	fileName := filepath.Base(source)
 	// Move the file to the destination
 	log.Println("Moving file: " + source + " to: " + destination + fileName)
-	cmd := exec.Command("cp", source, destination + fileName)
+	cmd := exec.Command("cp", source, destination+fileName)
 	err := cmd.Run()
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+// Generate a random string of a given length.
+func generateRandomString(length int) string {
+	randomBytes := make([]byte, length/2)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return fmt.Sprintf("%x", randomBytes)
+}
+
+/* The function takes two parameters: path and permission.
+We use os.Mkdir() to create the directory.
+If there is an error, we use log.Fatalln() to log the error and then exit the program. */
+func createDirectory(path string, permission os.FileMode) {
+	err := os.Mkdir(path, permission)
 	if err != nil {
 		log.Fatalln(err)
 	}
