@@ -3,10 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
 )
 
 // Check if there is a SD card connected.
