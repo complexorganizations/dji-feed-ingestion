@@ -1,6 +1,6 @@
 {
     "0": {
-        "host": "rtsp://Administrator:Password@localhost:8554/test_zero",
+        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_zero",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": ""
