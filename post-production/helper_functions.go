@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -41,7 +42,27 @@ func walkAndAppendPath(walkPath string) []string {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	sort.Strings(filePath)
 	return filePath
+}
+
+// Walk through a route, find all the folders and attach them to a slice.
+func walkAndAppendDirectory(walkPath string) []string {
+	var directoryPath []string
+	err := filepath.Walk(walkPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil
+		}
+		if directoryExists(path) {
+			directoryPath = append(directoryPath, path)
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	sort.Strings(directoryPath)
+	return directoryPath
 }
 
 // Get the file extension of a file
@@ -90,4 +111,15 @@ func isDirectoryEmpty(path string) bool {
 		log.Fatalln(err)
 	}
 	return len(files) == 0
+}
+
+// Remove all the files in a directory
+func removeAllFilesInDirectory(path string) {
+	folders := walkAndAppendDirectory(path)
+	for _, folder := range folders {
+		files := walkAndAppendPath(folder)
+		for _, file := range files {
+			removeFile(file)
+		}
+	}
 }
