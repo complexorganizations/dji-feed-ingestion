@@ -155,3 +155,12 @@ func createDirectory(path string, permission os.FileMode) {
 		log.Fatalln(err)
 	}
 }
+
+// Get the current working directory on where the executable is running
+func getCurrentWorkingDirectory() string {
+	currentFileName, err := os.Executable()
+	if err != nil {
+		log.Println(err)
+	}
+	return filepath.Dir(currentFileName) + "/"
+}
