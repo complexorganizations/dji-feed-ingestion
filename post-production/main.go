@@ -57,7 +57,7 @@ func main() {
 		log.Println("File:", file)
 	}
 	// Remove the directory
-	// nukeDirectory(filePath)
+	nukeDirectory(filePath)
 	if isDirectoryEmpty(filePath) {
 		log.Println("Directory is empty")
 	}
