@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Check if there is a usb mounted and if there is return it.
 func getUSBMountPoint() (string, error) {
 	cmd := exec.Command("df", "-h")
 	output, err := cmd.Output()
@@ -82,12 +83,7 @@ func removeDirectory(dir string) {
 	}
 }
 
-/*
-	It takes the path of a directory as an argument.
-
-If the directory is empty, it returns a true value.
-Otherwise, it returns a false value.
-*/
+// Check if a given directory is empty.
 func isDirectoryEmpty(path string) bool {
 	files, err := os.ReadDir(path)
 	if err != nil {
