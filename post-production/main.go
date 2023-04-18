@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 )
 
 // Check if there is a SD card connected.
@@ -22,34 +23,41 @@ func main() {
 	// Get the file path
 	filePath := mountPoint + "/"
 	// Check if the directory exists
-	if directoryExists(filePath) {
-		// Get all files in the directory
-		getAllFiles := walkAndAppendPath(filePath)
-		// Get all directories in the directory
-		getAllDirectories := walkAndAppendDirectory(filePath)
-		// Name all files in the directory
-		for _, file := range getAllFiles {
-			// Get the file extension
-			fileExtension := getFileExtension(file)
-			// Remove all files that are not MP4 or SRT
-			if fileExtension != ".MP4" && fileExtension != ".SRT" {
-				removeFile(file)
-			}
-			// Get the file path
-			log.Println("File:", file)
+	if !directoryExists(filePath) {
+		os.Exit(1)
+	}
+	// Get all files in the directory
+	getAllFiles := walkAndAppendPath(filePath)
+	// Get all directories in the directory
+	getAllDirectories := walkAndAppendDirectory(filePath)
+	// Name all files in the directory
+	for _, file := range getAllFiles {
+		// Get the file extension
+		fileExtension := getFileExtension(file)
+		// Remove all files that are not MP4 or SRT
+		if fileExtension != ".MP4" && fileExtension != ".SRT" {
+			removeFile(file)
 		}
-		// Name all directories in the directory
-		for _, directory := range getAllDirectories {
-			// Remove all the empty directories
-			if isDirectoryEmpty(directory) {
-				removeDirectory(directory)
-			}
-			// Get the directory path
-			log.Println("Directory:", directory)
+		// Get the file path
+		log.Println("File:", file)
+	}
+	// Name all directories in the directory
+	for _, directory := range getAllDirectories {
+		// Remove all the empty directories
+		if isDirectoryEmpty(directory) {
+			removeDirectory(directory)
 		}
+		// Get the directory path
+		log.Println("Directory:", directory)
+	}
+
+	// Move all the files from the SD card to the local storage, in a new directory with the date and time.
+	for _, file := range getAllFiles {
+		// Move all the files from the SD card to the local storage
+		moveFile(file, "/home/prajwal/Projects/dji-feed-analysis/post-production/")
 	}
 	// Remove the directory
-	// removeAllFilesInDirectory(filePath)
+	removeAllFilesInDirectory(filePath)
 	if isDirectoryEmpty(filePath) {
 		log.Println("Directory is empty")
 	}
