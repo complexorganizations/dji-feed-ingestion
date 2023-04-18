@@ -32,13 +32,13 @@ Software requirements:
 - Currently only these drones are supported since the flight path can be fully automated using [FlightHub](https://www.dji.com/flighthub-2)
 
 #### How to stream the video feed from your DJI drone to the cloud?
-- DJI APP > Settings > Transmission > Live Streaming Platforms > RTMP > `rtmp://localhost:1935/drone_0?user=Administrator&pass=Password`
+- DJI APP > Settings > Transmission > Live Streaming Platforms > RTMP > `rtmp://localhost:1935/drone_zero?user=Administrator&pass=Password`
 
 #### How to transfer waypoints from DJI flight hub to controller?
 - ``
 
 #### How to watch the stream live via vlc?
-- VLC APP > Media > Open Network Stream > `rtsp://Administrator:Password@localhost:8554/test_0`
+- VLC APP > Media > Open Network Stream > `rtsp://Administrator:Password@localhost:8554/test_zero`
 
 #### Which controlls are supported?
 - RC-N1
