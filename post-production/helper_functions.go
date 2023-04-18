@@ -125,10 +125,13 @@ func removeAllFilesInDirectory(path string) {
 }
 
 // Move a file from one location to another.
-func moveFile(source, destination string) {
-	// Get the file name
+func moveFile(source string, destination string) {
+	// Get the file name from the source path
 	fileName := filepath.Base(source)
-	err := os.Rename(source, destination + fileName)
+	// Move the file to the destination
+	log.Println("Moving file: " + source + " to: " + destination + fileName)
+	cmd := exec.Command("cp", source, destination + fileName)
+	err := cmd.Run()
 	if err != nil {
 		log.Fatalln(err)
 	}
