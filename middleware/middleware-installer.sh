@@ -418,7 +418,7 @@ install-cps-connetor
 # ffmpeg -i rtsp://Administrator:Password@localhost:8554/drone_0 -c copy output.mp4
 
 # Install Go Language
-# curl -LO https://get.golang.org/$(uname)/go_installer && chmod +x go_installer && ./go_installer && rm go_installer
+# sudo apt-get update && sudo apt-get install software-properties-common -y && sudo add-apt-repository ppa:longsleep/golang-backports && sudo apt-get update && sudo apt-get install golang-1.20 -y
 
 # Docker.
 # docker run -it debian /bin/bash
