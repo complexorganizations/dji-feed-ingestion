@@ -1,10 +1,10 @@
 {
-     "StreamName": "test-stream-0",
+     "StreamName": "test-video-feed-0",
      "ImageGenerationConfiguration": {
           "Status": "ENABLED",
           "DestinationConfig": {
                "DestinationRegion": "us-east-1",
-               "Uri": "s3://dji-feed-analysis-bucket/outputs/"
+               "Uri": "s3://test-video-feed-bucket/test-video-feed-0/"
           },
           "SamplingInterval": 3000,
           "ImageSelectorType": "PRODUCER_TIMESTAMP",
