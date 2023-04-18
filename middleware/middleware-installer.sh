@@ -125,9 +125,9 @@ MEDIAMTX_SERVICE_FILE_PATH="/etc/systemd/system/mediamtx.service"
 # Assigns a path for the mediamtx binary
 MEDIAMTX_BINARY_PATH="${MEDIAMTX_LOCAL_PATH}/mediamtx"
 # The variable to stream a test video feed as an test connection.
-MEDIAMTX_TEST_CONNECTION_ZERO="rtsp://Administrator:Password@localhost:8554/test_zero"
-MEDIAMTX_TEST_CONNECTION_ONE="rtsp://Administrator:Password@localhost:8554/test_one"
-MEDIAMTX_TEST_CONNECTION_TWO="rtsp://Administrator:Password@localhost:8554/test_two"
+MEDIAMTX_TEST_CONNECTION_ZERO="rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_zero"
+MEDIAMTX_TEST_CONNECTION_ONE="rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_one"
+MEDIAMTX_TEST_CONNECTION_TWO="rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_two"
 # The path in the system that will host the test feed.
 MEDIAMTX_TEST_FEED_ZERO_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed-zero.service"
 MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH="/etc/systemd/system/mediamtx-test-feed-one.service"
