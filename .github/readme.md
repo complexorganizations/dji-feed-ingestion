@@ -5,14 +5,21 @@
 
 ---
 ### Requirements:
+
+Hardware requirements:
+
 - Professional: DJI Mavic 3 `https://www.ebay.com/itm/304601807310`
-- Enterprise: DJI Matrice 30 & Dock ``
+- Enterprise: DJI Matrice 30 & Dock `https://www.dji.com/matrice-30`
+
+Software requirements:
+
 - AWS & Google Cloud & Azure
 
 ---
 ### Overall Setup:
 - Establish a RTMP server and deploy cloud resources using terraform.
 - Use RTMP to send all of the DJI drone's data to the cloud service providers.
+- Use the cloud provider to analyse all incoming data.
 
 ---
 ### Features
