@@ -50,7 +50,7 @@ func main() {
 	// Move all the files from the SD card to the local storage, in a new directory with the date and time.
 	for _, file := range getAllFiles {
 		// Move all the files from the SD card to the local storage
-		// moveFile(file, "/home/prajwal/Projects/dji-feed-analysis/post-production/")
+		moveFile(file, "/home/prajwal/Projects/dji-feed-analysis/post-production/")
 		log.Println("File:", file)
 	}
 	// Remove the directory
