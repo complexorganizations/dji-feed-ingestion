@@ -17,36 +17,29 @@ import (
 // Move all the data from the local storage to the youtube.
 
 func main() {
+	// Get the mount point of the USB device
 	mountPoint, err := getUSBMountPoint()
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
+	// Get the file path
 	filePath := mountPoint + "/"
-	// Get all files in the directory
-	getAllFiles := walkAndAppendPath(filePath)
-	// Name all files in the directory
-	for _, file := range getAllFiles {
-		// Get the file extension
-		fileExtension := getFileExtension(file)
-		log.Println("extension:", fileExtension)
-		if fileExtension != ".MP4" && fileExtension != ".SRT" {
-			log.Println("Removing file:", file)
-			err := os.Remove(file)
-			if err != nil {
-				log.Println("Error:", err)
+	// Check if the directory exists
+	if directoryExists(filePath) {
+		// Get all files in the directory
+		getAllFiles := walkAndAppendPath(filePath)
+		// Name all files in the directory
+		for _, file := range getAllFiles {
+			// Get the file extension
+			fileExtension := getFileExtension(file)
+			// Remove all files that are not MP4 or SRT
+			if fileExtension != ".MP4" && fileExtension != ".SRT" {
+				removeFile(file)
 			}
+			// Get the file path
+			log.Println("File:", file)
 		}
-		// Get the file name
-		fileName := filepath.Base(file)
-		log.Println("name:", fileName)
-		// Get the file name without the extension
-		fileNameWithoutExtension := strings.TrimSuffix(fileName, fileExtension)
-		log.Println("name without extension:", fileNameWithoutExtension)
-		// Get the file path
-		filePath := filepath.Dir(file)
-		log.Println("path:", filePath)
-		log.Println("File:", file)
 	}
 }
 
@@ -84,6 +77,11 @@ func walkAndAppendPath(walkPath string) []string {
 	return filePath
 }
 
+// Get the file extension of a file
+func getFileExtension(path string) string {
+	return filepath.Ext(path)
+}
+
 // Check if the file exists and return a bool.
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
@@ -93,7 +91,38 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-// Get the file extension of a file
-func getFileExtension(path string) string {
-	return filepath.Ext(path)
+// Checks if the directory exists
+func directoryExists(path string) bool {
+	directory, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return directory.IsDir()
+}
+
+// Remove a file from the file system
+func removeFile(path string) {
+	err := os.Remove(path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+// Remove a directory and all its contents.
+func removeDirectory(dir string) {
+	err := os.RemoveAll(dir)
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+/* It takes the path of a directory as an argument.
+If the directory is empty, it returns a true value.
+Otherwise, it returns a false value. */
+func isDirectoryEmpty(path string) bool {
+	files, err := os.ReadDir(path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return len(files) == 0
 }
