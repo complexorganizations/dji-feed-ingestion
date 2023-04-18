@@ -22,10 +22,10 @@ var (
 	aws                        bool
 	gcp                        bool
 	// Values for the aws file path stuff;
-	amazonKinesisVideoStreamPath      = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp"
-	amazonKinesisVideoStreamBuildPath = amazonKinesisVideoStreamPath + "/build"
+	amazonKinesisVideoStreamPath      = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/"
+	amazonKinesisVideoStreamBuildPath = amazonKinesisVideoStreamPath + "build/"
 	// This is the issue with in google to fix this stuff. /// https://github.com/google/visionai/issues/6
-	amazonKinesisDefaultPath = amazonKinesisVideoStreamBuildPath + "/libgstkvssink.so"
+	amazonKinesisDefaultPath = amazonKinesisVideoStreamBuildPath + "libgstkvssink.so"
 	amazonKinesisTempPath    = amazonKinesisDefaultPath + ".tmp"
 	// Number of clients allowed on the system.
 	numberOfClientsAllowed int
