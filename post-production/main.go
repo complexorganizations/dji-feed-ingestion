@@ -14,7 +14,7 @@ import (
 // Remove the useless files from the SD card.
 // Move all the important data from SD card to local storage.
 // Format the SD card; prep it for the next flight.
-// Move all the data from the local storage to the s3.
+// Move all the data from the local storage to the youtube.
 
 func main() {
 	mountPoint, err := getUSBMountPoint()
