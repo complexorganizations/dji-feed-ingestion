@@ -46,15 +46,18 @@ func main() {
 			removeDirectory(directory)
 		}
 	}
-
+	// Move all the files from the SD card to the local storage
+	newLocation := "/home/prajwal/Projects/dji-feed-analysis/post-production/" + generateRandomString(10) + "/"
+	if !directoryExists(newLocation) {
+		createDirectory(newLocation, 0755)
+	}
 	// Move all the files from the SD card to the local storage, in a new directory with the date and time.
 	for _, file := range getAllFiles {
-		// Move all the files from the SD card to the local storage
-		moveFile(file, "/home/prajwal/Projects/dji-feed-analysis/post-production/")
+		moveFile(file, newLocation)
 		log.Println("File:", file)
 	}
 	// Remove the directory
-	removeAllFilesInDirectory(filePath)
+	// nukeDirectory(filePath)
 	if isDirectoryEmpty(filePath) {
 		log.Println("Directory is empty")
 	}
