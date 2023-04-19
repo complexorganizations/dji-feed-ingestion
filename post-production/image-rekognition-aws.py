@@ -13,7 +13,7 @@ def get_path_from_s3_uri(s3_uri):
 
 # Get the response from Rekognition
 def get_response(s3URI):
-    rekognition = boto3.client("rekognition")
+    rekognition = boto3.client("rekognition", region_name="us-east-1")
     response = rekognition.detect_labels(
         Image={
             "S3Object": {
@@ -37,19 +37,15 @@ def get_all_file_path_in_s3_bucket(s3URI):
 def main():
     # Get the response from Rekognition
     response = get_response(
-        "s3://dji-live-stream-feed-data-0/media/dji-stream-0//113669145637_dji-stream-0_1675350168417_db41d0f6-ccf1-4665-aa8d-de74561aaa64.jpg")
-
-    # Print the response
-    print(response)
+        "s3://drone-video-feed/drone-video-feed-0/113669145637_drone-video-feed-0_1681906281581_d237f7d6-5b69-4cfe-bbd4-70dc443813ea.jpg")
 
     # Print the confidence and name of each label
     for label in response["Labels"]:
         print(label["Name"], label["Confidence"])
 
-    # Get all the file paths of all the objects in a bucket
-    objects = get_all_file_path_in_s3_bucket(
-        "s3://dji-live-stream-feed-data-0/")
-    print(objects)
+    # Print the file paths of all the objects in the bucket
+    for objects in get_all_file_path_in_s3_bucket("s3://drone-video-feed/drone-video-feed-0/"):
+        print(objects)
 
 
 main()
