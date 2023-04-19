@@ -43,7 +43,7 @@ func main() {
 					}
 				}
 				// Move all the files from the SD card to the local storage
-				newLocation := getCurrentWorkingDirectory() + generateRandomString(10) + "/"
+				newLocation := getCurrentWorkingDirectory() + generateRandomString(10) + "_" + getCurrentTime() + "/"
 				if !directoryExists(newLocation) {
 					createDirectory(newLocation, 0755)
 				}
