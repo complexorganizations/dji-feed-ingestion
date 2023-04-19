@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 )
 
 // Check if there is a usb mounted and if there is return it.
@@ -165,4 +166,9 @@ func getCurrentWorkingDirectory() string {
 		log.Println(err)
 	}
 	return filepath.Dir(currentFileName) + "/"
+}
+
+// Get the current time in the format of MM-DD-YYYY_HH-MM-SS and return it as a string.
+func getCurrentTime() string {
+	return time.Now().Format("01-02-2006_15-04-05")
 }
