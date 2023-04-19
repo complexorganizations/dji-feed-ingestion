@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 )
@@ -15,11 +14,7 @@ import (
 
 func main() {
 	// Get the mount point of the USB device
-	mountPoint, err := getUSBMountPoint()
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+	mountPoint := getUSBMountPoint()
 	// Get the file path
 	filePath := mountPoint + "/"
 	// Check if the directory exists
