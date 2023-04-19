@@ -144,7 +144,6 @@ func moveFile(source string, destination string, moveWaitGroup *sync.WaitGroup) 
 	// Get the file name from the source path
 	fileName := filepath.Base(source)
 	// Move the file to the destination
-	log.Println("Moving file: " + source + " to: " + destination + fileName)
 	cmd := exec.Command("cp", source, destination+fileName)
 	err := cmd.Run()
 	if err != nil {
