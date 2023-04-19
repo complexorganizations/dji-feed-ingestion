@@ -41,7 +41,7 @@ func walkAndAppendPath(walkPath string) []string {
 		return nil
 	})
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	sort.Strings(filePath)
 	return filePath
@@ -60,7 +60,7 @@ func walkAndAppendDirectory(walkPath string) []string {
 		return nil
 	})
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	sort.Strings(directoryPath)
 	return directoryPath
@@ -93,7 +93,7 @@ func directoryExists(path string) bool {
 func removeFile(path string) {
 	err := os.Remove(path)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 }
 
@@ -101,7 +101,7 @@ func removeFile(path string) {
 func removeDirectory(dir string) {
 	err := os.RemoveAll(dir)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 }
 
@@ -109,7 +109,7 @@ func removeDirectory(dir string) {
 func isDirectoryEmpty(path string) bool {
 	files, err := os.ReadDir(path)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return len(files) == 0
 }
@@ -132,7 +132,7 @@ func moveFile(source string, destination string) {
 	cmd := exec.Command("cp", source, destination+fileName)
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 }
 
@@ -141,18 +141,20 @@ func generateRandomString(length int) string {
 	randomBytes := make([]byte, length/2)
 	_, err := rand.Read(randomBytes)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return fmt.Sprintf("%x", randomBytes)
 }
 
-/* The function takes two parameters: path and permission.
+/*
+The function takes two parameters: path and permission.
 We use os.Mkdir() to create the directory.
-If there is an error, we use log.Fatalln() to log the error and then exit the program. */
+If there is an error, we use log.Println() to log the error and then exit the program.
+*/
 func createDirectory(path string, permission os.FileMode) {
 	err := os.Mkdir(path, permission)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 }
 
