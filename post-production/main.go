@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+
+func init() {
+	//
+}
+
 // Check if there is a SD card connected.
 // Read all the files from the SD card.
 // Remove the useless files from the SD card.
