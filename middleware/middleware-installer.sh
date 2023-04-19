@@ -419,6 +419,7 @@ install-cps-connetor
 
 # Install Go Language
 # sudo apt-get update && sudo apt-get install software-properties-common -y && sudo add-apt-repository ppa:longsleep/golang-backports && sudo apt-get update && sudo apt-get install golang-1.20 -y
+# "export GOROOT=/usr/lib/go-1.20\nexport GOPATH=$HOME/go\nexport PATH=$PATH:$GOROOT/bin:$GOPATH/bin" >> ~/.bashrc
 
 # Docker.
 # docker run -it debian /bin/bash
