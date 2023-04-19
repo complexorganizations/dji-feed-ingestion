@@ -1,6 +1,11 @@
 import boto3
 
 
+# Get the S3 bucket connection URI from a s3 URI
+def get_s3_bucket_connection_uri(s3_uri):
+    return "s3://" + get_bucket_name_from_s3_uri(s3_uri)
+
+
 # Get the bucket name from a s3 URI
 def get_bucket_name_from_s3_uri(s3_uri):
     return s3_uri.split("/")[2]
@@ -27,7 +32,7 @@ def get_response(s3URI):
 
 # Get all the file paths of all the objects in a bucket
 def get_all_file_path_in_s3_bucket(s3URI):
-    s3 = boto3.client("s3")
+    s3 = boto3.client("s3", region_name="us-east-1")
     response = s3.list_objects_v2(Bucket=get_bucket_name_from_s3_uri(
         s3URI), Prefix=get_path_from_s3_uri(s3URI))
     # Return the file paths of all the objects in the bucket
@@ -35,9 +40,14 @@ def get_all_file_path_in_s3_bucket(s3URI):
 
 
 def main():
+    # URL of the image to be analyzed
+    s3URL = "s3://drone-video-feed/drone-video-feed-0/113669145637_drone-video-feed-0_1681906281581_d237f7d6-5b69-4cfe-bbd4-70dc443813ea.jpg"
+
+    # Print the connection URI
+    print(get_s3_bucket_connection_uri(s3URL))
+
     # Get the response from Rekognition
-    response = get_response(
-        "s3://drone-video-feed/drone-video-feed-0/113669145637_drone-video-feed-0_1681906281581_d237f7d6-5b69-4cfe-bbd4-70dc443813ea.jpg")
+    response = get_response(s3URL)
 
     # Print the confidence and name of each label
     for label in response["Labels"]:
