@@ -2,9 +2,12 @@ package main
 
 import (
 	"log"
+	"sync"
 	"time"
 )
 
+var removeWaitGroup sync.WaitGroup
+var moveWaitGroup sync.WaitGroup
 
 func init() {
 	//
@@ -29,24 +32,19 @@ func main() {
 			if !isDirectoryEmpty(filePath) {
 				// Get all files in the directory
 				getAllFiles := walkAndAppendPath(filePath)
-				// Get all directories in the directory
-				getAllDirectories := walkAndAppendDirectory(filePath)
 				// Name all files in the directory
 				for _, file := range getAllFiles {
 					// Get the file extension
 					fileExtension := getFileExtension(file)
 					// Remove all files that are not MP4 or SRT
 					if fileExtension != ".MP4" && fileExtension != ".SRT" {
-						removeFile(file)
+						removeWaitGroup.Add(1)
+						// Remove the file
+						go removeFile(file, &removeWaitGroup)
 					}
 				}
-				// Name all directories in the directory
-				for _, directory := range getAllDirectories {
-					// Remove all the empty directories
-					if isDirectoryEmpty(directory) {
-						removeDirectory(directory)
-					}
-				}
+				// Wait for all the files to be removed
+				removeWaitGroup.Wait()
 				// Move all the files from the SD card to the local storage
 				newLocation := getCurrentWorkingDirectory() + generateRandomString(10) + "_" + getCurrentTime() + "/"
 				if !directoryExists(newLocation) {
@@ -57,16 +55,14 @@ func main() {
 					// Get the file extension
 					fileExtension := getFileExtension(file)
 					if fileExtension == ".MP4" || fileExtension == ".SRT" {
-						moveFile(file, newLocation)
+						moveWaitGroup.Add(1)
+						go moveFile(file, newLocation, &moveWaitGroup)
 					}
-					log.Println("File:", file)
 				}
+				// Wait for all the files to be moved
+				moveWaitGroup.Wait()
 				// Format the SD card
-				if directoryExists(filePath) {
-					if !isDirectoryEmpty(filePath) {
-						nukeDirectory(filePath)
-					}
-				}
+				nukeDirectory(filePath)
 			} else {
 				log.Println("SD card is empty")
 			}
