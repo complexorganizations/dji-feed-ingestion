@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -91,11 +92,12 @@ func directoryExists(path string) bool {
 }
 
 // Remove a file from the file system
-func removeFile(path string) {
+func removeFile(path string, removeWaitGroup *sync.WaitGroup) {
 	err := os.Remove(path)
 	if err != nil {
 		log.Println(err)
 	}
+	removeWaitGroup.Done()
 }
 
 // Remove a directory and all its contents.
@@ -117,15 +119,28 @@ func isDirectoryEmpty(path string) bool {
 
 // Nuke a given directory and all its contents.
 func nukeDirectory(path string) {
-	if directoryExists(path) {
-		if !isDirectoryEmpty(path) {
-			removeDirectory(path)
+	filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
 		}
-	}
+		if fileExists(path) {
+			err := os.Remove(path)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+		if directoryExists(path) {
+			err := os.RemoveAll(path)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+		return nil
+	})
 }
 
 // Move a file from one location to another.
-func moveFile(source string, destination string) {
+func moveFile(source string, destination string, moveWaitGroup *sync.WaitGroup) {
 	// Get the file name from the source path
 	fileName := filepath.Base(source)
 	// Move the file to the destination
@@ -135,6 +150,7 @@ func moveFile(source string, destination string) {
 	if err != nil {
 		log.Println(err)
 	}
+	moveWaitGroup.Done()
 }
 
 // Generate a random string of a given length.
