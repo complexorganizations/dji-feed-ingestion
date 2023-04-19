@@ -12,20 +12,20 @@ import (
 )
 
 // Check if there is a usb mounted and if there is return it.
-func getUSBMountPoint() (string, error) {
+func getUSBMountPoint() string {
 	cmd := exec.Command("df", "-h")
 	output, err := cmd.Output()
 	if err != nil {
-		return "", err
+		return "Error: " + err.Error()
 	}
 	lines := strings.Split(string(output), "\n")
 	for _, line := range lines {
 		if strings.Contains(line, "/media") || strings.Contains(line, "/run/media") {
 			fields := strings.Fields(line)
-			return fields[len(fields)-1], nil
+			return fields[len(fields)-1]
 		}
 	}
-	return "", fmt.Errorf("USB device not found")
+	return "USB device not found"
 }
 
 // Walk through a route, find all the files and attach them to a slice.
