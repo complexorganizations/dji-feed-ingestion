@@ -41,6 +41,7 @@ func main() {
 						removeWaitGroup.Add(1)
 						// Remove the file
 						go removeFile(file, &removeWaitGroup)
+						log.Println("Removing file: " + file)
 					}
 				}
 				// Wait for all the files to be removed
@@ -57,12 +58,15 @@ func main() {
 					if fileExtension == ".MP4" || fileExtension == ".SRT" {
 						moveWaitGroup.Add(1)
 						go moveFile(file, newLocation, &moveWaitGroup)
+						log.Println("Moving file: " + file)
 					}
 				}
 				// Wait for all the files to be moved
 				moveWaitGroup.Wait()
 				// Format the SD card
-				nukeDirectory(filePath)
+				if !isDirectoryEmpty(filePath) {
+					nukeDirectory(filePath)
+				}
 			} else {
 				log.Println("SD card is empty")
 			}
