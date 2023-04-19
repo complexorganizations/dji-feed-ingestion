@@ -13,12 +13,11 @@ import (
 // Move all the data from the local storage to the youtube.
 
 func main() {
-	// Get the mount point of the USB device
-	mountPoint := getUSBMountPoint()
-	// Get the file path
-	filePath := mountPoint + "/"
-
 	for {
+		// Get the mount point of the USB device
+		mountPoint := getUSBMountPoint()
+		// Get the file path
+		filePath := mountPoint + "/"
 		// Check if the SD card is connected
 		if directoryExists(filePath) {
 			// Check if the SD card is empty
@@ -72,7 +71,7 @@ func main() {
 				log.Println("SD card is empty")
 			}
 		} else {
-			log.Println("SD card is connected")
+			log.Println("SD card is not connected.")
 		}
 		// Wait 5 seconds before checking again
 		time.Sleep(5 * time.Second)
