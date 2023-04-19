@@ -1,6 +1,1 @@
-##### Delete files
-- lrf
-
-##### Upload files
-- mp4
-- srt
+### Run the golang app.
