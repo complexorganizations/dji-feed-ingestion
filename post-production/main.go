@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 )
 
 // Check if there is a SD card connected.
@@ -19,7 +18,11 @@ func main() {
 	filePath := mountPoint + "/"
 	// Check if the directory exists
 	if !directoryExists(filePath) {
-		os.Exit(1)
+		log.Fatalln("SD card is not connected")
+	}
+	// Check if the directory is empty
+	if isDirectoryEmpty(filePath) {
+		log.Fatalln("SD card is empty")
 	}
 	// Get all files in the directory
 	getAllFiles := walkAndAppendPath(filePath)
@@ -55,9 +58,14 @@ func main() {
 		}
 		log.Println("File:", file)
 	}
-	// Remove the directory
-	nukeDirectory(filePath)
+	// Format the SD card
+	if directoryExists(filePath) {
+		if !isDirectoryEmpty(filePath) {
+			nukeDirectory(filePath)
+		}
+	}
+	// Validate if the SD card is empty
 	if isDirectoryEmpty(filePath) {
-		log.Println("Directory is empty")
+		log.Println("SD card is empty")
 	}
 }
