@@ -53,7 +53,11 @@ func main() {
 	}
 	// Move all the files from the SD card to the local storage, in a new directory with the date and time.
 	for _, file := range getAllFiles {
-		moveFile(file, newLocation)
+		// Get the file extension
+		fileExtension := getFileExtension(file)
+		if fileExtension == ".MP4" || fileExtension == ".SRT" {
+			moveFile(file, newLocation)
+		}
 		log.Println("File:", file)
 	}
 	// Remove the directory
