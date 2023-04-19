@@ -62,11 +62,6 @@ func main() {
 						nukeDirectory(filePath)
 					}
 				}
-				// Validate if the SD card is empty
-				if isDirectoryEmpty(filePath) {
-					log.Println("SD card is empty")
-				}
-
 			} else {
 				log.Println("SD card is empty")
 			}
