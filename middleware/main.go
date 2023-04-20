@@ -19,8 +19,8 @@ var (
 	rtspServerStatusChannel    = make(map[string]bool)
 	rtspServerStreamingChannel = make(map[string]bool)
 	debug                      bool
-	awsKVS                        bool
-	awsIVS 						bool
+	awsKVS                     bool
+	awsIVS                     bool
 	gcp                        bool
 	// Values for the aws file path stuff;
 	amazonKinesisVideoStreamPath      = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/"
