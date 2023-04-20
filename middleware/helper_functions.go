@@ -224,6 +224,20 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 	rtspServerStreamingChannel[host] = false
 }
 
+// Stream the video to aws interactive video service.
+func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, region string, forwardingWaitGroup *sync.WaitGroup) {
+	// Set the rtspServerStreamingChannel to true
+	rtspServerStreamingChannel[host] = true
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
+	err := cmd.Run()
+	if err != nil {
+		log.Println(err)
+	}
+	forwardingWaitGroup.Done()
+	// Set the rtspServerStreamingChannel to false
+	rtspServerStreamingChannel[host] = false
+}
+
 // Get the current working directory on where the executable is running
 func getCurrentWorkingDirectory() string {
 	currentFileName, err := os.Executable()
@@ -362,12 +376,11 @@ Imports the "os" package which provides the UserHomeDir() function
 Defines the currentUserHomeDir() function
 Invokes the UserHomeDir() function
 Returns the home directory of the current user
-Returns -1 if no user home directory is found
 */
 func currentUserHomeDir() string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return "-1"
+		log.Println(err)
 	}
 	return homeDir
 }
