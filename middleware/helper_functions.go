@@ -226,12 +226,16 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 
 // Stream the video to aws interactive video service.
 func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, region string, forwardingWaitGroup *sync.WaitGroup) {
+	// Set the rtspServerStreamingChannel to true
+	rtspServerStreamingChannel[host] = true
 	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
 	}
 	forwardingWaitGroup.Done()
+	// Set the rtspServerStreamingChannel to false
+	rtspServerStreamingChannel[host] = false
 }
 
 // Get the current working directory on where the executable is running
