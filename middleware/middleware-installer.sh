@@ -23,7 +23,7 @@ function system-information() {
         source /etc/os-release
         CURRENT_DISTRO=${ID}
         CURRENT_DISTRO_VERSION=${VERSION_ID}
-        CURRENT_DISTRO_VERSION_MAJOR=$(echo "${CURRENT_DISTRO_VERSION}" | cut --delimiter="." --fields=1,2)
+        CURRENT_DISTRO_VERSION_MAJOR=$(echo "${CURRENT_DISTRO_VERSION}" | cut --delimiter="." --fields=1)
     fi
 }
 
