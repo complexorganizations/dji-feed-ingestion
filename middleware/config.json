@@ -14,5 +14,37 @@
             "default_region": "us-central1",
             "vertex_ai_vision_stream": ""
         }
+    },
+    "1": {
+        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_one",
+        "amazon_kinesis_video_streams": {
+            "default_region": "us-east-1",
+            "kinesis_stream": ""
+        },
+        "amazon_interactive_video_service": {
+            "default_region": "us-east-1",
+            "ivs_stream": ""
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": ""
+        }
+    },
+    "2": {
+        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_two",
+        "amazon_kinesis_video_streams": {
+            "default_region": "us-east-1",
+            "kinesis_stream": ""
+        },
+        "amazon_interactive_video_service": {
+            "default_region": "us-east-1",
+            "ivs_stream": ""
+        },
+        "google_cloud_vertex_ai_vision": {
+            "project_name": "",
+            "default_region": "us-central1",
+            "vertex_ai_vision_stream": ""
+        }
     }
 }

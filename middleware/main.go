@@ -168,7 +168,7 @@ func init() {
 	// DEBUG: Print the Hash of the file to change it below.
 	// log.Println(sha256OfFile(applicationConfigFile))
 	// Hash the file and get the SHA-256 and make sure its not the deafult config.
-	if sha256OfFile(applicationConfigFile) == "71e2cc7d4a64fe52b81d51b9f776c2fcd0e725d98ffbf4c3d2fb97c89f929f85e91db81048a00cbe5a31615ab5b319caf00702f3d6dc6ad29da9e097e71270f9" {
+	if sha256OfFile(applicationConfigFile) == "7f6b889e1e2f5dbbbf4c44b36c875de4a6ed6310f3533ebdaefbeed5e5fb10107f8526b1b068feadfab5966f04d398314f444b749c2e5e7c42171c22800b5753" {
 		// The file has not been modified
 		saveAllErrors("Error: The config file has not been modified, Please modify it and try again.")
 	}
