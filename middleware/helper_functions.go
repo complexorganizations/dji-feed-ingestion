@@ -153,13 +153,13 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
 			mutex.Lock()
-			if getValueFromMap(rtspServerStatusChannel, rtspURL) == false {
+			if !getValueFromMap(rtspServerStatusChannel, rtspURL) {
 				addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
 			}
 			mutex.Unlock()
 		} else {
 			mutex.Lock()
-			if getValueFromMap(rtspServerStatusChannel, rtspURL) == true {
+			if !getValueFromMap(rtspServerStatusChannel, rtspURL) {
 				addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 			}
 			mutex.Unlock()
