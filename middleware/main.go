@@ -19,7 +19,8 @@ var (
 	rtspServerStatusChannel    = make(map[string]bool)
 	rtspServerStreamingChannel = make(map[string]bool)
 	debug                      bool
-	aws                        bool
+	awsKVS                        bool
+	awsIVS 						bool
 	gcp                        bool
 	// Values for the aws file path stuff;
 	amazonKinesisVideoStreamPath      = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/"
@@ -100,24 +101,31 @@ func init() {
 		tempConfig := flag.String("config", "config.json", "The location of the config file.")
 		tempLog := flag.String("log", "log.txt", "The location of the log file.")
 		tempDebug := flag.Bool("debug", false, "Determine if this is a debug run.")
-		tempAWS := flag.Bool("aws", false, "Determine if this is a AWS run.")
+		tempAWSKVS := flag.Bool("aws_kvs", false, "Determine if this is a AWS run.")
+		tempAWSIVS := flag.Bool("aws_ivs", false, "Determine if this is a AWS run.")
 		tempGCP := flag.Bool("gcp", false, "Determine if this is a GCP run.")
 		flag.Parse()
 		applicationConfigFile = *tempConfig
 		applicationLogFile = *tempLog
 		debug = *tempDebug
-		aws = *tempAWS
+		awsKVS = *tempAWSKVS
+		awsIVS = *tempAWSIVS
 		gcp = *tempGCP
 	} else {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
-	// Both AWS and GCP can't be true at the same time.
-	if aws && gcp {
-		saveAllErrors("Error: Both AWS and GCP can't be true at the same time.")
-	}
-	if !aws && !gcp {
-		saveAllErrors("Error: Both AWS and GCP can't be false at the same time.")
+	// Only run one of the three options.
+	if awsKVS && awsIVS && gcp {
+		log.Fatalln("Error: You can only run one of the three options.")
+	} else if !awsKVS && !awsIVS && !gcp {
+		log.Fatalln("Error: You must run one of the three options.")
+	} else if awsKVS && awsIVS {
+		log.Fatalln("Error: You can only run one of the three options.")
+	} else if awsKVS && gcp {
+		log.Fatalln("Error: You can only run one of the three options.")
+	} else if awsIVS && gcp {
+		log.Fatalln("Error: You can only run one of the three options.")
 	}
 	// Check if the system has the required tools and is installed in path.
 	requiredApplications := []string{
@@ -207,7 +215,7 @@ func main() {
 	// Setup the variables for aws.
 	var accessKey string
 	var secretKey string
-	if aws {
+	if awsIVS || awsKVS {
 		// Get the AWS Credentials
 		accessKey, secretKey = parseAWSCredentialsFile()
 	} else if gcp {
@@ -233,10 +241,12 @@ func main() {
 						counter = counter + 1
 						log.Println("third: " + server.Host + strconv.FormatBool(getValueFromMap(rtspServerStatusChannel, server.Host)))
 						uploadWaitGroup.Add(1)
-						if aws {
+						if awsKVS {
 							go forwardDataToAmazonKinesisStreams(server.Host, server.AmazonKinesisVideoStreams.KinesisStream, accessKey, secretKey, server.AmazonKinesisVideoStreams.DefaultRegion, &uploadWaitGroup)
 						} else if gcp {
 							go forwardDataToGoogleCloudVertexAI(server.Host, server.GoogleCloudVertexAiVision.ProjectName, server.GoogleCloudVertexAiVision.DefaultRegion, server.GoogleCloudVertexAiVision.VertexAiVisionStream, &uploadWaitGroup)
+						} else if awsIVS {
+							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, server.AmazonInteractiveVideoService.DefaultRegion, &uploadWaitGroup)
 						}
 					}
 					rtspServerRunCounter[server.Host] = 0
