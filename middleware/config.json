@@ -5,6 +5,10 @@
             "default_region": "us-east-1",
             "kinesis_stream": ""
         },
+        "amazon_interactive_video_service": {
+            "default_region": "us-east-1",
+            "ivs_stream": ""
+        },
         "google_cloud_vertex_ai_vision": {
             "project_name": "",
             "default_region": "us-central1",
