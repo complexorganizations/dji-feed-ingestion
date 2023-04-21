@@ -259,8 +259,9 @@ func main() {
 				// Make sure the server is not already canceled.
 				if rtspServerStreamingChannel[server.Host] {
 					log.Println("Canceling the context for: " + server.Host)
-					// Cancel the context
+					// Check if the context is already canceled.1
 					if ctx.Err() == nil {
+						// Cancel the context
 						cancel()
 					}
 				}
