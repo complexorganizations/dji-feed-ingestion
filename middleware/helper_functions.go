@@ -187,10 +187,10 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	if fileExists(amazonKinesisTempPath) {
 		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 	}
-	// Done forwarding
-	forwardingWaitGroup.Done()
 	// Set the rtspServerStreamingChannel to false
 	rtspServerStreamingChannel[host] = false
+	// Done forwarding
+	forwardingWaitGroup.Done()
 }
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
@@ -219,9 +219,10 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 		log.Println(err)
 	}
 	*/
-	forwardingWaitGroup.Done()
 	// Set the rtspServerStreamingChannel to false
 	rtspServerStreamingChannel[host] = false
+	// Close the channel.
+	forwardingWaitGroup.Done()
 }
 
 // Stream the video to aws interactive video service.
