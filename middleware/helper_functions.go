@@ -164,8 +164,8 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 			}
 			mutex.Unlock()
 		}
-		// Sleep for 3 seconds, after each check.
-		time.Sleep(3 * time.Second)
+		// Sleep for 5 seconds, after each check.
+		time.Sleep(5 * time.Second)
 	}
 }
 
