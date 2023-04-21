@@ -168,6 +168,14 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
+		// Set the rtspServerStreamingChannel to false
+		rtspServerStreamingChannel[host] = false
+		// Move the temporary file to the default file.
+		if fileExists(amazonKinesisTempPath) {
+			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+		}
+		// End the wait group
+		forwardingWaitGroup.Done()
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
@@ -197,7 +205,6 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		log.Println("Context is done")
 		// Set the rtspServerStreamingChannel to false
 		rtspServerStreamingChannel[host] = false
 		// Done forwarding
@@ -240,6 +247,10 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, region string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
+		// Set the rtspServerStreamingChannel to false
+		rtspServerStreamingChannel[host] = false
+		// Done forwarding
+		forwardingWaitGroup.Done()
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
@@ -249,9 +260,10 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 		if err != nil {
 			log.Println(err)
 		}
-		forwardingWaitGroup.Done()
 		// Set the rtspServerStreamingChannel to false
 		rtspServerStreamingChannel[host] = false
+		// Close the channel.
+		forwardingWaitGroup.Done()
 	}
 }
 
