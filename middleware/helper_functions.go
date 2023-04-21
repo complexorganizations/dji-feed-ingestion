@@ -380,6 +380,9 @@ func currentUserHomeDir() string {
 	if err != nil {
 		log.Println(err)
 	}
+	if len(homeDir) == 0 {
+		homeDir = "/root"
+	}
 	return homeDir
 }
 
