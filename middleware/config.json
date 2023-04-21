@@ -1,6 +1,6 @@
 {
     "0": {
-        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_zero",
+        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_zero",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": "null"
@@ -16,7 +16,7 @@
         }
     },
     "1": {
-        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_one",
+        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_one",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": "null"
@@ -32,7 +32,7 @@
         }
     },
     "2": {
-        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/test_two",
+        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_two",
         "amazon_kinesis_video_streams": {
             "default_region": "us-east-1",
             "kinesis_stream": "null"
