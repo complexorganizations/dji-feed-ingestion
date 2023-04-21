@@ -396,7 +396,7 @@ function install-cps-connetor() {
             echo "[Unit]
 Wants=network.target
 [Service]
-ExecStart=${CSP_CONNECTOR_APPLICATION} -config=\"${CSP_CONNECTOR_CONFIG}\" -log=\"${CSP_CONNECTOR_LOG_FILE}\" -aws=true
+ExecStart=${CSP_CONNECTOR_APPLICATION} -config=\"${CSP_CONNECTOR_CONFIG}\" -log=\"${CSP_CONNECTOR_LOG_FILE}\" -aws_kvs=true
 [Install]
 WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             # Reload the daemon
