@@ -254,23 +254,26 @@ func main() {
 					rtspServerRunCounter[server.Host] = 0
 				}
 			}
-			// Cancel the context if the server is not alive.
-			if !getValueFromMap(rtspServerStatusChannel, server.Host) {
-				// Make sure the server is not already canceled.
-				if rtspServerStreamingChannel[server.Host] {
-					log.Println("Canceling the context for: " + server.Host)
-					// Check if the context is already canceled.1
+			// Check if there is a stream running.
+			if rtspServerStreamingChannel[server.Host] {
+				log.Println("Stream is running for: " + server.Host)
+				// Make sure the status of the server is false.
+				if !getValueFromMap(rtspServerStatusChannel, server.Host) {
+					log.Println("Stream is not running for: " + server.Host)
+					// Check if the context is already canceled.
 					if ctx.Err() == nil {
-						// Cancel the context
+						log.Println("Context is not canceled for: " + server.Host)
+						// Cancel the context.
 						cancel()
 					}
 				}
 			}
 		}
 		// This sleep determins how often the program checks if the RTSP server is alive and streaming.
-		time.Sleep(3 * time.Second)
+		time.Sleep(10 * time.Second)
 		// The counter for how many streams are being uploaded.
 		log.Println("Counter: " + strconv.Itoa(counter))
+		log.Println(rtspServerStreamingChannel)
 		// End if debug
 		if debug {
 			break
