@@ -57,6 +57,9 @@ Software requirements:
 
 #### Which cloud services are used?
 
+##### YouTube
+- YouTube Live Streaming Platform
+
 ##### Amazon
 - Amazon Virtual Private Cloud
 - Amazon Elastic Load Balancer (ELB)
