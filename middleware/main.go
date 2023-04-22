@@ -23,6 +23,7 @@ var (
 	awsKVS                     bool
 	awsIVS                     bool
 	gcp                        bool
+	yt                         bool
 	// Values for the aws file path stuff;
 	amazonKinesisVideoStreamPath      = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/"
 	amazonKinesisVideoStreamBuildPath = amazonKinesisVideoStreamPath + "build/"
@@ -75,6 +76,7 @@ type HostStruct struct {
 	AmazonKinesisVideoStreams     AmazonKinesisVideoStreams     `json:"amazon_kinesis_video_streams"`
 	AmazonInteractiveVideoService AmazonInteractiveVideoService `json:"amazon_interactive_video_service"`
 	GoogleCloudVertexAiVision     GoogleCloudVertexAiVision     `json:"google_cloud_vertex_ai_vision"`
+	YoutubeLiveStream             YoutubeLiveStream             `json:"youtube_live_stream"`
 }
 
 type AmazonKinesisVideoStreams struct {
@@ -93,6 +95,10 @@ type GoogleCloudVertexAiVision struct {
 	VertexAiVisionStream string `json:"vertex_ai_vision_stream"`
 }
 
+type YoutubeLiveStream struct {
+	StreamKey string `json:"stream_key"`
+}
+
 func init() {
 	// Validate the operating system
 	lockdownToLinuxOperatingSystem()
@@ -105,6 +111,7 @@ func init() {
 		tempAWSKVS := flag.Bool("aws_kvs", false, "Determine if this is a AWS run.")
 		tempAWSIVS := flag.Bool("aws_ivs", false, "Determine if this is a AWS run.")
 		tempGCP := flag.Bool("gcp", false, "Determine if this is a GCP run.")
+		tempYT := flag.Bool("yt", false, "Determine if this is a YT run.")
 		flag.Parse()
 		applicationConfigFile = *tempConfig
 		applicationLogFile = *tempLog
@@ -112,6 +119,7 @@ func init() {
 		awsKVS = *tempAWSKVS
 		awsIVS = *tempAWSIVS
 		gcp = *tempGCP
+		yt = *tempYT
 	} else {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
@@ -200,6 +208,7 @@ func init() {
 		validateJSONLength("Google Project Name", server.GoogleCloudVertexAiVision.ProjectName)
 		validateJSONLength("Google Default Region", server.GoogleCloudVertexAiVision.DefaultRegion)
 		validateJSONLength("Google Vertex AI Vision Stream", server.GoogleCloudVertexAiVision.VertexAiVisionStream)
+		validateJSONLength("YouTube Stream Name", server.YoutubeLiveStream.StreamKey)
 		// Check if the rtsp server is alive and responding to requests
 		go checkRTSPServerAliveInBackground(server.Host)
 	}
@@ -248,8 +257,9 @@ func main() {
 						} else if gcp {
 							go forwardDataToGoogleCloudVertexAI(server.Host, server.GoogleCloudVertexAiVision.ProjectName, server.GoogleCloudVertexAiVision.DefaultRegion, server.GoogleCloudVertexAiVision.VertexAiVisionStream, &uploadWaitGroup, ctx)
 						} else if awsIVS {
-							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, server.AmazonInteractiveVideoService.DefaultRegion, &uploadWaitGroup, ctx)
-						}
+							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, server.AmazonInteractiveVideoService.DefaultRegion, &uploadWaitGroup)
+						} else if yt {
+							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup)						}
 					}
 					rtspServerRunCounter[server.Host] = 0
 				}
