@@ -151,14 +151,12 @@ func checkRTSPServerAlive(rtspURL string) bool {
 // Run this function in the background and check if a given RTSP server is alive
 func checkRTSPServerAliveInBackground(rtspURL string) {
 	for {
-		mutex.Lock()
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
 			go addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
 		} else {
 			go addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 		}
-		mutex.Unlock()
 		// Sleep for 3 seconds, after each check.
 		time.Sleep(3 * time.Second)
 	}
@@ -510,7 +508,9 @@ func directoryExists(path string) bool {
 
 // Add a key-value pair to the given map.
 func addKeyValueToMap(providedMap map[string]bool, key string, value bool) map[string]bool {
+	mutex.Lock()
 	providedMap[key] = value
+	mutex.Unlock()
 	return providedMap
 }
 
