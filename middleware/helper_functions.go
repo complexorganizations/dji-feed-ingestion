@@ -217,24 +217,26 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 		if fileExists(amazonKinesisTempPath) {
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 		}
-		// NOTE: THIS IS METHORD 0
-		os.Setenv("AWS_ACCESS_KEY_ID", accessKey)
-		os.Setenv("AWS_SECRET_ACCESS_KEY", secretKey)
-		os.Setenv("AWS_DEFAULT_REGION", awsRegion)
-		cmd := exec.Command("./kvs_gstreamer_sample", streamName, host)
-		cmd.Dir = amazonKinesisVideoStreamBuildPath
-		err := cmd.Run()
-		if err != nil {
-			log.Println(err)
-		}
-		/* NOTE: THIS IS METHORD 1
-		// Run the gstreamer command to forward the data to AWS Kinesis Video Streams
-		cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
-		err := cmd.Run()
-		if err != nil {
-			log.Println(err)
-		}
+		/*
+			// NOTE: THIS IS METHORD 0
+			os.Setenv("AWS_ACCESS_KEY_ID", accessKey)
+			os.Setenv("AWS_SECRET_ACCESS_KEY", secretKey)
+			os.Setenv("AWS_DEFAULT_REGION", awsRegion)
+			cmd := exec.Command("./kvs_gstreamer_sample", streamName, host)
+			cmd.Dir = amazonKinesisVideoStreamBuildPath
+			err := cmd.Run()
+			if err != nil {
+				log.Println(err)
+			}
 		*/
+		// NOTE: THIS IS METHORD 1
+		// Run the gstreamer command to forward the data to AWS Kinesis Video Streams
+		cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
+
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
 		// Set the rtspServerStreamingChannel to false
 		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Close the channel.
