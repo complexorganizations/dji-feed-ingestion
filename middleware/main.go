@@ -257,10 +257,13 @@ func main() {
 					rtspServerRunCounter[server.Host] = 0
 				}
 			}
+			log.Println("Map", rtspServerStreamingChannel)
 			// Check if the streamer is still streaming
 			if rtspServerStreamingChannel[server.Host] {
+				log.Println("#4:" + server.Host + strconv.FormatBool(getValueFromMap(rtspServerStatusChannel, server.Host)))
 				// Check if the rtsp server is alive and responding to requests
 				if !getValueFromMap(rtspServerStatusChannel, server.Host) {
+					log.Println("The RTSP server is not alive, killing the process.")
 					// If the server is not alive than kill the process
 					cancel()
 					/*
