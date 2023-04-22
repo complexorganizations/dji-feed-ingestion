@@ -253,7 +253,7 @@ func main() {
 						} else if awsIVS {
 							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, server.AmazonInteractiveVideoService.DefaultRegion, &uploadWaitGroup)
 						} else if yt {
-							go forwardDataToYouTube(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup)
+							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup)
 						}
 					}
 					rtspServerRunCounter[server.Host] = 0
