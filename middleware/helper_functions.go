@@ -454,14 +454,16 @@ func parseAWSCredentialsFile() (string, string) {
 			awsAccessKey = strings.TrimSpace(awsAccessKey)
 			awsSecretKey = strings.TrimSpace(awsSecretKey)
 		}
+	} else {
+		saveAllErrors("Error: Missing the AWS TS Caller ID.")
 	}
 	// Check if the AWS access key is empty.
 	if len(awsAccessKey) == 0 {
-		saveAllErrors("The AWS access key is empty.")
+		saveAllErrors("Error: The AWS Access Key is missing.")
 	}
 	// Check if the AWS secret key is empty.
 	if len(awsSecretKey) == 0 {
-		saveAllErrors("The AWS secret key is empty.")
+		saveAllErrors("Error: The AWS secret Key is missing.")
 	}
 	return awsAccessKey, awsSecretKey
 }
