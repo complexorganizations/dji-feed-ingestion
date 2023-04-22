@@ -124,16 +124,8 @@ func init() {
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Only run one of the three options.
-	if awsKVS && awsIVS && gcp {
-		log.Fatalln("Error: You can only run one of the three options.")
-	} else if !awsKVS && !awsIVS && !gcp {
-		log.Fatalln("Error: You must run one of the three options.")
-	} else if awsKVS && awsIVS {
-		log.Fatalln("Error: You can only run one of the three options.")
-	} else if awsKVS && gcp {
-		log.Fatalln("Error: You can only run one of the three options.")
-	} else if awsIVS && gcp {
-		log.Fatalln("Error: You can only run one of the three options.")
+	if awsKVS && awsIVS && gcp && yt {
+		log.Fatalln("Error: You can only run one of the -help options.")
 	}
 	// Check if the system has the required tools and is installed in path.
 	requiredApplications := []string{
