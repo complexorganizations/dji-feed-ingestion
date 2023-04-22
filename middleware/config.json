@@ -6,7 +6,6 @@
       "kinesis_stream": "null"
     },
     "amazon_interactive_video_service": {
-      "default_region": "us-east-1",
       "ivs_stream": "null"
     },
     "google_cloud_vertex_ai_vision": {
