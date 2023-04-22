@@ -154,9 +154,9 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 		mutex.Lock()
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
-			addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
+			go addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
 		} else {
-			addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
+			go addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 		}
 		mutex.Unlock()
 		// Sleep for 3 seconds, after each check.
@@ -169,7 +169,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	select {
 	case <-ctx.Done():
 		// Set the rtspServerStreamingChannel to false
-		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Once the data is forwarded, remove the temporary file.
 		if fileExists(amazonKinesisTempPath) {
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
@@ -180,7 +180,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
-		addKeyValueToMap(rtspServerStreamingChannel, host, true)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		// Move the default file to a temporary file.
 		if fileExists(amazonKinesisDefaultPath) {
 			moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
@@ -196,7 +196,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 		}
 		// Set the rtspServerStreamingChannel to false
-		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Done forwarding
 		forwardingWaitGroup.Done()
 	}
@@ -207,14 +207,14 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 	select {
 	case <-ctx.Done():
 		// Set the rtspServerStreamingChannel to false
-		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Done with the wait group
 		forwardingWaitGroup.Done()
 		log.Println("Forwarding to AWS Kinesis Video Streams has been canceled.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
-		addKeyValueToMap(rtspServerStreamingChannel, host, true)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		// Move the temporary file to the default file location if it exists.
 		if fileExists(amazonKinesisTempPath) {
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
@@ -238,7 +238,7 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 		}
 		*/
 		// Set the rtspServerStreamingChannel to false
-		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Close the channel.
 		forwardingWaitGroup.Done()
 	}
@@ -249,21 +249,21 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 	select {
 	case <-ctx.Done():
 		// Set the rtspServerStreamingChannel to false
-		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Done with the wait group
 		forwardingWaitGroup.Done()
 		log.Println("Forwarding to AWS IVS has been canceled.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
-		addKeyValueToMap(rtspServerStreamingChannel, host, true)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
 		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
 		}
 		// Set the rtspServerStreamingChannel to false
-		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Close the channel.
 		forwardingWaitGroup.Done()
 	}
@@ -281,14 +281,14 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
-		addKeyValueToMap(rtspServerStreamingChannel, host, true)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
 		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
 		}
 		// Set the rtspServerStreamingChannel to false
-		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Done with the wait group
 		forwardingWaitGroup.Done()
 	}
