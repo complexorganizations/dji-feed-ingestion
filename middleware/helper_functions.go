@@ -239,6 +239,20 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 	rtspServerStreamingChannel[host] = false
 }
 
+// Stream the video to youtube live.
+func forwardDataToYoutubeLive(host string, youtubeLiveURL string, forwardingWaitGroup *sync.WaitGroup) {
+	// Set the rtspServerStreamingChannel to true
+	rtspServerStreamingChannel[host] = true
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", youtubeLiveURL)
+	err := cmd.Run()
+	if err != nil {
+		log.Println(err)
+	}
+	forwardingWaitGroup.Done()
+	// Set the rtspServerStreamingChannel to false
+	rtspServerStreamingChannel[host] = false
+}
+
 // Get the current working directory on where the executable is running
 func getCurrentWorkingDirectory() string {
 	currentFileName, err := os.Executable()
