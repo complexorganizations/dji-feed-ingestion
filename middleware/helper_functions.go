@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/sha512"
 	"encoding/json"
 	"fmt"
@@ -164,87 +165,112 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 }
 
 // Forward data to google cloud vertex AI.
-func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup) {
-	// Set the rtspServerStreamingChannel to true
-	rtspServerStreamingChannel[host] = true
-	// Move the default file to a temporary file.
-	if fileExists(amazonKinesisDefaultPath) {
-		moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
+func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
+	select {
+	case <-ctx.Done():
+		log.Println("Forwarding to vertex AI has been canceled.")
+		return
+	default:
+		// Set the rtspServerStreamingChannel to true
+		rtspServerStreamingChannel[host] = true
+		// Move the default file to a temporary file.
+		if fileExists(amazonKinesisDefaultPath) {
+			moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
+		}
+		// Run the command to forward the data to vertex AI
+		cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+		// Once the data is forwarded, remove the temporary file.
+		if fileExists(amazonKinesisTempPath) {
+			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+		}
+		// Set the rtspServerStreamingChannel to false
+		rtspServerStreamingChannel[host] = false
+		// Done forwarding
+		forwardingWaitGroup.Done()
 	}
-	// Run the command to forward the data to vertex AI
-	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
-	err := cmd.Run()
-	if err != nil {
-		log.Println(err)
-	}
-	// Once the data is forwarded, remove the temporary file.
-	if fileExists(amazonKinesisTempPath) {
-		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
-	}
-	// Set the rtspServerStreamingChannel to false
-	rtspServerStreamingChannel[host] = false
-	// Done forwarding
-	forwardingWaitGroup.Done()
 }
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
-func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup) {
-	// Set the rtspServerStreamingChannel to true
-	rtspServerStreamingChannel[host] = true
-	// Move the temporary file to the default file location if it exists.
-	if fileExists(amazonKinesisTempPath) {
-		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
+	select {
+	case <-ctx.Done():
+		log.Println("Forwarding to AWS Kinesis Video Streams has been canceled.")
+		return
+	default:
+
+		// Set the rtspServerStreamingChannel to true
+		rtspServerStreamingChannel[host] = true
+		// Move the temporary file to the default file location if it exists.
+		if fileExists(amazonKinesisTempPath) {
+			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+		}
+		// NOTE: THIS IS METHORD 0
+		os.Setenv("AWS_ACCESS_KEY_ID", accessKey)
+		os.Setenv("AWS_SECRET_ACCESS_KEY", secretKey)
+		os.Setenv("AWS_DEFAULT_REGION", awsRegion)
+		cmd := exec.Command("./kvs_gstreamer_sample", streamName, host)
+		cmd.Dir = amazonKinesisVideoStreamBuildPath
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+		/* NOTE: THIS IS METHORD 1
+		// Run the gstreamer command to forward the data to AWS Kinesis Video Streams
+		cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+		*/
+		// Set the rtspServerStreamingChannel to false
+		rtspServerStreamingChannel[host] = false
+		// Close the channel.
+		forwardingWaitGroup.Done()
 	}
-	// NOTE: THIS IS METHORD 0
-	os.Setenv("AWS_ACCESS_KEY_ID", accessKey)
-	os.Setenv("AWS_SECRET_ACCESS_KEY", secretKey)
-	os.Setenv("AWS_DEFAULT_REGION", awsRegion)
-	cmd := exec.Command("./kvs_gstreamer_sample", streamName, host)
-	cmd.Dir = amazonKinesisVideoStreamBuildPath
-	err := cmd.Run()
-	if err != nil {
-		log.Println(err)
-	}
-	/* NOTE: THIS IS METHORD 1
-	// Run the gstreamer command to forward the data to AWS Kinesis Video Streams
-	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "video/x-h264,stream-format=avc", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
-	err := cmd.Run()
-	if err != nil {
-		log.Println(err)
-	}
-	*/
-	// Set the rtspServerStreamingChannel to false
-	rtspServerStreamingChannel[host] = false
-	// Close the channel.
-	forwardingWaitGroup.Done()
 }
 
 // Stream the video to aws interactive video service.
-func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, region string, forwardingWaitGroup *sync.WaitGroup) {
-	// Set the rtspServerStreamingChannel to true
-	rtspServerStreamingChannel[host] = true
-	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
-	err := cmd.Run()
-	if err != nil {
-		log.Println(err)
+func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, region string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
+	select {
+	case <-ctx.Done():
+		log.Println("Forwarding to AWS IVS has been canceled.")
+		return
+	default:
+		// Set the rtspServerStreamingChannel to true
+		rtspServerStreamingChannel[host] = true
+		cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+		forwardingWaitGroup.Done()
+		// Set the rtspServerStreamingChannel to false
+		rtspServerStreamingChannel[host] = false
 	}
-	forwardingWaitGroup.Done()
-	// Set the rtspServerStreamingChannel to false
-	rtspServerStreamingChannel[host] = false
 }
 
 // Stream the video to youtube live.
-func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGroup *sync.WaitGroup) {
-	// Set the rtspServerStreamingChannel to true
-	rtspServerStreamingChannel[host] = true
-	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
-	err := cmd.Run()
-	if err != nil {
-		log.Println(err)
+func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
+	select {
+	case <-ctx.Done():
+		log.Println("Forwarding to Youtube Live has been canceled.")
+		return
+	default:
+		// Set the rtspServerStreamingChannel to true
+		rtspServerStreamingChannel[host] = true
+		cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+		forwardingWaitGroup.Done()
+		// Set the rtspServerStreamingChannel to false
+		rtspServerStreamingChannel[host] = false
 	}
-	forwardingWaitGroup.Done()
-	// Set the rtspServerStreamingChannel to false
-	rtspServerStreamingChannel[host] = false
 }
 
 // Get the current working directory on where the executable is running
