@@ -168,11 +168,19 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
+		// Set the rtspServerStreamingChannel to false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		// Once the data is forwarded, remove the temporary file.
+		if fileExists(amazonKinesisTempPath) {
+			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+		}
+		// Done with the wait group
+		forwardingWaitGroup.Done()
 		log.Println("Forwarding to vertex AI has been canceled.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
-		rtspServerStreamingChannel[host] = true
+		addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		// Move the default file to a temporary file.
 		if fileExists(amazonKinesisDefaultPath) {
 			moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
@@ -198,10 +206,13 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
+		// Set the rtspServerStreamingChannel to false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		// Done with the wait group
+		forwardingWaitGroup.Done()
 		log.Println("Forwarding to AWS Kinesis Video Streams has been canceled.")
 		return
 	default:
-
 		// Set the rtspServerStreamingChannel to true
 		rtspServerStreamingChannel[host] = true
 		// Move the temporary file to the default file location if it exists.
@@ -237,6 +248,10 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, region string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
+		// Set the rtspServerStreamingChannel to false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		// Done with the wait group
+		forwardingWaitGroup.Done()
 		log.Println("Forwarding to AWS IVS has been canceled.")
 		return
 	default:
@@ -247,9 +262,10 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 		if err != nil {
 			log.Println(err)
 		}
-		forwardingWaitGroup.Done()
 		// Set the rtspServerStreamingChannel to false
 		rtspServerStreamingChannel[host] = false
+		// Close the channel.
+		forwardingWaitGroup.Done()
 	}
 }
 
@@ -258,6 +274,10 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 	select {
 	case <-ctx.Done():
 		log.Println("Forwarding to Youtube Live has been canceled.")
+		// Set the rtspServerStreamingChannel to false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		// Done with the wait group
+		forwardingWaitGroup.Done()
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
@@ -267,9 +287,10 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 		if err != nil {
 			log.Println(err)
 		}
-		forwardingWaitGroup.Done()
 		// Set the rtspServerStreamingChannel to false
 		rtspServerStreamingChannel[host] = false
+		// Done with the wait group
+		forwardingWaitGroup.Done()
 	}
 }
 
