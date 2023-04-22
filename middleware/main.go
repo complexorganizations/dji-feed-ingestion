@@ -257,24 +257,27 @@ func main() {
 					rtspServerRunCounter[server.Host] = 0
 				}
 			}
-			// Check if the rtsp server is alive and responding to requests
-			if !getValueFromMap(rtspServerStatusChannel, server.Host) {
-				// If the server is not alive than kill the process
-				cancel()
-				/*
-					// Reset the counter
-					counter = 0
-					// Reset the wait group
-					uploadWaitGroup = sync.WaitGroup{}
-					// Reset the context
-					ctx, cancel = context.WithCancel(context.Background())
-					// Reset the map
-					rtspServerStreamingChannel = make(map[string]bool)
-				*/
+			// Check if the streamer is still streaming
+			if rtspServerStreamingChannel[server.Host] {
+				// Check if the rtsp server is alive and responding to requests
+				if !getValueFromMap(rtspServerStatusChannel, server.Host) {
+					// If the server is not alive than kill the process
+					cancel()
+					/*
+						// Reset the counter
+						counter = 0
+						// Reset the wait group
+						uploadWaitGroup = sync.WaitGroup{}
+						// Reset the context
+						ctx, cancel = context.WithCancel(context.Background())
+						// Reset the map
+						rtspServerStreamingChannel = make(map[string]bool)
+					*/
+				}
 			}
 		}
 		// This sleep determins how often the program checks if the RTSP server is alive and streaming.
-		time.Sleep(3 * time.Second)
+		time.Sleep(5 * time.Second)
 		// The counter for how many streams are being uploaded.
 		log.Println("Counter: " + strconv.Itoa(counter))
 		// End if debug
