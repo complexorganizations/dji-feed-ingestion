@@ -84,7 +84,6 @@ type AmazonKinesisVideoStreams struct {
 }
 
 type AmazonInteractiveVideoService struct {
-	DefaultRegion string `json:"default_region"`
 	IvsStream     string `json:"ivs_stream"`
 }
 
@@ -247,7 +246,7 @@ func main() {
 						} else if gcp {
 							go forwardDataToGoogleCloudVertexAI(server.Host, server.GoogleCloudVertexAiVision.ProjectName, server.GoogleCloudVertexAiVision.DefaultRegion, server.GoogleCloudVertexAiVision.VertexAiVisionStream, &uploadWaitGroup)
 						} else if awsIVS {
-							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, server.AmazonInteractiveVideoService.DefaultRegion, &uploadWaitGroup)
+							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, &uploadWaitGroup)
 						} else if yt {
 							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup)
 						}
