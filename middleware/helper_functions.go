@@ -169,7 +169,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	select {
 	case <-ctx.Done():
 		// Set the rtspServerStreamingChannel to false
-		rtspServerStreamingChannel[host] = false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Move the temporary file to the default file.
 		if fileExists(amazonKinesisTempPath) {
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
@@ -179,7 +179,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
-		rtspServerStreamingChannel[host] = true
+		addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		// Move the default file to a temporary file.
 		if fileExists(amazonKinesisDefaultPath) {
 			moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
@@ -195,7 +195,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 		}
 		// Set the rtspServerStreamingChannel to false
-		rtspServerStreamingChannel[host] = false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Done forwarding
 		forwardingWaitGroup.Done()
 	}
@@ -206,14 +206,14 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 	select {
 	case <-ctx.Done():
 		// Set the rtspServerStreamingChannel to false
-		rtspServerStreamingChannel[host] = false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Done forwarding
 		forwardingWaitGroup.Done()
 		return
 	default:
 		log.Println("Context is not done")
 		// Set the rtspServerStreamingChannel to true
-		rtspServerStreamingChannel[host] = true
+		addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		// Move the temporary file to the default file location if it exists.
 		if fileExists(amazonKinesisTempPath) {
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
@@ -237,7 +237,7 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 		}
 		*/
 		// Set the rtspServerStreamingChannel to false
-		rtspServerStreamingChannel[host] = false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Close the channel.
 		forwardingWaitGroup.Done()
 	}
@@ -248,20 +248,20 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 	select {
 	case <-ctx.Done():
 		// Set the rtspServerStreamingChannel to false
-		rtspServerStreamingChannel[host] = false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Done forwarding
 		forwardingWaitGroup.Done()
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
-		rtspServerStreamingChannel[host] = true
+		addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
 		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
 		}
 		// Set the rtspServerStreamingChannel to false
-		rtspServerStreamingChannel[host] = false
+		addKeyValueToMap(rtspServerStreamingChannel, host, false)
 		// Close the channel.
 		forwardingWaitGroup.Done()
 	}
