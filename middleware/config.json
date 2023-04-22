@@ -1,50 +1,21 @@
 {
-    "0": {
-        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_zero",
-        "amazon_kinesis_video_streams": {
-            "default_region": "us-east-1",
-            "kinesis_stream": "null"
-        },
-        "amazon_interactive_video_service": {
-            "default_region": "us-east-1",
-            "ivs_stream": "null"
-        },
-        "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "us-central1",
-            "vertex_ai_vision_stream": "null"
-        }
+  "0": {
+    "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_zero",
+    "amazon_kinesis_video_streams": {
+      "default_region": "us-east-1",
+      "kinesis_stream": "null"
     },
-    "1": {
-        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_one",
-        "amazon_kinesis_video_streams": {
-            "default_region": "us-east-1",
-            "kinesis_stream": "null"
-        },
-        "amazon_interactive_video_service": {
-            "default_region": "us-east-1",
-            "ivs_stream": "null"
-        },
-        "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "us-central1",
-            "vertex_ai_vision_stream": "null"
-        }
+    "amazon_interactive_video_service": {
+      "default_region": "us-east-1",
+      "ivs_stream": "null"
     },
-    "2": {
-        "host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_two",
-        "amazon_kinesis_video_streams": {
-            "default_region": "us-east-1",
-            "kinesis_stream": "null"
-        },
-        "amazon_interactive_video_service": {
-            "default_region": "us-east-1",
-            "ivs_stream": "null"
-        },
-        "google_cloud_vertex_ai_vision": {
-            "project_name": "null",
-            "default_region": "us-central1",
-            "vertex_ai_vision_stream": "null"
-        }
+    "google_cloud_vertex_ai_vision": {
+      "project_name": "null",
+      "default_region": "us-central1",
+      "vertex_ai_vision_stream": "null"
+    },
+    "youtube_live_stream": {
+      "connection_string": "null"
     }
+  }
 }
