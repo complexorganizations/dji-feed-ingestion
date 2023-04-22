@@ -95,7 +95,7 @@ type GoogleCloudVertexAiVision struct {
 }
 
 type YoutubeLiveStream struct {
-	ConnectionString string `json:"connection_string"`
+	StreamKey string `json:"stream_key"`
 }
 
 func init() {
@@ -207,7 +207,7 @@ func init() {
 		validateJSONLength("Google Project Name", server.GoogleCloudVertexAiVision.ProjectName)
 		validateJSONLength("Google Default Region", server.GoogleCloudVertexAiVision.DefaultRegion)
 		validateJSONLength("Google Vertex AI Vision Stream", server.GoogleCloudVertexAiVision.VertexAiVisionStream)
-		validateJSONLength("YouTube Stream Name", server.YoutubeLiveStream.ConnectionString)
+		validateJSONLength("YouTube Stream Name", server.YoutubeLiveStream.StreamKey)
 		// Check if the rtsp server is alive and responding to requests
 		go checkRTSPServerAliveInBackground(server.Host)
 	}
@@ -253,7 +253,7 @@ func main() {
 						} else if awsIVS {
 							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, server.AmazonInteractiveVideoService.DefaultRegion, &uploadWaitGroup)
 						} else if yt {
-							go forwardDataToYouTube(server.Host, server.YoutubeLiveStream.ConnectionString, &uploadWaitGroup)
+							go forwardDataToYouTube(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup)
 						}
 					}
 					rtspServerRunCounter[server.Host] = 0
