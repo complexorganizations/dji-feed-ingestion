@@ -15,7 +15,7 @@
       "vertex_ai_vision_stream": "null"
     },
     "youtube_live_stream": {
-      "connection_string": "null"
+      "stream_key": "null"
     }
   }
 }
