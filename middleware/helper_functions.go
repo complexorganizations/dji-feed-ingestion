@@ -150,22 +150,16 @@ func checkRTSPServerAlive(rtspURL string) bool {
 // Run this function in the background and check if a given RTSP server is alive
 func checkRTSPServerAliveInBackground(rtspURL string) {
 	for {
+		mutex.Lock()
 		// Check if the server is alive
 		if checkRTSPServerAlive(rtspURL) {
-			mutex.Lock()
-			if !getValueFromMap(rtspServerStatusChannel, rtspURL) {
-				addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
-			}
-			mutex.Unlock()
+			addKeyValueToMap(rtspServerStatusChannel, rtspURL, true)
 		} else {
-			mutex.Lock()
-			if !getValueFromMap(rtspServerStatusChannel, rtspURL) {
-				addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
-			}
-			mutex.Unlock()
+			addKeyValueToMap(rtspServerStatusChannel, rtspURL, false)
 		}
-		// Sleep for 5 seconds, after each check.
-		time.Sleep(5 * time.Second)
+		mutex.Unlock()
+		// Sleep for 3 seconds, after each check.
+		time.Sleep(3 * time.Second)
 	}
 }
 
@@ -439,15 +433,17 @@ func parseAWSCredentialsFile() (string, string) {
 			// Remove whitespace from the keys.
 			awsAccessKey = strings.TrimSpace(awsAccessKey)
 			awsSecretKey = strings.TrimSpace(awsSecretKey)
+		} else {
+			saveAllErrors("Error: Missing the AWS TS Caller ID.")
 		}
 	}
 	// Check if the AWS access key is empty.
 	if len(awsAccessKey) == 0 {
-		saveAllErrors("The AWS access key is empty.")
+		saveAllErrors("Error: The AWS Access Key is missing.")
 	}
 	// Check if the AWS secret key is empty.
 	if len(awsSecretKey) == 0 {
-		saveAllErrors("The AWS secret key is empty.")
+		saveAllErrors("Error: The AWS secret Key is missing.")
 	}
 	return awsAccessKey, awsSecretKey
 }
