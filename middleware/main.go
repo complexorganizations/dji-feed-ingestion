@@ -260,12 +260,7 @@ func main() {
 				// Make sure the status of the server is false.
 				if !getValueFromMap(rtspServerStatusChannel, server.Host) {
 					log.Println("Stream is not running for: " + server.Host)
-					// Check if the context is already canceled.
-					if ctx.Err() == nil {
-						log.Println("Context is not canceled for: " + server.Host)
-						// Cancel the context.
-						cancel()
-					}
+					cancel()
 				}
 			}
 		}
