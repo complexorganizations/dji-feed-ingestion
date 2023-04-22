@@ -74,6 +74,7 @@ type HostStruct struct {
 	AmazonKinesisVideoStreams     AmazonKinesisVideoStreams     `json:"amazon_kinesis_video_streams"`
 	AmazonInteractiveVideoService AmazonInteractiveVideoService `json:"amazon_interactive_video_service"`
 	GoogleCloudVertexAiVision     GoogleCloudVertexAiVision     `json:"google_cloud_vertex_ai_vision"`
+	YoutubeLiveStream             YoutubeLiveStream             `json:"youtube_live_stream"`
 }
 
 type AmazonKinesisVideoStreams struct {
@@ -90,6 +91,10 @@ type GoogleCloudVertexAiVision struct {
 	ProjectName          string `json:"project_name"`
 	DefaultRegion        string `json:"default_region"`
 	VertexAiVisionStream string `json:"vertex_ai_vision_stream"`
+}
+
+type YoutubeLiveStream struct {
+	ConnectionString string `json:"connection_string"`
 }
 
 func init() {
