@@ -29,6 +29,8 @@ var (
 	// Note: There is an issue with vertex ai vision; where a file needs to be moved. https://github.com/google/visionai/issues/6
 	amazonKinesisDefaultPath = amazonKinesisVideoStreamBuildPath + "libgstkvssink.so"
 	amazonKinesisTempPath    = amazonKinesisDefaultPath + ".tmp"
+	// Google Cloud Credentials
+	googleCloudCredentials = currentUserHomeDir() + "/.config/gcloud/application_default_credentials.json"
 	// Number of clients allowed on the system.
 	numberOfClientsAllowed int
 )
