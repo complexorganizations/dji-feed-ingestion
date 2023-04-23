@@ -596,6 +596,6 @@ func validateGoogleCloudCLI() {
 	}
 	// Google Cloud Credentials File.
 	if !fileExists(googleCloudCredentials) {
-		saveAllErrors("Error: Didn't find any google cloud file at ", googleCloudCredentials)
+		saveAllErrors("Error: Didn't find any google cloud file at " + googleCloudCredentials)
 	}
 }
