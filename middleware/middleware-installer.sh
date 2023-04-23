@@ -278,6 +278,7 @@ Restart=always
 WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH}
     fi
     # Create a third test feed.
+    if [ ! -f "${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}" ]; then
         echo "[Unit]
 Description=Create a test feed for MediaMTX server #2
 Wants=network.target
