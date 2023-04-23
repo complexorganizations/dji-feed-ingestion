@@ -256,27 +256,35 @@ function setup-test-feed() {
     # Create a test feed if it does not exist already
     if [ ! -f "${MEDIAMTX_TEST_FEED_ZERO_SERVICE_PATH}" ]; then
         echo "[Unit]
+Description=Create a test feed for MediaMTX server #0
 Wants=network.target
 [Service]
+Type=simple
 ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_ZERO} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_ZERO}
+Restart=always
 [Install]
 WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_ZERO_SERVICE_PATH}
     fi
     # Create a second test feed
     if [ ! -f "${MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH}" ]; then
         echo "[Unit]
+Description=Create a test feed for MediaMTX server #1
 Wants=network.target
 [Service]
+Type=simple
 ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_ONE} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_ONE}
+Restart=always
 [Install]
 WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_ONE_SERVICE_PATH}
     fi
     # Create a third test feed.
-    if [ ! -f "${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}" ]; then
         echo "[Unit]
+Description=Create a test feed for MediaMTX server #2
 Wants=network.target
 [Service]
+Type=simple
 ExecStart=ffmpeg -re -stream_loop -1 -i ${MEDIAMTX_TEST_VIDEO_PATH_TWO} -c copy -f rtsp ${MEDIAMTX_TEST_CONNECTION_TWO}
+Restart=always
 [Install]
 WantedBy=multi-user.target" >${MEDIAMTX_TEST_FEED_TWO_SERVICE_PATH}
         # Reload the daemon
@@ -394,9 +402,14 @@ function install-cps-connetor() {
             # This code creates the service file
             # The service file is stored in /etc/systemd/system/csp-connector.service
             echo "[Unit]
+Description=Create the service for csp-connector.
 Wants=network.target
 [Service]
+Type=simple
+User=root
+WorkingDirectory=${CSP_CONNECTOR_PATH}
 ExecStart=${CSP_CONNECTOR_APPLICATION} -config=\"${CSP_CONNECTOR_CONFIG}\" -log=\"${CSP_CONNECTOR_LOG_FILE}\" -aws_kvs=true
+Restart=always
 [Install]
 WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             # Reload the daemon
