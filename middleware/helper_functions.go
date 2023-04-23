@@ -313,16 +313,22 @@ func getFileExtension(path string) string {
 
 // Validate the length of the JSON file.
 func validateJSONLength(key string, value string) bool {
-	// Check if the key and value are not empty
+	// Check if the length of the value is 0 or if its just whitespaces.
+	if len(value) == 0 || len(strings.TrimSpace(value)) == 0 {
+		log.Println("The value for the key '" + key + "' is empty.")
+		return false
+	}
+	// Check if both key and value have a length.
 	if len(key) >= 1 && len(value) >= 1 {
 		return true
 	}
-	// Check if the key and value are not empty
-	if len(key) >= 1 && len(value) == 0 {
-		saveAllErrors("The value for the key '" + key + "' is empty.")
+	// If the values are null its okay.
+	if value == "null" {
+		return true
 	}
 	return false
 }
+
 
 // Move file from one location to another
 func moveFile(source string, destination string) {
