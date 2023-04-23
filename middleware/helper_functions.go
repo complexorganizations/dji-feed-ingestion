@@ -169,6 +169,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 	if fileExists(amazonKinesisDefaultPath) {
 		moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
 	}
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", googleCloudCredentials)
 	// Run the command to forward the data to vertex AI
 	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
 	err := cmd.Run()
@@ -593,7 +594,8 @@ func validateGoogleCloudCLI() {
 	if len(strings.TrimSpace(string(out))) < 5 {
 		saveAllErrors("Error: Didn't find any account via the google cloud cli.")
 	}
-	if !fileExists(currentUserHomeDir() + "/.config/gcloud/application_default_credentials.json") {
-		saveAllErrors("Error: Didn't find any google cloud creds in the $HOME/.config/gcloud/application_default_credentials.json")
+	// Google Cloud Credentials File.
+	if !fileExists(googleCloudCredentials) {
+		saveAllErrors("Error: Didn't find any google cloud file at ", googleCloudCredentials)
 	}
 }
