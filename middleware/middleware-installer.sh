@@ -398,6 +398,10 @@ function install-cps-connetor() {
         curl -L "${CSP_CONNECTOR_CONFIG_URL}" -o "${CSP_CONNECTOR_CONFIG}"
         # Make the application executable
         chmod +x "${CSP_CONNECTOR_APPLICATION}"
+        # Add the application to the path
+        if [ ! -x "$(command -v csp-connector)" ]; then
+            cp -s ${CSP_CONNECTOR_APPLICATION} /usr/bin/csp-connector
+        fi
         if [ ! -f "${CSP_CONNECTOR_SERVICE}" ]; then
             # This code creates the service file
             # The service file is stored in /etc/systemd/system/csp-connector.service
@@ -408,7 +412,7 @@ Wants=network.target
 Type=simple
 User=root
 WorkingDirectory=${CSP_CONNECTOR_PATH}
-ExecStart=${CSP_CONNECTOR_APPLICATION} -config=\"${CSP_CONNECTOR_CONFIG}\" -log=\"${CSP_CONNECTOR_LOG_FILE}\" -aws_kvs=true
+ExecStart=csp-connector -config=\"${CSP_CONNECTOR_CONFIG}\" -log=\"${CSP_CONNECTOR_LOG_FILE}\" -aws_kvs=true
 Restart=always
 [Install]
 WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
