@@ -210,6 +210,11 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 	os.Setenv("GST_PLUGIN_PATH", "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/build:$GST_PLUGIN_PATH")
 	os.Setenv("LD_LIBRARY_PATH", "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/open-source/local/lib:$LD_LIBRARY_PATH")
 	cmd := exec.Command("gst-launch-1.0", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "kvssink", "stream-name="+streamName, "access-key="+accessKey, "secret-key="+secretKey, "aws-region="+awsRegion)
+	/* DEBUG:
+	// Redirect the command's stdout and stderr to the current process's stdout
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	*/
 	// Run the command
 	err := cmd.Run()
 	// Check if there was an error
