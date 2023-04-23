@@ -329,7 +329,6 @@ func validateJSONLength(key string, value string) bool {
 	return false
 }
 
-
 // Move file from one location to another
 func moveFile(source string, destination string) {
 	// Check if the source file exists
@@ -592,6 +591,9 @@ func validateGoogleCloudCLI() {
 	}
 	// Exit the app if google cloud creds are there.
 	if len(strings.TrimSpace(string(out))) < 5 {
-		saveAllErrors("Error: didn't find any google cloud accounts.")
+		saveAllErrors("Error: Didn't find any account via the google cloud cli.")
+	}
+	if !fileExists(currentUserHomeDir() + "/.config/gcloud/application_default_credentials.json") {
+		saveAllErrors("Error: Didn't find any google cloud creds in the $HOME/.config/gcloud/application_default_credentials.json")
 	}
 }
