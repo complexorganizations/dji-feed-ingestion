@@ -59,12 +59,6 @@ Software requirements:
 
 #### Which cloud services are used?
 
-##### Twitch
-- Twitch Live Stream
-
-##### YouTube
-- YouTube Live Streaming Platform
-
 ##### Amazon
 - Amazon Virtual Private Cloud
 - Amazon Elastic Load Balancer (ELB)
@@ -86,6 +80,15 @@ Software requirements:
 - Microsoft Azure Virtual Machines
 - Microsoft Azure "REPLACE_THIS_WITH_KVS_OR_IVS_OR_VERTEX_AI_ON_AZURE"
 - Microsoft Azure Blob Storage
+
+##### Twitch
+- Twitch Live Stream
+
+##### YouTube
+- YouTube Live Streaming Platform
+
+##### Facebook
+- Facebook Live Stream
 
 ---
 ### Notes
