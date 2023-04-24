@@ -273,6 +273,21 @@ func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *syn
 	forwardingWaitGroup.Done()
 }
 
+// Stream the video to facebook live.
+func forwardDataToFacebookLive(host string, facebookKey string, forwardingWaitGroup *sync.WaitGroup) {
+	// Set the rtspServerStreamingChannel to true
+	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmps://live-api-s.facebook.com:443/rtmp/"+facebookKey)
+	err := cmd.Run()
+	if err != nil {
+		log.Println(err)
+	}
+	// Set the rtspServerStreamingChannel to false
+	go addKeyValueToMap(rtspServerStreamingChannel, host, false)
+	// Done with the wait group
+	forwardingWaitGroup.Done()
+}
+
 // Stream the video to any other RTMP server.
 func forwardDataToAnyRTMP(host string, rtmpURL string, forwardingWaitGroup *sync.WaitGroup) {
 	// Set the rtspServerStreamingChannel to true
