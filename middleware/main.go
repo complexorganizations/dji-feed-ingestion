@@ -24,6 +24,7 @@ var (
 	gcp                        bool
 	yt                         bool
 	twitch                     bool
+	rtmp                       bool
 	// Values for the aws file path stuff;
 	amazonKinesisVideoStreamPath      = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/"
 	amazonKinesisVideoStreamBuildPath = amazonKinesisVideoStreamPath + "build/"
@@ -80,6 +81,7 @@ type HostStruct struct {
 	GoogleCloudVertexAiVision     GoogleCloudVertexAiVision     `json:"google_cloud_vertex_ai_vision"`
 	YoutubeLiveStream             YoutubeLiveStream             `json:"youtube_live_stream"`
 	TwitchLiveStream              TwitchLiveStream              `json:"twitch_live_stream"`
+	RtmpServer                    RtmpServer                    `json:"rtmp_server"`
 }
 
 type AmazonKinesisVideoStreams struct {
@@ -105,6 +107,10 @@ type TwitchLiveStream struct {
 	StreamKey string `json:"stream_key"`
 }
 
+type RtmpServer struct {
+	ConnectionString string `json:"connection_string"`
+}
+
 func init() {
 	// Validate the operating system
 	lockdownToLinuxOperatingSystem()
@@ -119,6 +125,7 @@ func init() {
 		tempGCP := flag.Bool("gcp", false, "Determine if this is a GCP run.")
 		tempYT := flag.Bool("yt", false, "Determine if this is a YT run.")
 		tempTwitch := flag.Bool("twitch", false, "Determine if this is a Twitch run.")
+		tempRTMP := flag.Bool("rtmp", false, "Determine if this is a Any RTMP run.")
 		flag.Parse()
 		// Set the values to the global variables.
 		applicationConfigFile = *tempConfig
@@ -129,12 +136,13 @@ func init() {
 		gcp = *tempGCP
 		yt = *tempYT
 		twitch = *tempTwitch
+		rtmp = *tempRTMP
 	} else {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Only run one of the three options.
-	if awsKVS && awsIVS && gcp && yt && twitch {
+	if awsKVS && awsIVS && gcp && yt && twitch && rtmp {
 		log.Fatalln("Error: You can only run one of the -help options.")
 	}
 	// Check if the system has the required tools and is installed in path.
@@ -262,6 +270,8 @@ func main() {
 							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup)
 						} else if twitch {
 							go forwardDataToTwitch(server.Host, server.TwitchLiveStream.StreamKey, &uploadWaitGroup)
+						} else if rtmp {
+							go forwardDataToAnyRTMP(server.Host, server.RtmpServer.ConnectionString, &uploadWaitGroup)
 						}
 					}
 					rtspServerRunCounter[server.Host] = 0
