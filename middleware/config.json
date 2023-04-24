@@ -15,6 +15,9 @@
     },
     "youtube_live_stream": {
       "stream_key": "null"
+    },
+    "any_rtmp_server": {
+      "connection_string": "null"
     }
   }
 }
