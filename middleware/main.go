@@ -23,6 +23,7 @@ var (
 	awsIVS                     bool
 	gcp                        bool
 	yt                         bool
+	twitch                     bool
 	// Values for the aws file path stuff;
 	amazonKinesisVideoStreamPath      = "/etc/amazon-kinesis-video-streams-producer-sdk-cpp/"
 	amazonKinesisVideoStreamBuildPath = amazonKinesisVideoStreamPath + "build/"
@@ -78,6 +79,7 @@ type HostStruct struct {
 	AmazonInteractiveVideoService AmazonInteractiveVideoService `json:"amazon_interactive_video_service"`
 	GoogleCloudVertexAiVision     GoogleCloudVertexAiVision     `json:"google_cloud_vertex_ai_vision"`
 	YoutubeLiveStream             YoutubeLiveStream             `json:"youtube_live_stream"`
+	TwitchLiveStream              TwitchLiveStream              `json:"twitch_live_stream"`
 }
 
 type AmazonKinesisVideoStreams struct {
@@ -86,7 +88,7 @@ type AmazonKinesisVideoStreams struct {
 }
 
 type AmazonInteractiveVideoService struct {
-	IvsStream     string `json:"ivs_stream"`
+	IvsStream string `json:"ivs_stream"`
 }
 
 type GoogleCloudVertexAiVision struct {
@@ -96,6 +98,10 @@ type GoogleCloudVertexAiVision struct {
 }
 
 type YoutubeLiveStream struct {
+	StreamKey string `json:"stream_key"`
+}
+
+type TwitchLiveStream struct {
 	StreamKey string `json:"stream_key"`
 }
 
@@ -112,7 +118,9 @@ func init() {
 		tempAWSIVS := flag.Bool("aws_ivs", false, "Determine if this is a AWS run.")
 		tempGCP := flag.Bool("gcp", false, "Determine if this is a GCP run.")
 		tempYT := flag.Bool("yt", false, "Determine if this is a YT run.")
+		tempTwitch := flag.Bool("twitch", false, "Determine if this is a Twitch run.")
 		flag.Parse()
+		// Set the values to the global variables.
 		applicationConfigFile = *tempConfig
 		applicationLogFile = *tempLog
 		debug = *tempDebug
@@ -120,12 +128,13 @@ func init() {
 		awsIVS = *tempAWSIVS
 		gcp = *tempGCP
 		yt = *tempYT
+		twitch = *tempTwitch
 	} else {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Only run one of the three options.
-	if awsKVS && awsIVS && gcp && yt {
+	if awsKVS && awsIVS && gcp && yt && twitch {
 		log.Fatalln("Error: You can only run one of the -help options.")
 	}
 	// Check if the system has the required tools and is installed in path.
@@ -251,6 +260,8 @@ func main() {
 							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, &uploadWaitGroup)
 						} else if yt {
 							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup)
+						} else if twitch {
+							go forwardDataToTwitch(server.Host, server.TwitchLiveStream.StreamKey, &uploadWaitGroup)
 						}
 					}
 					rtspServerRunCounter[server.Host] = 0

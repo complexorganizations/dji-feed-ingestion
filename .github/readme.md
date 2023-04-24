@@ -59,6 +59,9 @@ Software requirements:
 
 #### Which cloud services are used?
 
+##### Twitch
+- Twitch Live Stream
+
 ##### YouTube
 - YouTube Live Streaming Platform
 
