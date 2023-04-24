@@ -15,6 +15,9 @@
     },
     "youtube_live_stream": {
       "stream_key": "null"
+    },
+    "twitch_live_stream": {
+      "stream_key": "null"
     }
   }
 }
