@@ -258,6 +258,21 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 	forwardingWaitGroup.Done()
 }
 
+// Stream the video to twitch.
+func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *sync.WaitGroup) {
+	// Set the rtspServerStreamingChannel to true
+	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
+	err := cmd.Run()
+	if err != nil {
+		log.Println(err)
+	}
+	// Set the rtspServerStreamingChannel to false
+	go addKeyValueToMap(rtspServerStreamingChannel, host, false)
+	// Done with the wait group
+	forwardingWaitGroup.Done()
+}
+
 // Get the current working directory on where the executable is running
 func getCurrentWorkingDirectory() string {
 	currentFileName, err := os.Executable()
