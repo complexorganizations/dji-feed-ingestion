@@ -1,11 +1,13 @@
 package main
 
 import (
+	"crypto/rand"
 	"crypto/sha512"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
+	"math/big"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -246,9 +248,13 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 
 // Stream the video to youtube live.
 func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGroup *sync.WaitGroup) {
+	// Create a array of strings for youtube url
+	youtubeURL := []string{"rtmp://a.rtmp.youtube.com/live2/", "rtmp://b.rtmp.youtube.com/live2?backup=1/"}
+	// Get a random elmene from the array
+	randomYoutubeURL := randomElementFromSlice(youtubeURL)
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", randomYoutubeURL+youtubeKey)
 	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
 	err := cmd.Run()
 	if err != nil {
@@ -262,9 +268,13 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 
 // Stream the video to twitch.
 func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *sync.WaitGroup) {
+	// Create an array of strings for twitch url
+	twitchURL := []string{"rtmp://jfk50.contribute.live-video.net/app/", "rtmp://jfk.contribute.live-video.net/app/", "rtmp://iad03.contribute.live-video.net/app/"}
+	// Get a random element from the array
+	randomTwitchURL := randomElementFromSlice(twitchURL)
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", randomTwitchURL+twitchKey)
 	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
 	err := cmd.Run()
 	if err != nil {
@@ -648,4 +658,13 @@ func validateGoogleCloudCLI() {
 	if !fileExists(googleCloudCredentials) {
 		saveAllErrors("Error: Didn't find any google cloud file at " + googleCloudCredentials)
 	}
+}
+
+// Get a random element from the slice and return the element.
+func randomElementFromSlice(slice []string) string {
+	someRandomNumber, err := rand.Int(rand.Reader, big.NewInt(int64(len(slice))))
+	if err != nil {
+		log.Println(err)
+	}
+	return slice[someRandomNumber.Int64()]
 }
