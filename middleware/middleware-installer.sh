@@ -455,6 +455,14 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             mv "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}" "${CSP_CONNECTOR_APPLICATION}"
             # Make the application executable
             chmod +x "${CSP_CONNECTOR_APPLICATION}"
+            #######################################
+            # Clear the logs
+            # journalctl --rotate
+            # journalctl --vacuum-time=1s
+            # View the logs.
+            # journalctl -xefu csp-connector
+            # Reload the config file
+            # systemctl daemon-reload
             # Start the service
             if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
                 systemctl start csp-connector
