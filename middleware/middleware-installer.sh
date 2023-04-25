@@ -179,6 +179,8 @@ CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/${CSP_CONNECTOR_LATEST_FILE_NAM
 CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service"
 # Assigns a temporary download path for the CSP Connector zip file
 CSP_CONNECTOR_TEMP_DOWNLOAD_PATH="/tmp/${CSP_CONNECTOR_LATEST_FILE_NAME}"
+# Assigns a permanent download path for the CSP Connector binary file
+CSP_CONNECTOR_BINARY_PATH="/usr/bin/csp-connector"
 
 # Assigns the latest release of the Google Cloud Vision AI to a variable
 GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE=$(curl -s https://api.github.com/repos/google/visionai/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4)
@@ -451,10 +453,16 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             fi
             # Remove the application
             rm -f "${CSP_CONNECTOR_APPLICATION}"
+            # Remove the application from the path
+            if [ -x "$(command -v csp-connector)" ]; then
+                rm -f ${CSP_CONNECTOR_BINARY_PATH}
+            fi
             # Move the downloaded file to the application path
             mv "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}" "${CSP_CONNECTOR_APPLICATION}"
-            # Make the application executable
-            chmod +x "${CSP_CONNECTOR_APPLICATION}"
+            # Add the application to the path
+            if [ ! -x "$(command -v csp-connector)" ]; then
+                cp -s ${CSP_CONNECTOR_APPLICATION} ${CSP_CONNECTOR_BINARY_PATH}
+            fi
             #######################################
             # Clear the logs
             # journalctl --rotate
