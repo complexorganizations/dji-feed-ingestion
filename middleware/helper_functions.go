@@ -274,9 +274,17 @@ func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *syn
 	randomTwitchURL := randomElementFromSlice(twitchURL)
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", randomTwitchURL+twitchKey)
-	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
-	err := cmd.Run()
+	// cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", randomTwitchURL+twitchKey)
+	cmd := "gst-launch-1.0"
+	args := []string{
+		"rtspsrc", "location=" + host, "latency=0",
+		"!", "rtph264depay",
+		"!", "h264parse",
+		"!", "flvmux",
+		"!", "rtmpsink", "location=" + randomTwitchURL + twitchKey,
+	}
+	command := exec.Command(cmd, args...)
+	err := command.Run()
 	if err != nil {
 		log.Println(err)
 	}
