@@ -234,9 +234,17 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, forwardingWaitGroup *sync.WaitGroup) {
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
-	//cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+amazonIVSURL)
-	err := cmd.Run()
+	// cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
+	cmd := "gst-launch-1.0"
+	args := []string{
+		"rtspsrc", "location=" + host, "latency=0",
+		"!", "rtph264depay",
+		"!", "h264parse",
+		"!", "flvmux",
+		"!", "rtmpsink", "location=" + amazonIVSURL,
+	}
+	command := exec.Command(cmd, args...)
+	err := command.Run()
 	if err != nil {
 		log.Println(err)
 	}
