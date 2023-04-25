@@ -222,7 +222,7 @@ func init() {
 		validateJSONLength("Amazon Kinesis Region", server.AmazonKinesisVideoStreams.DefaultRegion)
 		validateJSONLength("Amazon Kinesis Stream Name", server.AmazonKinesisVideoStreams.KinesisStream)
 		// AWS IVS
-		validateJSONLength("Amazon IVS Stream Name", server.AmazonInteractiveVideoService.StreamName)
+		validateJSONLength("Amazon IVS Stream Name", server.AmazonInteractiveVideoService.IvsStream)
 		// GCP
 		validateJSONLength("Google Project Name", server.GoogleCloudVertexAiVision.ProjectName)
 		validateJSONLength("Google Default Region", server.GoogleCloudVertexAiVision.DefaultRegion)
@@ -234,7 +234,7 @@ func init() {
 		// Facebook
 		validateJSONLength("Facebook Stream Name", server.FacebookLiveStream.StreamKey)
 		// RTMP
-		validateJSONLength("RTMP Stream Name", server.RTMPStream.StreamKey)
+		validateJSONLength("RTMP Stream Name", server.RtmpServer.ConnectionString)
 		// Check if the rtsp server is alive and responding to requests
 		go checkRTSPServerAliveInBackground(server.Host)
 	}
