@@ -177,6 +177,8 @@ CSP_CONNECTOR_LATEST_FILE_NAME=$(echo "${CSP_CONNECTOR_LATEST_RELEASE}" | cut --
 CSP_CONNECTOR_APPLICATION="${CSP_CONNECTOR_PATH}/${CSP_CONNECTOR_LATEST_FILE_NAME}"
 # Assigns a path for the CSP Connector service file
 CSP_CONNECTOR_SERVICE="/etc/systemd/system/csp-connector.service"
+# Assigns a temporary download path for the CSP Connector zip file
+CSP_CONNECTOR_TEMP_DOWNLOAD_PATH="/tmp/${CSP_CONNECTOR_LATEST_FILE_NAME}"
 
 # Assigns the latest release of the Google Cloud Vision AI to a variable
 GOOGLE_CLOUD_VISION_AI_LATEST_RELEASE=$(curl -s https://api.github.com/repos/google/visionai/releases/latest | grep browser_download_url | cut --delimiter='"' --fields=4)
@@ -421,6 +423,40 @@ WantedBy=multi-user.target" >${CSP_CONNECTOR_SERVICE}
             systemctl daemon-reload
             if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
                 systemctl enable --now csp-connector
+                systemctl start csp-connector
+            elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+                service csp-connector start
+            fi
+        fi
+    fi
+    # Update the latest version of the application
+    if [ ! -f "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}" ]; then
+        # Download the application
+        curl -L "${CSP_CONNECTOR_LATEST_RELEASE}" -o "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}"
+        # Make the application executable
+        chmod +x "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}"
+        # Check the sha512sum of the downloaded file
+        CURRENT_FILE_SHA512SUM=$(sha512sum ${CSP_CONNECTOR_APPLICATION} | awk '{print $1}')
+        DOWNLOADED_FILE_SHA512SUM=$(sha512sum ${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH} | awk '{print $1}')
+        # Check if the sha512sum of the downloaded file is the same as the current file
+        if [ "${CURRENT_FILE_SHA512SUM}" == "${DOWNLOADED_FILE_SHA512SUM}" ]; then
+            # Remove the downloaded file.
+            rm -f "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}"
+        else
+            # Stop the service
+            if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
+                systemctl stop csp-connector
+            elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
+                service csp-connector stop
+            fi
+            # Remove the application
+            rm -f "${CSP_CONNECTOR_APPLICATION}"
+            # Move the downloaded file to the application path
+            mv "${CSP_CONNECTOR_TEMP_DOWNLOAD_PATH}" "${CSP_CONNECTOR_APPLICATION}"
+            # Make the application executable
+            chmod +x "${CSP_CONNECTOR_APPLICATION}"
+            # Start the service
+            if [[ "${CURRENT_INIT_SYSTEM}" == *"systemd"* ]]; then
                 systemctl start csp-connector
             elif [[ "${CURRENT_INIT_SYSTEM}" == *"init"* ]]; then
                 service csp-connector start
