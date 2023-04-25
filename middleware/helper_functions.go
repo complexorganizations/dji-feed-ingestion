@@ -232,8 +232,8 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, forwardingWaitGroup *sync.WaitGroup) {
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	// cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
-	cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+amazonIVSURL)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
+	//cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+amazonIVSURL)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
@@ -248,8 +248,8 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGroup *sync.WaitGroup) {
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	// cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
-	cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
+	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
@@ -264,8 +264,8 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *sync.WaitGroup) {
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	// cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
-	cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
+	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://jfk50.contribute.live-video.net/app/"+twitchKey)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
@@ -280,8 +280,8 @@ func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *syn
 func forwardDataToFacebookLive(host string, facebookKey string, forwardingWaitGroup *sync.WaitGroup) {
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	// cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmps://live-api-s.facebook.com:443/rtmp/"+facebookKey)
-	cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmps://live-api-s.facebook.com:443/rtmp/"+facebookKey)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmps://live-api-s.facebook.com:443/rtmp/"+facebookKey)
+	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmps://live-api-s.facebook.com:443/rtmp/"+facebookKey)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
@@ -296,8 +296,8 @@ func forwardDataToFacebookLive(host string, facebookKey string, forwardingWaitGr
 func forwardDataToAnyRTMP(host string, rtmpURL string, forwardingWaitGroup *sync.WaitGroup) {
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	// cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", rtmpURL)
-	cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+rtmpURL)
+	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", rtmpURL)
+	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+rtmpURL)
 	err := cmd.Run()
 	if err != nil {
 		log.Println(err)
