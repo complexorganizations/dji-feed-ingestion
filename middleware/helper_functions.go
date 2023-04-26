@@ -254,9 +254,17 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 	randomYoutubeURL := randomElementFromSlice(youtubeURL)
 	// Set the rtspServerStreamingChannel to true
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	cmd := exec.Command("ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", randomYoutubeURL+youtubeKey)
-	// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmp://a.rtmp.youtube.com/live2/"+youtubeKey)
-	err := cmd.Run()
+	cmd := "gst-launch-1.0"
+	args := []string{
+		"rtspsrc", "location=" + rtspSource, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "name=mux",
+		"streamable=true", "!", "rtmpsink", "location=" + randomYoutubeURL + rtspKey, "audiotestsrc",
+		"!", "audioconvert", "!", "audioresample", "!", "voaacenc", "bitrate=128000", "!", "aacparse", "!", "mux.",
+	}
+	// Create an *exec.Cmd
+	command := exec.Command(cmd, args...)
+	// Run the command
+	err := command.Run()
+	// Check if there was an error
 	if err != nil {
 		log.Println(err)
 	}
