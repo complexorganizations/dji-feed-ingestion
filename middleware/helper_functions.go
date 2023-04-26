@@ -256,8 +256,8 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
 	cmd := "gst-launch-1.0"
 	args := []string{
-		"rtspsrc", "location=" + rtspSource, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "name=mux",
-		"streamable=true", "!", "rtmpsink", "location=" + randomYoutubeURL + rtspKey, "audiotestsrc",
+		"rtspsrc", "location=" + host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "name=mux",
+		"streamable=true", "!", "rtmpsink", "location=" + randomYoutubeURL + youtubeKey, "audiotestsrc",
 		"!", "audioconvert", "!", "audioresample", "!", "voaacenc", "bitrate=128000", "!", "aacparse", "!", "mux.",
 	}
 	// Create an *exec.Cmd
