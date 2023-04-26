@@ -150,7 +150,7 @@ func init() {
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Only run one of the three options.
-	if awsKVS && awsIVS && gcp && yt && twitch && facebook &&rtmp {
+	if awsKVS && awsIVS && gcp && yt && twitch && facebook && rtmp {
 		log.Fatalln("Error: You can only run one of the -help options.")
 	}
 	// Check if the system has the required tools and is installed in path.
@@ -289,7 +289,7 @@ func main() {
 							go forwardDataToTwitch(server.Host, server.TwitchLiveStream.StreamKey, &uploadWaitGroup)
 						} else if facebook {
 							go forwardDataToFacebookLive(server.Host, server.FacebookLiveStream.StreamKey, &uploadWaitGroup)
-						}	else if rtmp {
+						} else if rtmp {
 							go forwardDataToAnyRTMP(server.Host, server.RtmpServer.ConnectionString, &uploadWaitGroup)
 						}
 					}
