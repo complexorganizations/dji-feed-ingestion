@@ -488,7 +488,7 @@ install-cps-connetor
 # ffmpeg -i rtsp://Administrator:Password@localhost:8554/drone_0 -c copy output.mp4
 
 # Install Go Language
-# sudo apt-get update && sudo apt-get install software-properties-common -y && sudo add-apt-repository ppa:longsleep/golang-backports && sudo apt-get update && sudo apt-get install golang-1.20 -y
+# sudo apt-get update && sudo apt-get install software-properties-common -y && sudo add-apt-repository ppa:longsleep/golang-backports -y && sudo apt-get update && sudo apt-get install golang-1.20 -y
 # echo -e "export GOROOT=/usr/lib/go-1.20\nexport GOPATH=$HOME/go\nexport PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin" >> ~/.bashrc
 
 # Docker.
