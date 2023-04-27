@@ -318,7 +318,9 @@ func walkAndAppendPathByFileType(walkPath string, fileType string) []string {
 }
 
 // Concatenate all subtitles files in a given slice.
-func concatenateSubtitlesFiles(fileList []string, outputLocation string) {
+func concatenateSubtitlesFiles(fileList []string, outputLocation string, concatenateWaitGroup *sync.WaitGroup) {
+	// Sort the files
+	sort.Strings(fileList)
 	// Create a new empty Subtitles object to hold the combined SRT data
 	subtitles := astisub.NewSubtitles()
 	// Loop through each SRT file and add its data to the combined Subtitles object
@@ -336,4 +338,13 @@ func concatenateSubtitlesFiles(fileList []string, outputLocation string) {
 	if err != nil {
 		log.Println(err)
 	}
+	// Remove the files
+	for _, file := range fileList {
+		removeWaitGroup.Add(1)
+		go removeFile(file, &removeWaitGroup)
+	}
+	// Wait for the files to be removed
+	removeWaitGroup.Wait()
+	// Mark the wait group as done
+	concatenateWaitGroup.Done()
 }
