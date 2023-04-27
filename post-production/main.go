@@ -39,8 +39,10 @@ func main() {
 				var sdCardVideoFilesOnly []string = walkAndAppendPathByFileType(filePath, ".MP4")
 				// Get all the SRT files in the directory
 				var sdCardSRTFilesOnly []string = walkAndAppendPathByFileType(filePath, ".SRT")
+				// Const file names
+				randomFileName := generateRandomString(10) + "_" + getCurrentTime()
 				// Move all the files from the SD card to the local storage
-				newLocation := getCurrentWorkingDirectory() + generateRandomString(10) + "_" + getCurrentTime() + "/"
+				newLocation := getCurrentWorkingDirectory() + randomFileName + "/"
 				if !directoryExists(newLocation) {
 					createDirectory(newLocation, 0755)
 				}
@@ -63,8 +65,6 @@ func main() {
 				}
 				// Start the post processing on the local system here, as a go routine so that it can continue with the loop.
 				var videoFilesOnly []string = walkAndAppendPathByFileType(newLocation, ".MP4")
-				// Const file names
-				randomFileName := generateRandomString(10) + "_" + getCurrentTime()
 				// Create a location to store the final video
 				finalVideoLocation := newLocation + randomFileName + ".mp4"
 				// Create a location to store the final srt file
