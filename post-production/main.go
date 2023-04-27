@@ -8,6 +8,7 @@ import (
 
 var removeWaitGroup sync.WaitGroup
 var moveWaitGroup sync.WaitGroup
+var concatenateWaitGroup sync.WaitGroup
 
 func init() {
 	// Lockdown to the linux OS.
@@ -32,37 +33,27 @@ func main() {
 		// Check if the SD card is connected
 		if directoryExists(filePath) {
 			// Check if the SD card is empty
+			// Note: Add checks here to check specfic usb and not all drives for this.
 			if !isDirectoryEmpty(filePath) {
-				// Get all files in the directory
-				getAllFiles := walkAndAppendPath(filePath)
-				// Name all files in the directory
-				for _, file := range getAllFiles {
-					// Get the file extension
-					fileExtension := getFileExtension(file)
-					// Remove all files that are not MP4 or SRT
-					if fileExtension != ".MP4" && fileExtension != ".SRT" {
-						removeWaitGroup.Add(1)
-						// Remove the file
-						go removeFile(file, &removeWaitGroup)
-						log.Println("Removing file: " + file)
-					}
-				}
-				// Wait for all the files to be removed
-				removeWaitGroup.Wait()
+				// Get all the MP4 files in the directory
+				var sdCardVideoFilesOnly []string = walkAndAppendPathByFileType(filePath, ".MP4")
+				// Get all the SRT files in the directory
+				var sdCardSRTFilesOnly []string = walkAndAppendPathByFileType(filePath, ".SRT")
 				// Move all the files from the SD card to the local storage
 				newLocation := getCurrentWorkingDirectory() + generateRandomString(10) + "_" + getCurrentTime() + "/"
 				if !directoryExists(newLocation) {
 					createDirectory(newLocation, 0755)
 				}
 				// Move all the files from the SD card to the local storage, in a new directory with the date and time.
-				for _, file := range getAllFiles {
-					// Get the file extension
-					fileExtension := getFileExtension(file)
-					if fileExtension == ".MP4" || fileExtension == ".SRT" {
-						moveWaitGroup.Add(1)
-						go moveFile(file, newLocation, &moveWaitGroup)
-						log.Println("Moving file: " + file)
-					}
+				for _, file := range sdCardVideoFilesOnly {
+					moveWaitGroup.Add(1)
+					go moveFile(file, newLocation, &moveWaitGroup)
+					log.Println("Moving file: " + file)
+				}
+				for _, file := range sdCardSRTFilesOnly {
+					moveWaitGroup.Add(1)
+					go moveFile(file, newLocation, &moveWaitGroup)
+					log.Println("Moving file: " + file)
 				}
 				// Wait for all the files to be moved
 				moveWaitGroup.Wait()
@@ -71,13 +62,22 @@ func main() {
 					nukeDirectory(filePath)
 				}
 				// Start the post processing on the local system here, as a go routine so that it can continue with the loop.
+				var videoFilesOnly []string = walkAndAppendPathByFileType(newLocation, ".MP4")
+				// Create a location to store the final video
+				finalVideoLocation := newLocation + generateRandomString(10) + "_" + getCurrentTime() + ".MP4"
+				// Add one to the wait group
+				concatenateWaitGroup.Add(1)
+				// Concatenate all the videos
+				go concatenateVideos(videoFilesOnly, finalVideoLocation, &concatenateWaitGroup)
 			} else {
-				log.Println("SD card is empty")
+				log.Println("SD card is empty.")
 			}
 		} else {
-			log.Println("SD card is not connected.")
+			log.Println("SD card not found.")
 		}
 		// Wait 5 seconds before checking again
 		time.Sleep(5 * time.Second)
+		// Wait for all the files to be concatenated
+		concatenateWaitGroup.Wait()
 	}
 }
