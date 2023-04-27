@@ -67,6 +67,7 @@ func main() {
 				if !isDirectoryEmpty(filePath) {
 					nukeDirectory(filePath)
 				}
+				// Start the post processing on the local system here, as a go routine so that it can continue with the loop.
 			} else {
 				log.Println("SD card is empty")
 			}
