@@ -95,12 +95,11 @@ func directoryExists(path string) bool {
 }
 
 // Remove a file from the file system
-func removeFile(path string, removeWaitGroup *sync.WaitGroup) {
+func removeFile(path string) {
 	err := os.Remove(path)
 	if err != nil {
 		log.Println(err)
 	}
-	removeWaitGroup.Done()
 }
 
 // Remove a directory and all its contents.
@@ -257,7 +256,9 @@ func sha256OfFile(filePath string) string {
 }
 
 // Concatenate videos using ffmpeg
-func concatenateVideos(videoFiles []string, outputFile string) {
+func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGroup *sync.WaitGroup) {
+	log.Println("Concatenating videos...")
+	log.Println(videoFiles, outputFile)
 	inputs := "concat:"
 	// Build the input string for ffmpeg command
 	for fileIndex, file := range videoFiles {
@@ -276,10 +277,36 @@ func concatenateVideos(videoFiles []string, outputFile string) {
 	if err != nil {
 		log.Fatalf("Error running ffmpeg command: %v", err)
 	}
+	// Remove the files
+	for _, file := range videoFiles {
+		removeFile(file)
+	}
+	// Mark the wait group as done
+	concatenateWaitGroup.Done()
 }
 
 // Check if the application is installed and in path
 func commandExists(application string) bool {
 	_, err := exec.LookPath(application)
 	return err == nil
+}
+
+// Walk through a route, find all the files and attach them to a slice.
+func walkAndAppendPathByFileType(walkPath string, fileType string) []string {
+	var filePath []string
+	err := filepath.Walk(walkPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil
+		}
+		if fileExists(path) {
+			if getFileExtension(path) == fileType {
+				filePath = append(filePath, path)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return filePath
 }
