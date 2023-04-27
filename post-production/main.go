@@ -63,13 +63,18 @@ func main() {
 				}
 				// Start the post processing on the local system here, as a go routine so that it can continue with the loop.
 				var videoFilesOnly []string = walkAndAppendPathByFileType(newLocation, ".MP4")
+				// Const file names
+				randomFileName := generateRandomString(10) + "_" + getCurrentTime()
 				// Create a location to store the final video
-				finalVideoLocation := newLocation + generateRandomString(10) + "_" + getCurrentTime() + ".MP4"
+				finalVideoLocation := newLocation + randomFileName + ".mp4"
+				// Create a location to store the final srt file
+				finalSRTLocation := newLocation + randomFileName + ".srt"
 				// Add one to the wait group
-				concatenateWaitGroup.Add(1)
+				concatenateWaitGroup.Add(2)
 				// Concatenate all the videos
 				go concatenateVideos(videoFilesOnly, finalVideoLocation, &concatenateWaitGroup)
 				// Concatenate all the srt files
+				go concatenateSubtitlesFiles(videoFilesOnly, finalSRTLocation, &concatenateWaitGroup)
 			} else {
 				log.Println("SD card is empty.")
 			}
