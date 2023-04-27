@@ -14,6 +14,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/asticode/go-astisub"
 )
 
 // Check if there is a usb mounted and if there is return it.
@@ -313,4 +315,36 @@ func walkAndAppendPathByFileType(walkPath string, fileType string) []string {
 		log.Fatalln(err)
 	}
 	return filePath
+}
+
+// Concatenate all subtitles files in a given slice.
+func concatenateSubtitlesFiles(fileList []string, outputLocation string, concatenateWaitGroup *sync.WaitGroup) {
+	// Sort the files
+	sort.Strings(fileList)
+	// Create a new empty Subtitles object to hold the combined SRT data
+	subtitles := astisub.NewSubtitles()
+	// Loop through each SRT file and add its data to the combined Subtitles object
+	for _, file := range fileList {
+		file, err := astisub.OpenFile(file)
+		if err != nil {
+			log.Println(err)
+		}
+		for _, item := range file.Items {
+			subtitles.Items = append(subtitles.Items, item)
+		}
+	}
+	// Save the combined SRT data to a new file
+	err := subtitles.Write(outputLocation)
+	if err != nil {
+		log.Println(err)
+	}
+	// Remove the files
+	for _, file := range fileList {
+		removeWaitGroup.Add(1)
+		go removeFile(file, &removeWaitGroup)
+	}
+	// Wait for the files to be removed
+	removeWaitGroup.Wait()
+	// Mark the wait group as done
+	concatenateWaitGroup.Done()
 }
