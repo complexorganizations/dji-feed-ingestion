@@ -263,7 +263,7 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 		"!", "videoconvert",
 		"!", "videorate",
 		"!", "video/x-raw", "framerate=60/1",
-		"!", "x264enc", "bitrate=9000", "speed-preset=ultrafast", "key-int-max=120",
+		"!", "x264enc", "bitrate=9000", "speed-preset=ultrafast", "key-int-max=240",
 		"!", "flvmux", "name=mux", "streamable=true",
 		"!", "rtmpsink", "location=" + randomYoutubeURL + youtubeKey,
 		"audiotestsrc", "wave=4",
