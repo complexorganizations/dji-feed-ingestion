@@ -270,6 +270,7 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 		"!", "voaacenc", "bitrate=128000",
 		"!", "aacparse",
 		"!", "mux."
+	}
 	// Create an *exec.Cmd
 	command := exec.Command(cmd, args...)
 	// Run the command
