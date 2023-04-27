@@ -12,6 +12,8 @@ var moveWaitGroup sync.WaitGroup
 func init() {
 	// Lockdown to the linux OS.
 	lockdownToLinuxOperatingSystem()
+	// Check if the required programs are installed.
+	//
 }
 
 // Check if there is a SD card connected.
