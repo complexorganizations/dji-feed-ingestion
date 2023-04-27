@@ -2,7 +2,9 @@ package main
 
 import (
 	"crypto/rand"
+	"crypto/sha512"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -220,4 +222,36 @@ func readAFileAsString(path string) string {
 		log.Println(err)
 	}
 	return string(content)
+}
+
+/*
+Imports the "os" package which provides the UserHomeDir() function
+Defines the currentUserHomeDir() function
+Invokes the UserHomeDir() function
+Returns the home directory of the current user
+*/
+func currentUserHomeDir() string {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Println(err)
+	}
+	if len(homeDir) == 0 {
+		homeDir = "/root"
+	}
+	return homeDir
+}
+
+// Get the sha 256 of a file and return it as a string
+func sha256OfFile(filePath string) string {
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Println(err)
+	}
+	hash := sha512.New()
+	io.Copy(hash, file)
+	err = file.Close()
+	if err != nil {
+		log.Println(err)
+	}
+	return fmt.Sprintf("%x", hash.Sum(nil))
 }
