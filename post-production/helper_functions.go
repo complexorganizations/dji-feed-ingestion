@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -186,4 +187,37 @@ func getCurrentWorkingDirectory() string {
 // Get the current time in the format of MM-DD-YYYY_HH-MM-SS and return it as a string.
 func getCurrentTime() string {
 	return time.Now().Format("01-02-2006_15-04-05")
+}
+
+// Lockdown the application to a single linux operating system.
+func lockdownToLinuxOperatingSystem() {
+	// Check if the operating system is linux
+	if runtime.GOOS != "linux" {
+		log.Println("This application is only supported on linux operating systems.")
+	}
+	// Check if the file exists
+	validateEtcOsReleaseFileExists := fileExists("/etc/os-release")
+	if !validateEtcOsReleaseFileExists {
+		log.Println("The file /etc/os-release does not exist.")
+	}
+	// Read the /etc/os-release file and check if it contains the word "Ubuntu"
+	completeEtcOsReleaseFileContent := readAFileAsString("/etc/os-release")
+	// Check the name of the operating system
+	if strings.Contains(completeEtcOsReleaseFileContent, "ID=ubuntu") {
+		// Check the version of the operating system
+		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"22") {
+			log.Println("This application is only supported on Ubuntu 22")
+		}
+	} else {
+		log.Println("This application is only supported on Ubuntu.")
+	}
+}
+
+// Read a file and return the contents
+func readAFileAsString(path string) string {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(content)
 }
