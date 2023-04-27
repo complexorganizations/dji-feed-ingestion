@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/sha512"
 	"encoding/json"
@@ -273,11 +274,45 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 	}
 	// Create an *exec.Cmd
 	command := exec.Command(cmd, args...)
-	// Run the command
-	err := command.Run()
+	var output bytes.Buffer
+	command.Stderr = &output
+	// Start the command
+	err := command.Start()
 	// Check if there was an error
 	if err != nil {
 		log.Println(err)
+	}
+	stopChan := make(chan bool)
+	go func() {
+		lastOutputSize := 0
+		counter := 0
+		for {
+			select {
+			case <-stopChan:
+				return
+			case <-time.After(1 * time.Second):
+				currentOutputSize := output.Len()
+				if currentOutputSize == lastOutputSize {
+					counter++
+				} else {
+					counter = 0
+				}
+				// Kills the app after 30 seconds of not using it.
+				if counter >= 30 {
+					err := cmd.Process.Kill()
+					if err != nil {
+						log.Printf("Error killing command: %v", err)
+					}
+					return
+				}
+				lastOutputSize = currentOutputSize
+			}
+		}
+	}()
+	err = cmd.Wait()
+	stopChan <- true
+	if err != nil {
+		log.Printf("Command finished with error: %v", err)
 	}
 	// Set the rtspServerStreamingChannel to false
 	go addKeyValueToMap(rtspServerStreamingChannel, host, false)
