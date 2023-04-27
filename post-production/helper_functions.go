@@ -195,12 +195,12 @@ func getCurrentTime() string {
 func lockdownToLinuxOperatingSystem() {
 	// Check if the operating system is linux
 	if runtime.GOOS != "linux" {
-		log.Println("This application is only supported on linux operating systems.")
+		log.Fatalln("This application is only supported on linux operating systems.")
 	}
 	// Check if the file exists
 	validateEtcOsReleaseFileExists := fileExists("/etc/os-release")
 	if !validateEtcOsReleaseFileExists {
-		log.Println("The file /etc/os-release does not exist.")
+		log.Fatalln("The file /etc/os-release does not exist.")
 	}
 	// Read the /etc/os-release file and check if it contains the word "Ubuntu"
 	completeEtcOsReleaseFileContent := readAFileAsString("/etc/os-release")
@@ -208,10 +208,10 @@ func lockdownToLinuxOperatingSystem() {
 	if strings.Contains(completeEtcOsReleaseFileContent, "ID=ubuntu") {
 		// Check the version of the operating system
 		if !strings.Contains(completeEtcOsReleaseFileContent, "VERSION_ID=\"22") {
-			log.Println("This application is only supported on Ubuntu 22")
+			log.Fatalln("This application is only supported on Ubuntu 22")
 		}
 	} else {
-		log.Println("This application is only supported on Ubuntu.")
+		log.Fatalln("This application is only supported on Ubuntu.")
 	}
 }
 
