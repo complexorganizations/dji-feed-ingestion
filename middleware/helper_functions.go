@@ -299,7 +299,7 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 				}
 				// Kills the app after 30 seconds of not using it.
 				if counter >= 30 {
-					err := cmd.Process.Kill()
+					err := command.Process.Kill()
 					if err != nil {
 						log.Printf("Error killing command: %v", err)
 					}
@@ -309,7 +309,7 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 			}
 		}
 	}()
-	err = cmd.Wait()
+	err = command.Wait()
 	stopChan <- true
 	if err != nil {
 		log.Printf("Command finished with error: %v", err)
