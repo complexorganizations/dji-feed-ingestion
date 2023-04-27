@@ -255,3 +255,31 @@ func sha256OfFile(filePath string) string {
 	}
 	return fmt.Sprintf("%x", hash.Sum(nil))
 }
+
+// Concatenate videos using ffmpeg
+func concatenateVideos(videoFiles []string, outputFile string) {
+	inputs := "concat:"
+	// Build the input string for ffmpeg command
+	for fileIndex, file := range videoFiles {
+		// Add the file name to the input string
+		inputs = inputs + file
+		// Add a pipe if it is not the last file
+		if fileIndex < len(videoFiles)-1 {
+			inputs = inputs + "|"
+		}
+	}
+	// Execute the ffmpeg command
+	cmd := exec.Command("ffmpeg", "-i", inputs, "-c", "copy", outputFile)
+	// Run the command
+	err := cmd.Run()
+	// Check for errors
+	if err != nil {
+		log.Fatalf("Error running ffmpeg command: %v", err)
+	}
+}
+
+// Check if the application is installed and in path
+func commandExists(application string) bool {
+	_, err := exec.LookPath(application)
+	return err == nil
+}
