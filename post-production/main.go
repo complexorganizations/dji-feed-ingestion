@@ -62,6 +62,7 @@ func main() {
 				// Format the SD card
 				if !isDirectoryEmpty(filePath) {
 					nukeDirectory(filePath)
+					log.Println("SD card formatted.")
 				}
 				// Start the post processing on the local system here, as a go routine so that it can continue with the loop.
 				var videoFilesOnly []string = walkAndAppendPathByFileType(newLocation, ".MP4")
