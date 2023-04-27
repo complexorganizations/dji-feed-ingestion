@@ -69,6 +69,7 @@ func main() {
 				concatenateWaitGroup.Add(1)
 				// Concatenate all the videos
 				go concatenateVideos(videoFilesOnly, finalVideoLocation, &concatenateWaitGroup)
+				// Concatenate all the srt files
 			} else {
 				log.Println("SD card is empty.")
 			}
