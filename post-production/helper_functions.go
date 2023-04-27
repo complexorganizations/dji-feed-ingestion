@@ -95,11 +95,12 @@ func directoryExists(path string) bool {
 }
 
 // Remove a file from the file system
-func removeFile(path string) {
+func removeFile(path string, removeWaitGroup *sync.WaitGroup) {
 	err := os.Remove(path)
 	if err != nil {
 		log.Println(err)
 	}
+	removeWaitGroup.Done()
 }
 
 // Remove a directory and all its contents.
@@ -279,8 +280,11 @@ func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGr
 	}
 	// Remove the files
 	for _, file := range videoFiles {
-		removeFile(file)
+		removeWaitGroup.Add(1)
+		go removeFile(file, &removeWaitGroup)
 	}
+	// Wait for the files to be removed
+	removeWaitGroup.Wait()
 	// Mark the wait group as done
 	concatenateWaitGroup.Done()
 }
