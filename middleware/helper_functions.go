@@ -259,8 +259,8 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 		"rtspsrc", "location=" + host,
 		"!", "rtph264depay",
 		"!", "h264parse",
-		"!", "video/x-h264",
-		"!", "queue",
+		"!", "avdec_h264",
+		"!", "videoconvert",
 		"!", "x264enc", "bitrate=4500", "speed-preset=fast",
 		"!", "flvmux", "name=mux", "streamable=true",
 		"!", "rtmpsink", "location=" + randomYoutubeURL + youtubeKey,
@@ -269,8 +269,7 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 		"!", "audioresample",
 		"!", "voaacenc", "bitrate=128000",
 		"!", "aacparse",
-		"!", "mux.",
-	}
+		"!", "mux."
 	// Create an *exec.Cmd
 	command := exec.Command(cmd, args...)
 	// Run the command
