@@ -262,18 +262,14 @@ func sha256OfFile(filePath string) string {
 func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGroup *sync.WaitGroup) {
 	log.Println("Concatenating videos...")
 	log.Println(videoFiles, outputFile)
-	inputs := "concat:"
-	// Build the input string for ffmpeg command
-	for fileIndex, file := range videoFiles {
-		// Add the file name to the input string
-		inputs = inputs + file
-		// Add a pipe if it is not the last file
-		if fileIndex < len(videoFiles)-1 {
-			inputs = inputs + "|"
-		}
-	}
+	// Get the output directory
+	outputDirectory := filepath.Dir(outputFile)
+	// Create a temp path to store the video file log
+	tempVideoFilesPath := outputDirectory + "/tempVideoFiles.txt"
+	// Write the input string for ffmpeg command
+	videoConcatenateWriteFile(videoFiles, tempVideoFilesPath)
 	// Execute the ffmpeg command
-	cmd := exec.Command("ffmpeg", "-i", inputs, "-c", "copy", outputFile)
+	cmd := exec.Command("ffmpeg", "-f", "concat", "-safe", "0", "-i", tempVideoFilesPath, "-c", "copy", outputFile)
 	// Run the command
 	err := cmd.Run()
 	// Check for errors
@@ -291,6 +287,23 @@ func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGr
 	*/
 	// Mark the wait group as done
 	concatenateWaitGroup.Done()
+}
+
+// Write the list of video files to concatenate using ffmpeg
+func videoConcatenateWriteFile(videoFiles []string, fileName string) {
+	// Open the file for writing
+	file, err := os.Create(fileName)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer file.Close()
+	// Write each video file name to the file in the required format
+	for _, videoFile := range videoFiles {
+		_, err := file.WriteString(fmt.Sprintf("file '%s'\n", videoFile))
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
 }
 
 // Check if the application is installed and in path
