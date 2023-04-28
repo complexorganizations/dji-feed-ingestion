@@ -86,7 +86,7 @@ func main() {
 		}
 		// Wait 5 seconds before checking again
 		time.Sleep(5 * time.Second)
-		// Wait for all the files to be concatenated
-		concatenateWaitGroup.Wait()
 	}
+	// Wait for all the files to be concatenated
+	concatenateWaitGroup.Wait()
 }
