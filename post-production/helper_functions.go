@@ -280,13 +280,15 @@ func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGr
 	if err != nil {
 		log.Fatalf("Error running ffmpeg command: %v", err)
 	}
-	// Remove the files
-	for _, file := range videoFiles {
-		removeWaitGroup.Add(1)
-		go removeFile(file, &removeWaitGroup)
-	}
-	// Wait for the files to be removed
-	removeWaitGroup.Wait()
+	/*
+		// Remove the files
+		for _, file := range videoFiles {
+			removeWaitGroup.Add(1)
+			go removeFile(file, &removeWaitGroup)
+		}
+		// Wait for the files to be removed
+		removeWaitGroup.Wait()
+	*/
 	// Mark the wait group as done
 	concatenateWaitGroup.Done()
 }
