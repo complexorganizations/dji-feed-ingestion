@@ -164,28 +164,36 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 }
 
 // Forward data to google cloud vertex AI.
-func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup) {
-	// Set the rtspServerStreamingChannel to true
-	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	// Move the default file to a temporary file.
-	if fileExists(amazonKinesisDefaultPath) {
-		moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
+func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
+	select {
+	case <-ctx.Done():
+		fmt.Printf("Worker %d stopped\n", id)
+		return
+	default:
+		// Set the rtspServerStreamingChannel to true
+		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
+		// Move the default file to a temporary file.
+		if fileExists(amazonKinesisDefaultPath) {
+			moveFile(amazonKinesisDefaultPath, amazonKinesisTempPath)
+		}
+		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", googleCloudCredentials)
+		// Run the command to forward the data to vertex AI
+		cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		if err != nil {
+			log.Println(err)
+		}
+		// Once the data is forwarded, remove the temporary file.
+		if fileExists(amazonKinesisTempPath) {
+			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
+		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", googleCloudCredentials)
-	// Run the command to forward the data to vertex AI
-	cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
-	err := cmd.Run()
-	if err != nil {
-		log.Println(err)
-	}
-	// Once the data is forwarded, remove the temporary file.
-	if fileExists(amazonKinesisTempPath) {
-		moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
-	}
-	// Set the rtspServerStreamingChannel to false
-	go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done forwarding
-	forwardingWaitGroup.Done()
+	defer forwardingWaitGroup.Done()
 }
 
 // Forward data to AWS Kinesis Video Streams using gstreamer.
