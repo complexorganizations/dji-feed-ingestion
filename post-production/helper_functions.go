@@ -264,6 +264,7 @@ func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGr
 	log.Println(videoFiles, outputFile)
 	// Get the output directory
 	outputDirectory := filepath.Dir(outputFile)
+	// NOTE: Compress all the video files so they are smaller; combine the video files into one.
 	// Create a temp path to store the video file log
 	tempVideoFilesPath := outputDirectory + "/tempVideoFiles.txt"
 	// Write the input string for ffmpeg command
