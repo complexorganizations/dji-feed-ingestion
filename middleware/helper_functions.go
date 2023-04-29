@@ -188,9 +188,9 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		if fileExists(amazonKinesisTempPath) {
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
+	// Set the rtspServerStreamingChannel to false
+	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done forwarding
 	defer forwardingWaitGroup.Done()
 }
@@ -236,9 +236,9 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 		if err != nil {
 			log.Println(err)
 		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
+	// Set the rtspServerStreamingChannel to false
+	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Close the channel.
 	defer forwardingWaitGroup.Done()
 }
@@ -258,11 +258,11 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 		if err != nil {
 			log.Println(err)
 		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
+	// Set the rtspServerStreamingChannel to false
+	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Close the channel.
-	forwardingWaitGroup.Done()
+	defer forwardingWaitGroup.Done()
 }
 
 // Stream the video to youtube live.
@@ -303,9 +303,9 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 		if err != nil {
 			log.Println(err)
 		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
+	// Set the rtspServerStreamingChannel to false
+	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
@@ -336,9 +336,9 @@ func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *syn
 		if err != nil {
 			log.Println(err)
 		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
+	// Set the rtspServerStreamingChannel to false
+	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
@@ -358,9 +358,9 @@ func forwardDataToFacebookLive(host string, facebookKey string, forwardingWaitGr
 		if err != nil {
 			log.Println(err)
 		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
+	// Set the rtspServerStreamingChannel to false
+	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
@@ -380,9 +380,9 @@ func forwardDataToAnyRTMP(host string, rtmpURL string, forwardingWaitGroup *sync
 		if err != nil {
 			log.Println(err)
 		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
+	// Set the rtspServerStreamingChannel to false
+	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
