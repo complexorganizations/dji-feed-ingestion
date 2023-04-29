@@ -300,7 +300,15 @@ func main() {
 			}
 			log.Println("Map", rtspServerStreamingChannel)
 		}
-		// Check if the feed is being uploaded and be ready to cancel if no rtsp server is dead.
+		// Task: Cancel the context if the server is not alive.
+		// Check if there is a upload in progress.
+		if rtspServerStreamingChannel[server.Host] {
+			// Check if the server is alive and responding to requests
+			if !getValueFromMap(rtspServerStatusChannel, server.Host) {
+				// Cancel the context
+				cancel()
+			}
+		}
 		// This sleep determins how often the program checks if the RTSP server is alive and streaming.
 		time.Sleep(5 * time.Second)
 		// The counter for how many streams are being uploaded.
