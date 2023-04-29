@@ -3,7 +3,7 @@
 ### If you would want to participate in this project, kindly join the discord server.
 ### Discord: https://discord.gg/bSrurbBh
 
-[![IMAGE_ALT](https://img.youtube.com/vi/BOePnnHyHgo/0.jpg)](https://www.youtube.com/watch?v=BOePnnHyHgo)
+[![IMAGE_ALT](https://img.youtube.com/vi/Tp_YjSdbnuo/0.jpg)](https://www.youtube.com/watch?v=Tp_YjSdbnuo)
 
 ---
 ### Requirements:
