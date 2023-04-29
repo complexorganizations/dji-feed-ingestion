@@ -168,7 +168,7 @@ func checkRTSPServerAliveInBackground(rtspURL string) {
 func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion string, vertexStreams string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		fmt.Printf("Worker %d stopped\n", id)
+		log.Println("Worker Stopped.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
@@ -199,7 +199,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey string, secretKey string, awsRegion string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		fmt.Printf("Worker %d stopped\n", id)
+		log.Println("Worker Stopped.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
@@ -247,7 +247,7 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		fmt.Printf("Worker %d stopped\n", id)
+		log.Println("Worker Stopped.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
@@ -269,7 +269,7 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		fmt.Printf("Worker %d stopped\n", id)
+		log.Println("Worker Stopped.")
 		return
 	default:
 		// Create a array of strings for youtube url
@@ -314,7 +314,7 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		fmt.Printf("Worker %d stopped\n", id)
+		log.Println("Worker Stopped.")
 		return
 	default:
 		// Create an array of strings for twitch url
@@ -347,7 +347,7 @@ func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *syn
 func forwardDataToFacebookLive(host string, facebookKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		fmt.Printf("Worker %d stopped\n", id)
+		log.Println("Worker Stopped.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
@@ -369,7 +369,7 @@ func forwardDataToFacebookLive(host string, facebookKey string, forwardingWaitGr
 func forwardDataToAnyRTMP(host string, rtmpURL string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	select {
 	case <-ctx.Done():
-		fmt.Printf("Worker %d stopped\n", id)
+		log.Println("Worker Stopped.")
 		return
 	default:
 		// Set the rtspServerStreamingChannel to true
