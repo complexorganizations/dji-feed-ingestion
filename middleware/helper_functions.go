@@ -180,8 +180,6 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", googleCloudCredentials)
 		// Run the command to forward the data to vertex AI
 		cmd := exec.Command("vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
