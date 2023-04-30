@@ -194,9 +194,9 @@ YOUTUBE_DLP_LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/yt-dlp/yt-
 # The system's local path where the yt-dlp should be placed
 YOUTUBE_DLP_LOCAL_PATH="/usr/bin/yt-dlp"
 # Test video to download and evaluate from YouTube
-YOUTUBE_DLP_TEST_VIDEO_URL_ZERO="https://www.youtube.com/watch?v=uqoWOnP2EN4"
-YOUTUBE_DLP_TEST_VIDEO_URL_ONE="https://www.youtube.com/watch?v=nQOinVC5j9g"
-YOUTUBE_DLP_TEST_VIDEO_URL_TWO="https://www.youtube.com/watch?v=13bex6RXc6c"
+YOUTUBE_DLP_TEST_VIDEO_URL_ZERO="https://www.youtube.com/watch?v=BOePnnHyHgo"
+YOUTUBE_DLP_TEST_VIDEO_URL_ONE="https://www.youtube.com/watch?v=pXirYbJic98"
+YOUTUBE_DLP_TEST_VIDEO_URL_TWO="https://www.youtube.com/watch?v=Tp_YjSdbnuo"
 
 # Install mediamtx application.
 function install-mediamtx-application() {
