@@ -267,47 +267,50 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 
 // Stream the video to youtube live.
 func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
-	select {
-	case <-ctx.Done():
-		log.Println("Worker stopped")
-		return
-	default:
-		// Create a array of strings for youtube url
-		youtubeURL := []string{"rtmp://a.rtmp.youtube.com/live2/", "rtmp://b.rtmp.youtube.com/live2?backup=1/"}
-		// Get a random elmene from the array
-		randomYoutubeURL := randomElementFromSlice(youtubeURL)
-		// Set the rtspServerStreamingChannel to true
-		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-		cmd := "gst-launch-1.0"
-		args := []string{
-			"rtspsrc", "location=" + host,
-			"!", "rtph264depay",
-			"!", "h264parse",
-			"!", "avdec_h264",
-			"!", "videoconvert",
-			"!", "x264enc", "bitrate=5000", "speed-preset=ultrafast", "key-int-max=120",
-			"!", "flvmux", "name=mux", "streamable=true",
-			"!", "rtmpsink", "location=" + randomYoutubeURL + youtubeKey,
-			"audiotestsrc", "wave=4",
-			"!", "audioconvert",
-			"!", "audioresample",
-			"!", "voaacenc", "bitrate=128000",
-			"!", "aacparse",
-			"!", "mux.",
-		}
-		// Create an *exec.Cmd
-		command := exec.CommandContext(ctx, cmd, args...)
-		// Run the command
-		err := command.Run()
-		// Check if there was an error
-		if err != nil {
-			log.Println(err)
-		}
-		// Set the rtspServerStreamingChannel to false
-		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
-	}
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
+	//
+	for {
+		select {
+		case <-ctx.Done():
+			log.Println("Worker stopped")
+			return
+		default:
+			// Create a array of strings for youtube url
+			youtubeURL := []string{"rtmp://a.rtmp.youtube.com/live2/", "rtmp://b.rtmp.youtube.com/live2?backup=1/"}
+			// Get a random elmene from the array
+			randomYoutubeURL := randomElementFromSlice(youtubeURL)
+			// Set the rtspServerStreamingChannel to true
+			go addKeyValueToMap(rtspServerStreamingChannel, host, true)
+			cmd := "gst-launch-1.0"
+			args := []string{
+				"rtspsrc", "location=" + host,
+				"!", "rtph264depay",
+				"!", "h264parse",
+				"!", "avdec_h264",
+				"!", "videoconvert",
+				"!", "x264enc", "bitrate=5000", "speed-preset=ultrafast", "key-int-max=120",
+				"!", "flvmux", "name=mux", "streamable=true",
+				"!", "rtmpsink", "location=" + randomYoutubeURL + youtubeKey,
+				"audiotestsrc", "wave=4",
+				"!", "audioconvert",
+				"!", "audioresample",
+				"!", "voaacenc", "bitrate=128000",
+				"!", "aacparse",
+				"!", "mux.",
+			}
+			// Create an *exec.Cmd
+			command := exec.CommandContext(ctx, cmd, args...)
+			// Run the command
+			err := command.Run()
+			// Check if there was an error
+			if err != nil {
+				log.Println(err)
+			}
+			// Set the rtspServerStreamingChannel to false
+			go addKeyValueToMap(rtspServerStreamingChannel, host, false)
+		}
+	}
 }
 
 // Stream the video to twitch.
