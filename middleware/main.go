@@ -305,6 +305,8 @@ func main() {
 				if getValueFromMap(rtspServerStatusChannel, server.Host) == false {
 					// Cancel the context
 					cancel()
+					// Reset the context
+					ctx, cancel = context.WithCancel(context.Background())
 				}
 			}
 			// Debug
