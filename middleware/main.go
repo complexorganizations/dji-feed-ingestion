@@ -300,9 +300,9 @@ func main() {
 			}
 			// Task: Cancel the context if the server is not alive.
 			// Check if there is a upload in progress.
-			if rtspServerStreamingChannel[server.Host] {
+			if rtspServerStreamingChannel[server.Host] == true {
 				// Check if the server is alive and responding to requests
-				if !getValueFromMap(rtspServerStatusChannel, server.Host) {
+				if getValueFromMap(rtspServerStatusChannel, server.Host) == false {
 					// Cancel the context
 					cancel()
 				}
