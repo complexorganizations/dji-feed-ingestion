@@ -180,7 +180,7 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", googleCloudCredentials)
 		// Run the command to forward the data to vertex AI
 		cmd := exec.CommandContext(ctx, "vaictl", "-p", projectName, "-l", gcpRegion, "-c", "application-cluster-0", "--service-endpoint", "visionai.googleapis.com", "send", "rtsp", "to", "streams", vertexStreams, "--rtsp-uri", host)
-		err := cmd.Start()
+		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
 		}
@@ -188,9 +188,9 @@ func forwardDataToGoogleCloudVertexAI(host string, projectName string, gcpRegion
 		if fileExists(amazonKinesisTempPath) {
 			moveFile(amazonKinesisTempPath, amazonKinesisDefaultPath)
 		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	// Set the rtspServerStreamingChannel to false
-	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done forwarding
 	defer forwardingWaitGroup.Done()
 }
@@ -236,9 +236,9 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 		if err != nil {
 			log.Println(err)
 		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	// Set the rtspServerStreamingChannel to false
-	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Close the channel.
 	defer forwardingWaitGroup.Done()
 }
@@ -258,9 +258,9 @@ func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, 
 		if err != nil {
 			log.Println(err)
 		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	// Set the rtspServerStreamingChannel to false
-	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Close the channel.
 	defer forwardingWaitGroup.Done()
 }
@@ -296,16 +296,16 @@ func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGrou
 			"!", "mux.",
 		}
 		// Create an *exec.Cmd
-		command := exec.CommandContext(ctx ,cmd, args...)
+		command := exec.CommandContext(ctx, cmd, args...)
 		// Run the command
 		err := command.Run()
 		// Check if there was an error
 		if err != nil {
 			log.Println(err)
 		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	// Set the rtspServerStreamingChannel to false
-	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
@@ -336,9 +336,9 @@ func forwardDataToTwitch(host string, twitchKey string, forwardingWaitGroup *syn
 		if err != nil {
 			log.Println(err)
 		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	// Set the rtspServerStreamingChannel to false
-	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
@@ -354,13 +354,13 @@ func forwardDataToFacebookLive(host string, facebookKey string, forwardingWaitGr
 		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		cmd := exec.CommandContext(ctx, "ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", "rtmps://live-api-s.facebook.com:443/rtmp/"+facebookKey)
 		// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+"rtmps://live-api-s.facebook.com:443/rtmp/"+facebookKey)
-		err := cmd.Start()
+		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
 		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	// Set the rtspServerStreamingChannel to false
-	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
@@ -376,13 +376,13 @@ func forwardDataToAnyRTMP(host string, rtmpURL string, forwardingWaitGroup *sync
 		go addKeyValueToMap(rtspServerStreamingChannel, host, true)
 		cmd := exec.CommandContext(ctx, "ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", rtmpURL)
 		// cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+rtmpURL)
-		err := cmd.Start()
+		err := cmd.Run()
 		if err != nil {
 			log.Println(err)
 		}
+		// Set the rtspServerStreamingChannel to false
+		go addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	}
-	// Set the rtspServerStreamingChannel to false
-	defer addKeyValueToMap(rtspServerStreamingChannel, host, false)
 	// Done with the wait group
 	defer forwardingWaitGroup.Done()
 }
