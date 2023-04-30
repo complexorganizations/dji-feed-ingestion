@@ -258,8 +258,42 @@ func sha256OfFile(filePath string) string {
 	return fmt.Sprintf("%x", hash.Sum(nil))
 }
 
+// Compress a video video file using ffmpeg
+func compressVideo(videoFile string, compressWaitGroup *sync.WaitGroup) {
+	log.Println("Compressing video file: " + videoFile)
+	// Get the file path only from the video file
+	fileDirectoryOnly := videoFile[0:strings.LastIndex(videoFile, "/")]
+	// Get the file name only from the file path, remove the extension
+	fileNameOnly := videoFile[strings.LastIndex(videoFile, "/")+1 : strings.LastIndex(videoFile, ".")]
+	// Create the compressed video file name
+	compressedVideoFile := fileDirectoryOnly + "/" + fileNameOnly + "_compressed.mp4"
+	// Compress the video file
+	cmd := exec.Command("ffmpeg", "-i", videoFile, "-vcodec", "libx265", "-crf", "23", compressedVideoFile)
+	// Run the command
+	err := cmd.Run()
+	// Check if there was an error
+	if err != nil {
+		log.Println(err)
+	}
+	// Remove the original video file
+	// os.Remove(videoFile)
+	// Rename the compressed video file to the original video file name
+	// os.Rename(compressedVideoFile, videoFile)
+	// Close the wait group
+	compressWaitGroup.Done()
+}
+
 // Concatenate videos using ffmpeg
 func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGroup *sync.WaitGroup) {
+	// Compress all the video files so they are smaller; combine the video files into one.
+	compressWaitGroup := sync.WaitGroup{}
+	for _, videoFile := range videoFiles {
+		compressWaitGroup.Add(1)
+		go compressVideo(videoFile, &compressWaitGroup)
+	}
+	// Wait for all the video files to be compressed
+	compressWaitGroup.Wait()
+	// Concatenate the video files
 	log.Println("Concatenating videos...")
 	log.Println(videoFiles, outputFile)
 	// Get the output directory
