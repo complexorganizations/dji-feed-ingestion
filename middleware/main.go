@@ -261,6 +261,8 @@ func main() {
 	var rtspServerRunCounter = make(map[string]int)
 	// Var counter
 	var counter int
+	// Create a map for the cancel functions
+	var cancelFuncs = make(map[string]context.CancelFunc)
 	for {
 		for i := 0; i < numberOfClientsAllowed; i++ {
 			// Start the cancel and the context for the RTSP Server
@@ -277,8 +279,13 @@ func main() {
 					log.Println("#2:" + server.Host + strconv.FormatBool(getValueFromMap(rtspServerStatusChannel, server.Host)))
 					// Check if the server is alive and responding to requests
 					if getValueFromMap(rtspServerStatusChannel, server.Host) {
+						// Add key-value pair to the map
+						cancelFuncs[server.Host] = cancel
+						// Increment the counter
 						counter = counter + 1
+						// Log the counter
 						log.Println("#3:" + server.Host + strconv.FormatBool(getValueFromMap(rtspServerStatusChannel, server.Host)))
+						// Add one to the wait group
 						uploadWaitGroup.Add(1)
 						if awsKVS {
 							go forwardDataToAmazonKinesisStreams(server.Host, server.AmazonKinesisVideoStreams.KinesisStream, accessKey, secretKey, server.AmazonKinesisVideoStreams.DefaultRegion, &uploadWaitGroup, ctx)
@@ -305,7 +312,7 @@ func main() {
 				// Check if the server is alive and responding to requests
 				if getValueFromMap(rtspServerStatusChannel, server.Host) == false {
 					// Cancel the context
-					cancel()
+					cancelFuncs[server.Host]()
 				}
 			}
 			// Debug
