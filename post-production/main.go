@@ -6,9 +6,11 @@ import (
 	"time"
 )
 
-var removeWaitGroup sync.WaitGroup
-var moveWaitGroup sync.WaitGroup
-var concatenateWaitGroup sync.WaitGroup
+var (
+	removeWaitGroup      sync.WaitGroup
+	moveWaitGroup        sync.WaitGroup
+	concatenateWaitGroup sync.WaitGroup
+)
 
 func init() {
 	// Lockdown to the linux OS.
