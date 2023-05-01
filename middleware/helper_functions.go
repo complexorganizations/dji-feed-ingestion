@@ -18,7 +18,10 @@ import (
 	"time"
 
 	"github.com/bluenviron/gortsplib/v3"
+	"github.com/bluenviron/gortsplib/v3/pkg/formats"
+	"github.com/bluenviron/gortsplib/v3/pkg/media"
 	"github.com/bluenviron/gortsplib/v3/pkg/url"
+	"github.com/pion/rtp"
 )
 
 var (
@@ -666,4 +669,71 @@ func randomElementFromSlice(slice []string) string {
 		log.Println(err)
 	}
 	return slice[someRandomNumber.Int64()]
+}
+
+// Check the length of a RTSP stream packet and determine if the client is still connected.
+func checkRTSPStreamPacketConnection(host string) bool {
+	// Create a new client
+	rtspClient := gortsplib.Client{}
+	// Parse the URL
+	url, err := url.Parse(host)
+	// Log any errors
+	if err != nil {
+		log.Println(err)
+	}
+	// Connect to the server
+	err = rtspClient.Start(url.Scheme, url.Host)
+	// Log any errors
+	if err != nil {
+		log.Println(err)
+	}
+	// Find published medias
+	medias, baseURL, _, err := rtspClient.Describe(url)
+	// Log any errors
+	if err != nil {
+		log.Println(err)
+	}
+	// Setup all medias
+	err = rtspClient.SetupAll(medias, baseURL)
+	// Log any errors
+	if err != nil {
+		log.Println(err)
+	}
+	// Create two variables to store the payload length
+	var lessThanFiveHundred int
+	var greaterThanFiveHundred int
+	// Called when a RTP packet arrives
+	rtspClient.OnPacketRTPAny(func(medi *media.Media, forma formats.Format, pkt *rtp.Packet) {
+		if len(pkt.Payload) < 500 {
+			lessThanFiveHundred = lessThanFiveHundred + 1
+		} else if len(pkt.Payload) > 500 {
+			greaterThanFiveHundred = greaterThanFiveHundred + 1
+		}
+	})
+	// Start playing
+	_, err = rtspClient.Play(nil)
+	// Log any errors
+	if err != nil {
+		log.Println(err)
+	}
+	// Wait for 10 seconds and then close the connection
+	time.Sleep(10 * time.Second)
+	// Close the connection
+	rtspClient.Close()
+	// Return true if there are more packets with a payload length than 500
+	return greaterThanFiveHundred > lessThanFiveHundred
+}
+
+// Check the packet length of a RTSP stream in a loop in the background.
+func checkRTSPStreamPacketConnectionInLoop(host string) {
+	for {
+		// Check if the server is alive
+		if checkRTSPStreamPacketConnection(host) {
+			go addKeyValueToMap(rtspServerPacketChannel, host, true)
+		} else {
+			go addKeyValueToMap(rtspServerPacketChannel, host, false)
+		}
+		// Sleep for 1 minute before checking again
+		time.Sleep(1 * time.Minute)
+	}
 }
