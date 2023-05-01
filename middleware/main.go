@@ -329,7 +329,7 @@ func main() {
 				}
 			}
 			// Debug
-			log.Println("Map", rtspServerStreamingChannel)
+			log.Println("Current forwarding status map: ", rtspServerStreamingChannel)
 		}
 		// This sleep determins how often the program checks if the RTSP server is alive and streaming.
 		time.Sleep(5 * time.Second)
