@@ -727,13 +727,18 @@ func checkRTSPStreamPacketConnection(host string) bool {
 // Check the packet length of a RTSP stream in a loop in the background.
 func checkRTSPStreamPacketConnectionInLoop(host string) {
 	for {
-		// Check if the server is alive
-		if checkRTSPStreamPacketConnection(host) {
-			go addKeyValueToMap(rtspServerPacketChannel, host, true)
+		// Check if the server is online
+		if getValueFromMap(rtspServerStatusChannel, host) {
+			// Check if the packet are still being sent
+			if checkRTSPStreamPacketConnection(host) {
+				go addKeyValueToMap(rtspServerPacketChannel, host, true)
+			} else {
+				go addKeyValueToMap(rtspServerPacketChannel, host, false)
+			}
 		} else {
 			go addKeyValueToMap(rtspServerPacketChannel, host, false)
 		}
-		// Sleep for 15 minute before checking again
-		time.Sleep(15 * time.Second)
+		// Sleep for 10 seconds before checking again
+		time.Sleep(10 * time.Second)
 	}
 }
