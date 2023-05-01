@@ -239,6 +239,8 @@ func init() {
 		validateJSONLength("RTMP Stream Name", server.RtmpServer.ConnectionString)
 		// Check if the rtsp server is alive and responding to requests
 		go checkRTSPServerAliveInBackground(server.Host)
+		// Check if the rtsp server is sending packets
+		go checkRTSPStreamPacketConnectionInLoop(server.Host)
 	}
 	// Note: This is a temp location for this and other location will be better for this.
 	go checkConfigChanges()
@@ -279,11 +281,9 @@ func main() {
 					rtspServerRunCounter[server.Host] = 1
 					log.Println("#2:" + server.Host + strconv.FormatBool(getValueFromMap(rtspServerStatusChannel, server.Host)))
 					// Check if the server is alive and responding to requests
-					if getValueFromMap(rtspServerStatusChannel, server.Host) {
+					if getValueFromMap(rtspServerStatusChannel, server.Host) && getValueFromMap(rtspServerPacketChannel, server.Host) {
 						// Add key-value pair to the map
 						cancelFuncs[server.Host] = cancel
-						// Check the packet length in the background
-						go checkRTSPStreamPacketConnectionInLoop(server.Host)
 						// Increment the counter
 						counter = counter + 1
 						// Log the counter
