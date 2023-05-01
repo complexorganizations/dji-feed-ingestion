@@ -716,8 +716,8 @@ func checkRTSPStreamPacketConnection(host string) bool {
 	if err != nil {
 		log.Println(err)
 	}
-	// Wait for 10 seconds and then close the connection
-	time.Sleep(10 * time.Second)
+	// Wait for 5 seconds and then close the connection
+	time.Sleep(5 * time.Second)
 	// Close the connection
 	rtspClient.Close()
 	// Return true if there are more packets with a payload length than 500
@@ -733,7 +733,7 @@ func checkRTSPStreamPacketConnectionInLoop(host string) {
 		} else {
 			go addKeyValueToMap(rtspServerPacketChannel, host, false)
 		}
-		// Sleep for 1 minute before checking again
-		time.Sleep(1 * time.Minute)
+		// Sleep for 30 minute before checking again
+		time.Sleep(30 * time.Second)
 	}
 }
