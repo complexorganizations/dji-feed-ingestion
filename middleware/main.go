@@ -19,6 +19,7 @@ var (
 	currentJsonValue           interface{}
 	rtspServerStatusChannel    = make(map[string]bool)
 	rtspServerStreamingChannel = make(map[string]bool)
+	rtspServerPacketChannel    = make(map[string]bool)
 	debug                      bool
 	awsKVS                     bool
 	awsIVS                     bool
@@ -281,6 +282,8 @@ func main() {
 					if getValueFromMap(rtspServerStatusChannel, server.Host) {
 						// Add key-value pair to the map
 						cancelFuncs[server.Host] = cancel
+						// Check the packet length in the background
+						go checkRTSPStreamPacketConnectionInLoop(server.Host)
 						// Increment the counter
 						counter = counter + 1
 						// Log the counter
@@ -311,6 +314,11 @@ func main() {
 			if getValueFromMap(rtspServerStreamingChannel, server.Host) == true {
 				// Check if the server is alive and responding to requests
 				if getValueFromMap(rtspServerStatusChannel, server.Host) == false {
+					// Cancel the context
+					cancelFuncs[server.Host]()
+				}
+				// Check if the packet connection is alive
+				if getValueFromMap(rtspServerPacketChannel, server.Host) == false {
 					// Cancel the context
 					cancelFuncs[server.Host]()
 				}
