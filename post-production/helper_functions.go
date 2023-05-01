@@ -276,9 +276,7 @@ func compressVideo(videoFile string, compressWaitGroup *sync.WaitGroup) {
 		log.Println(err)
 	}
 	// Remove the original video file
-	// os.Remove(videoFile)
-	// Rename the compressed video file to the original video file name
-	// os.Rename(compressedVideoFile, videoFile)
+	os.Remove(videoFile)
 	// Close the wait group
 	compressWaitGroup.Done()
 }
