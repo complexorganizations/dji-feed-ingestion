@@ -305,20 +305,27 @@ func main() {
 						} else if rtmp {
 							go forwardDataToAnyRTMP(server.Host, server.RtmpServer.ConnectionString, &uploadWaitGroup, ctx)
 						}
+					} else {
+						log.Println("Server is not alive: " + server.Host)
+						log.Println("Server is not sending packets: " + server.Host)
 					}
 					rtspServerRunCounter[server.Host] = 0
 				}
+			} else {
+				log.Println("Server is already streaming: " + server.Host)
 			}
 			// Task: Cancel the context if the server is not alive.
 			// Check if there is a upload in progress.
 			if getValueFromMap(rtspServerStreamingChannel, server.Host) == true {
 				// Check if the server is alive and responding to requests
 				if getValueFromMap(rtspServerStatusChannel, server.Host) == false {
+					log.Println("Canceling the context for: " + server.Host + " because the server is not alive.")
 					// Cancel the context
 					cancelFuncs[server.Host]()
 				}
 				// Check if the packet connection is alive
 				if getValueFromMap(rtspServerPacketChannel, server.Host) == false {
+					log.Println("Canceling the context for: " + server.Host + " because the server is not sending packets.")
 					// Cancel the context
 					cancelFuncs[server.Host]()
 				}
