@@ -733,7 +733,7 @@ func checkRTSPStreamPacketConnectionInLoop(host string) {
 		} else {
 			go addKeyValueToMap(rtspServerPacketChannel, host, false)
 		}
-		// Sleep for 30 minute before checking again
-		time.Sleep(30 * time.Second)
+		// Sleep for 15 minute before checking again
+		time.Sleep(15 * time.Second)
 	}
 }
