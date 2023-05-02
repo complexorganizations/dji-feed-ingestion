@@ -283,14 +283,16 @@ func compressVideo(videoFile string, compressWaitGroup *sync.WaitGroup) {
 
 // Concatenate videos using ffmpeg
 func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGroup *sync.WaitGroup) {
-	// Compress all the video files so they are smaller; combine the video files into one.
-	compressWaitGroup := sync.WaitGroup{}
-	for _, videoFile := range videoFiles {
-		compressWaitGroup.Add(1)
-		go compressVideo(videoFile, &compressWaitGroup)
-	}
-	// Wait for all the video files to be compressed
-	compressWaitGroup.Wait()
+	/*
+		// Compress all the video files so they are smaller; combine the video files into one.
+		compressWaitGroup := sync.WaitGroup{}
+		for _, videoFile := range videoFiles {
+			compressWaitGroup.Add(1)
+			go compressVideo(videoFile, &compressWaitGroup)
+		}
+		// Wait for all the video files to be compressed
+		compressWaitGroup.Wait()
+	*/
 	// Concatenate the video files
 	log.Println("Concatenating videos...")
 	log.Println(videoFiles, outputFile)
@@ -298,7 +300,7 @@ func concatenateVideos(videoFiles []string, outputFile string, concatenateWaitGr
 	outputDirectory := filepath.Dir(outputFile)
 	// NOTE: Compress all the video files so they are smaller; combine the video files into one.
 	// Create a temp path to store the video file log
-	tempVideoFilesPath := outputDirectory + "/tempVideoFiles.txt"
+	tempVideoFilesPath := outputDirectory + "/tempCombineVideos.txt"
 	// Write the input string for ffmpeg command
 	videoConcatenateWriteFile(videoFiles, tempVideoFilesPath)
 	// Execute the ffmpeg command
