@@ -34,7 +34,19 @@ func main() {
 		filePath := mountPoint + "/"
 		// Check if the SD card is connected
 		if directoryExists(filePath) {
-			// Check if the SD card is empty
+			// Check if the validation file exists
+			if fileExists(filePath + "validation.txt") {
+				// Read the validation file
+				validationFileContents := readAFileAsString(filePath + "validation.txt")
+				// Check if the validation file is valid
+				if validateHMACMassageAuthentication([]byte("RANDOM_CONTENT"), []byte("RANDOM_PASSWORD"), validationFileContents) {
+					log.Println("Validation file is valid.")
+				} else {
+					log.Println("Validation file is not valid.")
+				}
+			} else {
+				log.Println("Validation file not found.")
+			}
 			// Note: Add checks here to check specfic usb and not all drives for this.
 			if !isDirectoryEmpty(filePath) {
 				// Get all the MP4 files in the directory
@@ -66,6 +78,9 @@ func main() {
 					nukeDirectory(filePath)
 					log.Println("SD card formatted.")
 				}
+				// Write the data to the SD card for the next flight
+				writeToFile(filePath+"validation.txt", getHMACMessageAuthentication([]byte("RANDOM_CONTENT"), []byte("RANDOM_PASSWORD")))
+				log.Println("Please remove the SD card.")
 				// Start the post processing on the local system here, as a go routine so that it can continue with the loop.
 				var videoFilesOnly []string = walkAndAppendPathByFileType(newLocation, ".MP4")
 				// Create the variable to store the srt files
