@@ -188,9 +188,9 @@ func getCurrentWorkingDirectory() string {
 	return filepath.Dir(currentFileName) + "/"
 }
 
-// Get the current time in the format of MM-DD-YYYY_HH-MM-SS and return it as a string.
+// Get the current time in the format of MM-DD-YYYY and return it as a string.
 func getCurrentTime() string {
-	return time.Now().Format("01-02-2006_15-04-05")
+	return time.Now().Format("01-02-2006")
 }
 
 // Lockdown the application to a single linux operating system.
