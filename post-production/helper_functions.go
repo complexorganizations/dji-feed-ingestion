@@ -27,7 +27,7 @@ func getUSBMountPoint() string {
 	}
 	lines := strings.Split(string(output), "\n")
 	for _, line := range lines {
-		if strings.Contains(line, "/media") || strings.Contains(line, "/run/media") {
+		if strings.Contains(line, "Mavic-3-") {
 			fields := strings.Fields(line)
 			return fields[len(fields)-1]
 		}
