@@ -1,8 +1,11 @@
 package main
 
 import (
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha256"
 	"crypto/sha512"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"log"
@@ -399,4 +402,32 @@ func concatenateSubtitlesFiles(fileList []string, outputLocation string, concate
 	removeWaitGroup.Wait()
 	// Mark the wait group as done
 	concatenateWaitGroup.Done()
+}
+
+// Get the hmac message authentication
+func getHMACMessageAuthentication(content []byte, password []byte) string {
+	hash := hmac.New(sha256.New, password)
+	hash.Write(content)
+	return hex.EncodeToString(hash.Sum(nil))
+}
+
+// Validate HMAC for message authentication
+func validateHMACMassageAuthentication(content []byte, password []byte, contentSHA string) bool {
+	decodedSHA, err := hex.DecodeString(contentSHA)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	mac := hmac.New(sha256.New, password)
+	mac.Write(content)
+	return hmac.Equal(decodedSHA, mac.Sum(nil))
+}
+
+/* It takes in a path and content to write to that file.
+It uses the os.WriteFile function to write the content to that file.
+It checks for errors and logs them. */
+func writeToFile(path string, content string) {
+	err := os.WriteFile(path, []byte(content), 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
