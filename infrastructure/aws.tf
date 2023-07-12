@@ -1,7 +1,7 @@
 // Create a VPC in AWS.
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.19.0"
+  version = "5.0.0"
 }
 
 module "vpc" {
@@ -21,7 +21,7 @@ module "vpc" {
 // Security Groups
 module "security-group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "4.17.1"
+  version = "5.1.0"
 }
 
 module "security_group" {
@@ -50,7 +50,7 @@ module "security_group" {
 // S3
 module "s3-bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "3.7.0"
+  version = "3.14.0"
 }
 
 module "s3_bucket" {
@@ -65,7 +65,7 @@ module "s3_bucket" {
 // EC2
 module "ec2-instance" {
   source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "4.3.0"
+  version = "5.2.1"
 }
 
 module "ec2_instance" {
@@ -88,7 +88,7 @@ module "ec2_instance" {
 // Auto scale the ec2
 module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
-  version = "6.9.0"
+  version = "6.10.0"
   # insert the 1 required variable here
 }
 
