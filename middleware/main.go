@@ -23,9 +23,6 @@ var (
 	debug                      bool
 	awsKVS                     bool
 	gcp                        bool
-	yt                         bool
-	twitch                     bool
-	rtmp                       bool
 	// Google Cloud Credentials
 	googleCloudCredentials = currentUserHomeDir() + "/.config/gcloud/application_default_credentials.json"
 	// Number of clients allowed on the system.
@@ -73,9 +70,6 @@ type HostStruct struct {
 	Host                          string                        `json:"host"`
 	AmazonKinesisVideoStreams     AmazonKinesisVideoStreams     `json:"amazon_kinesis_video_streams"`
 	GoogleCloudVertexAiVision     GoogleCloudVertexAiVision     `json:"google_cloud_vertex_ai_vision"`
-	YoutubeLiveStream             YoutubeLiveStream             `json:"youtube_live_stream"`
-	TwitchLiveStream              TwitchLiveStream              `json:"twitch_live_stream"`
-	RtmpServer                    RtmpServer                    `json:"rtmp_server"`
 }
 
 type AmazonKinesisVideoStreams struct {
@@ -89,18 +83,6 @@ type GoogleCloudVertexAiVision struct {
 	VertexAiVisionStream string `json:"vertex_ai_vision_stream"`
 }
 
-type YoutubeLiveStream struct {
-	StreamKey string `json:"stream_key"`
-}
-
-type TwitchLiveStream struct {
-	StreamKey string `json:"stream_key"`
-}
-
-type RtmpServer struct {
-	ConnectionString string `json:"connection_string"`
-}
-
 func init() {
 	// Validate the operating system
 	lockdownToLinuxOperatingSystem()
@@ -112,9 +94,6 @@ func init() {
 		tempDebug := flag.Bool("debug", false, "Determine if this is a debug run.")
 		tempAWSKVS := flag.Bool("aws_kvs", false, "Determine if this is a AWS run.")
 		tempGCP := flag.Bool("gcp", false, "Determine if this is a GCP run.")
-		tempYT := flag.Bool("yt", false, "Determine if this is a YT run.")
-		tempTwitch := flag.Bool("twitch", false, "Determine if this is a Twitch run.")
-		tempRTMP := flag.Bool("rtmp", false, "Determine if this is a Any RTMP run.")
 		flag.Parse()
 		// Set the values to the global variables.
 		applicationConfigFile = *tempConfig
@@ -122,15 +101,12 @@ func init() {
 		debug = *tempDebug
 		awsKVS = *tempAWSKVS
 		gcp = *tempGCP
-		yt = *tempYT
-		twitch = *tempTwitch
-		rtmp = *tempRTMP
 	} else {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Only run one of the three options.
-	if awsKVS && gcp && yt && twitch && rtmp {
+	if awsKVS && gcp {
 		log.Fatalln("Error: You can only run one of the -help options.")
 	}
 	// Check if the system has the required tools and is installed in path.
@@ -192,12 +168,6 @@ func init() {
 		validateJSONLength("Google Project Name", server.GoogleCloudVertexAiVision.ProjectName)
 		validateJSONLength("Google Default Region", server.GoogleCloudVertexAiVision.DefaultRegion)
 		validateJSONLength("Google Vertex AI Vision Stream", server.GoogleCloudVertexAiVision.VertexAiVisionStream)
-		// YouTube
-		validateJSONLength("YouTube Stream Name", server.YoutubeLiveStream.StreamKey)
-		// Twitch
-		validateJSONLength("Twitch Stream Name", server.TwitchLiveStream.StreamKey)
-		// RTMP
-		validateJSONLength("RTMP Stream Name", server.RtmpServer.ConnectionString)
 		// Check if the rtsp server is alive and responding to requests
 		go checkRTSPServerAliveInBackground(server.Host)
 		// Check if the rtsp server is sending packets
@@ -256,12 +226,6 @@ func main() {
 							go forwardDataToAmazonKinesisStreams(server.Host, server.AmazonKinesisVideoStreams.KinesisStream, accessKey, secretKey, server.AmazonKinesisVideoStreams.DefaultRegion, &uploadWaitGroup, ctx)
 						} else if gcp {
 							go forwardDataToGoogleCloudVertexAI(server.Host, server.GoogleCloudVertexAiVision.ProjectName, server.GoogleCloudVertexAiVision.DefaultRegion, server.GoogleCloudVertexAiVision.VertexAiVisionStream, &uploadWaitGroup, ctx)
-						} else if yt {
-							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup, ctx)
-						} else if twitch {
-							go forwardDataToTwitch(server.Host, server.TwitchLiveStream.StreamKey, &uploadWaitGroup, ctx)
-						} else if rtmp {
-							go forwardDataToAnyRTMP(server.Host, server.RtmpServer.ConnectionString, &uploadWaitGroup, ctx)
 						}
 					} else {
 						log.Println("Server is not alive: " + server.Host)
