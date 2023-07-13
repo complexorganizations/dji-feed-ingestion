@@ -22,7 +22,6 @@ var (
 	rtspServerPacketChannel    = make(map[string]bool)
 	debug                      bool
 	awsKVS                     bool
-	awsIVS                     bool
 	gcp                        bool
 	yt                         bool
 	twitch                     bool
@@ -123,7 +122,6 @@ func init() {
 		tempLog := flag.String("log", "log.txt", "The location of the log file.")
 		tempDebug := flag.Bool("debug", false, "Determine if this is a debug run.")
 		tempAWSKVS := flag.Bool("aws_kvs", false, "Determine if this is a AWS run.")
-		tempAWSIVS := flag.Bool("aws_ivs", false, "Determine if this is a AWS run.")
 		tempGCP := flag.Bool("gcp", false, "Determine if this is a GCP run.")
 		tempYT := flag.Bool("yt", false, "Determine if this is a YT run.")
 		tempTwitch := flag.Bool("twitch", false, "Determine if this is a Twitch run.")
@@ -135,7 +133,6 @@ func init() {
 		applicationLogFile = *tempLog
 		debug = *tempDebug
 		awsKVS = *tempAWSKVS
-		awsIVS = *tempAWSIVS
 		gcp = *tempGCP
 		yt = *tempYT
 		twitch = *tempTwitch
@@ -146,7 +143,7 @@ func init() {
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Only run one of the three options.
-	if awsKVS && awsIVS && gcp && yt && twitch && facebook && rtmp {
+	if awsKVS && gcp && yt && twitch && facebook && rtmp {
 		log.Fatalln("Error: You can only run one of the -help options.")
 	}
 	// Check if the system has the required tools and is installed in path.
@@ -232,7 +229,7 @@ func main() {
 	// Setup the variables for aws.
 	var accessKey string
 	var secretKey string
-	if awsIVS || awsKVS {
+	if awsKVS {
 		// Get the AWS Credentials
 		accessKey, secretKey = parseAWSCredentialsFile()
 	} else if gcp {
@@ -276,8 +273,6 @@ func main() {
 							go forwardDataToAmazonKinesisStreams(server.Host, server.AmazonKinesisVideoStreams.KinesisStream, accessKey, secretKey, server.AmazonKinesisVideoStreams.DefaultRegion, &uploadWaitGroup, ctx)
 						} else if gcp {
 							go forwardDataToGoogleCloudVertexAI(server.Host, server.GoogleCloudVertexAiVision.ProjectName, server.GoogleCloudVertexAiVision.DefaultRegion, server.GoogleCloudVertexAiVision.VertexAiVisionStream, &uploadWaitGroup, ctx)
-						} else if awsIVS {
-							go forwardDataToAmazonIVS(server.Host, server.AmazonInteractiveVideoService.IvsStream, accessKey, secretKey, &uploadWaitGroup, ctx)
 						} else if yt {
 							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup, ctx)
 						} else if twitch {
