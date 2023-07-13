@@ -25,7 +25,6 @@ var (
 	gcp                        bool
 	yt                         bool
 	twitch                     bool
-	facebook                   bool
 	rtmp                       bool
 	// Google Cloud Credentials
 	googleCloudCredentials = currentUserHomeDir() + "/.config/gcloud/application_default_credentials.json"
@@ -76,7 +75,6 @@ type HostStruct struct {
 	GoogleCloudVertexAiVision     GoogleCloudVertexAiVision     `json:"google_cloud_vertex_ai_vision"`
 	YoutubeLiveStream             YoutubeLiveStream             `json:"youtube_live_stream"`
 	TwitchLiveStream              TwitchLiveStream              `json:"twitch_live_stream"`
-	FacebookLiveStream            FacebookLiveStream            `json:"facebook_live_stream"`
 	RtmpServer                    RtmpServer                    `json:"rtmp_server"`
 }
 
@@ -99,10 +97,6 @@ type TwitchLiveStream struct {
 	StreamKey string `json:"stream_key"`
 }
 
-type FacebookLiveStream struct {
-	StreamKey string `json:"stream_key"`
-}
-
 type RtmpServer struct {
 	ConnectionString string `json:"connection_string"`
 }
@@ -120,7 +114,6 @@ func init() {
 		tempGCP := flag.Bool("gcp", false, "Determine if this is a GCP run.")
 		tempYT := flag.Bool("yt", false, "Determine if this is a YT run.")
 		tempTwitch := flag.Bool("twitch", false, "Determine if this is a Twitch run.")
-		tempFacebook := flag.Bool("facebook", false, "Determine if this is a Facebook run.")
 		tempRTMP := flag.Bool("rtmp", false, "Determine if this is a Any RTMP run.")
 		flag.Parse()
 		// Set the values to the global variables.
@@ -131,14 +124,13 @@ func init() {
 		gcp = *tempGCP
 		yt = *tempYT
 		twitch = *tempTwitch
-		facebook = *tempFacebook
 		rtmp = *tempRTMP
 	} else {
 		// if there are no flags provided than we close the application.
 		log.Fatalln("Error: No flags provided. Please use -help for more information.")
 	}
 	// Only run one of the three options.
-	if awsKVS && gcp && yt && twitch && facebook && rtmp {
+	if awsKVS && gcp && yt && twitch && rtmp {
 		log.Fatalln("Error: You can only run one of the -help options.")
 	}
 	// Check if the system has the required tools and is installed in path.
@@ -204,8 +196,6 @@ func init() {
 		validateJSONLength("YouTube Stream Name", server.YoutubeLiveStream.StreamKey)
 		// Twitch
 		validateJSONLength("Twitch Stream Name", server.TwitchLiveStream.StreamKey)
-		// Facebook
-		validateJSONLength("Facebook Stream Name", server.FacebookLiveStream.StreamKey)
 		// RTMP
 		validateJSONLength("RTMP Stream Name", server.RtmpServer.ConnectionString)
 		// Check if the rtsp server is alive and responding to requests
@@ -270,8 +260,6 @@ func main() {
 							go forwardDataToYoutubeLive(server.Host, server.YoutubeLiveStream.StreamKey, &uploadWaitGroup, ctx)
 						} else if twitch {
 							go forwardDataToTwitch(server.Host, server.TwitchLiveStream.StreamKey, &uploadWaitGroup, ctx)
-						} else if facebook {
-							go forwardDataToFacebookLive(server.Host, server.FacebookLiveStream.StreamKey, &uploadWaitGroup, ctx)
 						} else if rtmp {
 							go forwardDataToAnyRTMP(server.Host, server.RtmpServer.ConnectionString, &uploadWaitGroup, ctx)
 						}
