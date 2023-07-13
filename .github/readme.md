@@ -82,15 +82,6 @@ Software requirements:
 - Microsoft Azure "REPLACE_THIS_WITH_KVS_OR_IVS_OR_VERTEX_AI_ON_AZURE"
 - Microsoft Azure Blob Storage
 
-##### [Twitch](https://www.twitch.tv/)
-- Twitch Live Stream
-
-##### [YouTube](https://www.youtube.com/)
-- YouTube Live Streaming Platform
-
-##### [Facebook](https://www.facebook.com/)
-- Facebook Live Stream
-
 ---
 ### Notes
 - Make sure you have 30 MBPS Upload & 30 MBPS Download when connecting to the RTMP server.
