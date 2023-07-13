@@ -226,22 +226,6 @@ func forwardDataToAmazonKinesisStreams(host string, streamName string, accessKey
 	defer forwardingWaitGroup.Done()
 }
 
-// Stream the video to aws interactive video service.
-func forwardDataToAmazonIVS(host string, amazonIVSURL string, publicKey string, privateKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
-	// Set the rtspServerStreamingChannel to true
-	go addKeyValueToMap(rtspServerStreamingChannel, host, true)
-	cmd := exec.CommandContext(ctx, "ffmpeg", "-re", "-stream_loop", "-1", "-i", host, "-c", "copy", "-f", "flv", amazonIVSURL)
-	//cmd := exec.Command("gst-launch-1.0", "-v", "rtspsrc", "location="+host, "!", "rtph264depay", "!", "h264parse", "!", "flvmux", "!", "rtmpsink", "location="+amazonIVSURL)
-	err := cmd.Run()
-	if err != nil {
-		log.Println(err)
-	}
-	// Set the rtspServerStreamingChannel to false
-	go addKeyValueToMap(rtspServerStreamingChannel, host, false)
-	// Close the channel.
-	defer forwardingWaitGroup.Done()
-}
-
 // Stream the video to youtube live.
 func forwardDataToYoutubeLive(host string, youtubeKey string, forwardingWaitGroup *sync.WaitGroup, ctx context.Context) {
 	// Create a array of strings for youtube url
