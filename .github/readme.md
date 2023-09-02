@@ -9,6 +9,7 @@
 [![WhatsApp](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/whatsapp.svg)](https://chat.whatsapp.com/KR0nia4ajom2NWl32YOYZK)
 [![Telegram](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/telegram.svg)](https://t.me/parking_united_com)
 [![Teams](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/teams.svg)](https://teams.live.com/l/community/FAAHt8haBHMqRRUOwI)
+[![Skype](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/skype.svg)](https://join.skype.com/hjhsrvQlinZk)
 
 
 ---
