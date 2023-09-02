@@ -2,9 +2,9 @@
 
 ---
 ### Contact:
-![https://discord.gg/3mwJHr5Btt](https://cloud.githubusercontent.com/assets/6291467/26705903/96c2d66e-477c-11e7-9f4e-f3c0efe96c9a.png)
-![https://parking-unitedcom.slack.com/archives/C05QM7PS9GV/p1693631754500589](https://d33wubrfki0l68.cloudfront.net/440eab0e0067a780b31c30b775d4a6aeb45bb684/addc7/assets/images/tool-icons/slack.png)
-![https://avatars.githubusercontent.com/u/702459?s=200](https://signal.group/#CjQKIPhEy6Pk8c-wXi-6O3DRXQ3eSLvJNqW61uq46Y-Ya3mrEhDaILflpc1oE9joFmzC3REG)
+![https://discord.gg/3mwJHr5Btt](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/discord.svg)
+![https://parking-unitedcom.slack.com/archives/C05QM7PS9GV/p1693631754500589](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/slack.svg)
+![https://signal.group/#CjQKIPhEy6Pk8c-wXi-6O3DRXQ3eSLvJNqW61uq46Y-Ya3mrEhDaILflpc1oE9joFmzC3REG](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/signal.svg)
 
 ---
 ### Requirements:
