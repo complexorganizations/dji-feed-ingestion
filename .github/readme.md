@@ -10,6 +10,7 @@
 [![Telegram](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/telegram.svg)](https://t.me/parking_united_com)
 [![Teams](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/teams.svg)](https://teams.live.com/l/community/FAAHt8haBHMqRRUOwI)
 [![Skype](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/skype.svg)](https://join.skype.com/hjhsrvQlinZk)
+[![Reddit](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/reddit.svg)](https://reddit.com/r/parking_united_com/s/YefTKn0cfX)
 
 
 ---
