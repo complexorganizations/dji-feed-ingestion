@@ -1,7 +1,7 @@
-# Get the latest ubuntu image from docker hub
+# Get the latest ubuntu image from dockerhub.
 FROM ubuntu:latest
 
-# Install the RTSP server with middleware.
+# Install the dependencies for the middleware; and then install the middleware.
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y &&  \ 
