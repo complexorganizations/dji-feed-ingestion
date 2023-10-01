@@ -1,0 +1,41 @@
+name: Build the latest version of the script
+on:
+  push:
+    paths:
+      - "**.sh"
+      - "**.go"
+  pull_request:
+    paths:
+      - "**.sh"
+      - "**.go"
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build on ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code into the directory
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+            go-version-file: "middleware/go.mod"
+            cache: true
+            check-latest: true
+        id: go
+      - name: Install the latest version of the script.
+        run: sudo bash middleware/middleware-installer.sh
+      - name: Setup AWS public keys
+        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
+      - name: Setup AWS private keys
+        run: aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+      - name: Build the application && Run the app help.
+        run: cd middleware/ && go build . && ./csp-connector -help
+      - name: Run the whole application.
+        run: cd middleware/ && ./csp-connector -config="config.json" -log="log.txt" -gcp=true -debug=true
+      - name: View the application logs.
+        run: cat middleware/log.txt
