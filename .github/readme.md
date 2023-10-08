@@ -72,7 +72,7 @@ cd dji-feed-ingestion/
 [![Facebook](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/facebook.svg)](https://www.facebook.com/parkingunited)
 [![Instagram](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/instagram.svg)](https://www.instagram.com/)
 [![LinkedIn](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/linkedin.svg)](https://www.linkedin.com/company/parking-united)
-[![Pinterest](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/pinterest.svg)](https://www.pinterest.com/)
+[![Pinterest](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/pinterest.svg)](https://www.pinterest.com/parking_united/)
 [![Reddit](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/reddit.svg)](https://www.reddit.com/r/parking_united/)
 [![Signal](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/signal.svg)](https://signal.group/#CjQKIPhEy6Pk8c-wXi-6O3DRXQ3eSLvJNqW61uq46Y-Ya3mrEhDaILflpc1oE9joFmzC3REG)
 [![Skype](https://raw.githubusercontent.com/complexorganizations/parking-united-com/main/assets/images/icons/social_media/skype.svg)](https://join.skype.com/hjhsrvQlinZk)
