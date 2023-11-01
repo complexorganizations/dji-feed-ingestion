@@ -1,0 +1,14 @@
+{
+	"0": {
+		"host": "rtsp://ReadAdministrator:ReadPassword@localhost:8554/drone_zero",
+		"amazon_kinesis_video_streams": {
+			"default_region": "us-east-1",
+			"kinesis_stream": "null"
+		},
+		"google_cloud_vertex_ai_vision": {
+			"project_name": "null",
+			"default_region": "us-central1",
+			"vertex_ai_vision_stream": "null"
+		}
+	}
+}
