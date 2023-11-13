@@ -6,17 +6,17 @@ module "vpc" {
 
 // Using VPC module
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-  name = "my-vpc"
-  cidr = "10.0.0.0/16"
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-  enable_nat_gateway = true
-  single_nat_gateway = false
+  source                 = "terraform-aws-modules/vpc/aws"
+  name                   = "my-vpc"
+  cidr                   = "10.0.0.0/16"
+  azs                    = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  private_subnets        = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets         = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  enable_nat_gateway     = true
+  single_nat_gateway     = false
   one_nat_gateway_per_az = false
-  reuse_nat_ips       = true
-  enable_vpn_gateway = true
+  reuse_nat_ips          = true
+  enable_vpn_gateway     = true
 }
 
 // Security Groups
@@ -26,13 +26,13 @@ module "security-group" {
 }
 
 module "security_group" {
-  source = "terraform-aws-modules/security-group/aws"
+  source      = "terraform-aws-modules/security-group/aws"
   name        = "user-service"
   description = "Security group for user-service with custom ports open within VPC, and PostgreSQL publicly open"
   vpc_id      = "vpc-12345678"
 
-  ingress_cidr_blocks      = ["10.10.0.0/16"]
-  ingress_rules            = ["https-443-tcp"]
+  ingress_cidr_blocks = ["10.10.0.0/16"]
+  ingress_rules       = ["https-443-tcp"]
   ingress_with_cidr_blocks = [
     {
       from_port   = 8080
@@ -72,10 +72,10 @@ module "ec2-instance" {
 
 // Using ec2 instance module
 module "ec2_instance" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "~> 3.0"
-  for_each = toset(["one", "two", "three"])
-  name = "instance-${each.key}"
+  source                 = "terraform-aws-modules/ec2-instance/aws"
+  version                = "~> 3.0"
+  for_each               = toset(["one", "two", "three"])
+  name                   = "instance-${each.key}"
   ami                    = "ami-ebd02392"
   instance_type          = "t2.micro"
   key_name               = "user1"
@@ -92,14 +92,14 @@ module "ec2_instance" {
 module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "6.10.0"
-  # insert the 1 required variable here
+  name    = "example-autoscaling"
 }
 
 // Using autoscaling module
 module "asg" {
-  source  = "terraform-aws-modules/autoscaling/aws"
+  source = "terraform-aws-modules/autoscaling/aws"
   # Autoscaling group
-  name = "example-asg"
+  name                      = "example-asg"
   min_size                  = 0
   max_size                  = 1
   desired_capacity          = 1
@@ -168,7 +168,7 @@ module "asg" {
         volume_size           = 20
         volume_type           = "gp2"
       }
-    }, {
+      }, {
       device_name = "/dev/sda1"
       no_device   = 1
       ebs = {
