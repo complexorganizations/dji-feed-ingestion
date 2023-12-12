@@ -1,6 +1,6 @@
 module csp-connector
 
-go 1.20
+go 1.21
 
 require (
 	github.com/bluenviron/gortsplib/v3 v3.1.0
