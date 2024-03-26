@@ -10,9 +10,9 @@ Join our expanding team! We are looking for skilled designers and developers wit
 
 ### Equipment Specifications
 
-- **Entry-Level**: [DJI Air 3](https://store.dji.com/product/dji-air-3)
-- **Advanced-Level**: [DJI Mavic 3](https://www.dji.com/mavic-3)
-- **Industrial-Level**: [DJI Matrice 30](https://www.dji.com/matrice-30)
+- **Entry-Level**: [DJI Air 3](https://www.dji.com/air-3)
+- **Advanced-Level**: [DJI Mavic 3 Classic](https://www.dji.com/mavic-3-classic)
+- **Industrial-Level**: [DJI Dock 2](https://enterprise.dji.com/dock-2)
 
 ### Software and Platforms
 
