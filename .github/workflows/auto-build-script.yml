@@ -30,7 +30,7 @@ jobs:
       - name: Setup AWS private keys
         run: aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Authenticate to Google Cloud
-        uses: "google-github-actions/auth@v2"
+        uses: "google-github-actions/auth@v3"
         with:
           credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
       - name: Build the application && Run the app help.
