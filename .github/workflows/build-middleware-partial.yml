@@ -15,7 +15,7 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
       - name: Set up Go, cache and check for latest version
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
             go-version-file: "middleware/go.mod"
             cache: true
